@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dose Singko - Dashboard</title>
+  
+  <!-- Google Fonts: Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel ="icon" href="images/iconup.png" type="image">
+
+  <style>
+    .card { border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+    .dashboard-header { margin-bottom: 2rem; text-align: center; }
+    .stats-card h3 { font-size: 2rem; }
+    .improvement-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px;
+      margin-top: 15px;
+    }
+
+    .label-box {
+      background-color: #ffe5e5;
+      color: #4B0000;
+      font-weight: bold;
+      border-radius: 12px;
+      padding: 8px;
+      text-align: center;
+      margin-bottom: 5px;
+    }
+
+    .suggestion-box {
+      border: 1px solid #000;
+      border-radius: 12px;
+      padding: 6px;
+      text-align: center;
+      margin: 2px 0;
+    }
+  </style>
+
+</head>
+
+<body style="margin:0; display:flex; min-height:100vh; background-color:#ffffff;">
+
+  <!-- Navbar / Sidebar -->
+  <%- include('../partials/navbaradmin') %>
+
+  <!-- Main Content -->
+  <div class="dashboard-container d-flex flex-column flex-grow-1" style="min-height:100vh; overflow-y:auto;">
+    <div class="container-fluid mt-4 px-4">
+  <!-- Breadcrumb -->
+  <div class="dashboard-header mb-4" style="margin-left:20px; font-size:0.85rem;">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-1" style="color: gray; font-size:0.85rem;">
+        <li class="breadcrumb-item" style="color: gray;">Feedback Management</li>
+        <li class="breadcrumb-item">
+          <a href="/dashboard" style="color: black; text-decoration: none;">DoseSingko Dashboard</a>
+        </li>
+      </ol>
+    </nav>
+  </div>
+<div id="messageBox" class="alert d-none" role="alert"></div>
+
+<% if (user) { %>
+<div id="welcome-toast" style="
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #fff;
+  color: #333;
+  border: 1px solid #000;
+  padding: 12px 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 9999;
+  min-width: 220px;
+">
+  <!-- Profile Image -->
+  <div style="
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid #000;
+    flex-shrink: 0;
+  ">
+    <img src="<%= user.profilePic || '/images/default-profile.png' %>" alt="Profile" style="width:100%; height:100%; object-fit: cover;">
+  </div>
+
+  <!-- Text Content -->
+  <div style="display: flex; flex-direction: column;">
+    <span style="font-weight: 600;">Welcome, <%= user.username %>!</span>
+    <span style="font-size:12px; color:#555;">Let's make today amazing ☕</span>
+  </div>
+</div>
+<% } %>
+<script>
+  window.addEventListener("DOMContentLoaded", () => {
+    const toast = document.getElementById("welcome-toast");
+    if (toast) {
+      setTimeout(() => {
+        toast.style.transition = "transform 0.5s ease, opacity 0.5s ease";
+        toast.style.opacity = 0;
+        toast.style.transform = "translateX(100px)";
+        setTimeout(() => toast.remove(), 500);
+      }, 3000);
+    }
+  });
+</script>
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <h4 class="mb-1 text-dark fw-bold">DoseSingko Dashboard</h4>
+      <p class="text-muted small mb-0">Comprehensive feedback analytics and insights</p>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+<button 
+  onclick="window.print()" 
+  style="background-color: white; color: black; border: 1px solid black; padding: 4px 8px; border-radius: 3px; font-size: 14px; display: flex; align-items: center; gap: 3px;">
+  <i class="bi bi-printer"></i> Print
+</button>
+
+<button class="btn btn-outline-secondary btn-sm" onclick="window.location.href='/dashboard'">
+  <i class="fas fa-sync-alt me-1"></i> Refresh
+</button>
+
+      <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#orModal">
+        <i class="fas fa-plus me-1"></i> Add OR
+      </button>
+    </div>
+  </div>
+  <div class="modal fade" id="orModal" tabindex="-1" aria-labelledby="orModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="orModalLabel">Enter OR Number</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <input type="text" id="modalOrNumber" class="form-control" placeholder="OR Number">
+          </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" id="addOrBtn">Add OR</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<% const currentYear = new Date().getFullYear(); %>
+
+<!-- Slim Modern Filters -->
+<div class="card p-3 mb-4"
+     style="background:#fff; border:1px solid #e6e6e6; border-radius:20px; width:100%; max-width:100%; box-shadow:none;">
+
+  <div class="d-flex flex-wrap align-items-center justify-content-start gap-3">
+
+    <div class="d-flex align-items-center" style="font-size:1rem; color:#333; font-weight:600;">
+      <i class="fas fa-filter me-2" style="color:#000;"></i> Filter Records
+    </div>
+
+    <div class="d-flex flex-wrap align-items-center justify-content-start gap-3 flex-grow-1">
+
+      <div class="d-flex align-items-center gap-2" style="min-width:120px;">
+        <i class="fas fa-calendar-alt" style="color:#666; font-size:0.9rem;"></i>
+        <select id="month" class="form-select"
+                style="border-radius:12px; padding:6px 10px; font-size:0.9rem; border:1px solid #ddd; width:110px;">
+          <option value="">Month</option>
+          <% for(let m=1; m<=12; m++) { %>
+            <option value="<%= m %>"><%= new Date(0, m-1).toLocaleString('default', { month: 'short' }) %></option>
+          <% } %>
+        </select>
+      </div>
+
+      <div class="d-flex align-items-center gap-2" style="min-width:100px;">
+        <i class="fas fa-calendar-day" style="color:#666; font-size:0.9rem;"></i>
+        <select id="day" class="form-select"
+                style="border-radius:12px; padding:6px 10px; font-size:0.9rem; border:1px solid #ddd; width:90px;">
+          <option value="">Day</option>
+          <% for(let d=1; d<=31; d++) { %>
+            <option value="<%= d %>"><%= d %></option>
+          <% } %>
+        </select>
+      </div>
+
+      <div class="d-flex align-items-center gap-2" style="min-width:100px;">
+        <i class="fas fa-hourglass" style="color:#666; font-size:0.9rem;"></i>
+        <select id="year" class="form-select"
+                style="border-radius:12px; padding:6px 10px; font-size:0.9rem; border:1px solid #ddd; width:90px;">
+          <% for(let y=currentYear; y>=currentYear-5; y--) { %>
+            <option value="<%= y %>" <%= y === currentYear ? 'selected' : '' %>><%= y %></option>
+          <% } %>
+        </select>
+      </div>
+
+      <div style="flex:0 0 auto;">
+        <button class="btn btn-dark px-3 py-2"
+                onclick="applyFilter()"
+                style="border-radius:12px; font-size:0.9rem; font-weight:600;">
+          <i class="fas fa-check me-1"></i> Apply
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Stats -->
+<div style="display: flex; justify-content: space-between; align-items: stretch; gap: 16px; margin-bottom: 25px; color: #000; font-size: 0.9rem;">
+  
+  <div style="flex: 1; background: linear-gradient(135deg, #f5f5f5, #d9d9d9); color: #000; border: 1px solid #000; border-radius: 12px; box-shadow: none; padding: 14px; transition: all 0.2s; cursor: pointer;"
+       onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h6 style="margin: 0; font-weight: 500;">Total Feedback</h6>
+      <i class="bi bi-chat-dots-fill" style="font-size: 16px; color:#000;"></i>
+    </div>
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 6px;">
+      <h4 id="totalFeedback" style="margin: 0; font-size: 20px;"><%= feedbackData.totalFeedback %></h4>
+      <% if (feedbackData.totalFeedbackChange >= 0) { %>
+       <i class="bi bi-graph-up" style="color: #28a745; font-size: 16px;"></i>
+      <% } else { %>
+        <i class="bi bi-graph-down" style="color: #dc3545; font-size: 16px;"></i>
+      <% } %>
+    </div>
+  </div>
+
+  <div style="flex: 1; background: linear-gradient(135deg, #f5f5f5, #d9d9d9); color: #000; border: 1px solid #000; border-radius: 12px; box-shadow: none; padding: 14px; transition: all 0.2s; cursor: pointer;"
+       onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h6 style="margin: 0; font-weight: 500;">Average Rating</h6>
+      <i class="bi bi-star-fill" style="font-size: 16px; color:#000;"></i>
+    </div>
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 6px;">
+      <h4 id="avgRating" style="margin: 0; font-size: 20px;"><%= feedbackData.avgRating.toFixed(2) %></h4>
+      <% if (feedbackData.avgRating < 3.5) { %>
+        <i class="bi bi-graph-down" style="color: #dc3545; font-size: 16px;"></i>
+      <% } else { %>
+        <% if (feedbackData.avgRatingChange >= 0) { %>
+          <i class="bi bi-graph-up" style="color: #28a745; font-size: 16px;"></i>
+        <% } else { %>
+          <i class="bi bi-arrow-down-left" style="color: #dc3545; font-size: 16px;"></i>
+        <% } %>
+      <% } %>
+    </div>
+  </div>
+
+  <div style="flex: 1; background: linear-gradient(135deg, #f5f5f5, #d9d9d9); color: #000; border: 1px solid #000; border-radius: 12px; box-shadow: none; padding: 14px; transition: all 0.2s; cursor: pointer;"
+       onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h6 style="margin: 0; font-weight: 500;">Total Customers</h6>
+      <i class="bi bi-people-fill" style="font-size: 16px; color:#000;"></i>
+    </div>
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 6px;">
+      <h4 id="activeCustomers" style="margin: 0; font-size: 20px;"><%= feedbackData.activeCustomers %></h4>
+      <% if (feedbackData.customerChange >= 0) { %>
+       <i class="bi bi-graph-up" style="color: #28a745; font-size: 16px;"></i>
+      <% } else { %>
+        <i class="bi bi-graph-down" style="color: #dc3545; font-size: 16px;"></i>
+      <% } %>
+    </div>
+  </div>
+
+  <div style="flex: 1; background: linear-gradient(135deg, #f5f5f5, #d9d9d9); color: #000; border: 1px solid #000; border-radius: 12px; box-shadow: none; padding: 14px; transition: all 0.2s; cursor: pointer;"
+       onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h6 style="margin: 0; font-weight: 500;">Recent Submissions</h6>
+      <i class="bi bi-clock-history" style="font-size: 16px; color:#000;"></i>
+    </div>
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 6px;">
+      <h4 id="recentSubmissions" style="margin: 0; font-size: 20px;"><%= feedbackData.recentSubmissions %></h4>
+      <% if (feedbackData.submissionChange >= 0) { %>
+       <i class="bi bi-graph-up" style="color: #28a745; font-size: 16px;"></i>
+      <% } else { %>
+        <i class="bi bi-arrow-down-right" style="color: #dc3545; font-size: 16px;"></i>
+      <% } %>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+<div class="card p-3 mb-4" style="background-color: #fff; border-radius: 8px; position: relative; box-shadow: 0 8px 20px rgba(0,0,0,0.15);">
+<h2 style="font-size: 1rem; font-weight: bold; display: flex; align-items: center; gap: 0.4rem; color: black;">
+  <i class="bi bi-bar-chart-fill"></i>
+  Feedback Ratings Regression
+</h2>
+<p style="font-size: .8rem; color: gray;">Analyzing trends across categories based on customer feedback</p>
+
+  <canvas id="feedbackChart" max-height="400"></canvas>
+
+  <div id="emojiOverlay" style="position: absolute; top:0; left:0; width:100%; height:100%; display:flex; justify-content:center; align-items:center; pointer-events:none;"></div>
+
+<h4 style="color: #4B4B4B; font-weight: normal; font-size: 1rem; margin-top: 1.5rem; display: flex; align-items: center; gap: 0.4rem;">
+  <i class="bi bi-lightbulb-fill"></i>
+  Areas for Improvement & Recommendations:
+</h4>
+  <div id="improvementGrid" class="mt-2"></div>
+</div>
+<!-- Average Ratings and Rating Distribution Section -->
+<div style="display: flex; gap: 20px; flex-wrap: nowrap; justify-content: space-between; align-items: stretch; margin-top: 20px; margin-bottom: 20px;">
+  
+  <!-- Average Ratings by Category -->
+  <div style="flex: 1; min-width: 0;">
+    <div class="card" style="background: #fff; color: #000; border: 1px solid #ccc; height: 450px; display: flex; flex-direction: column; box-shadow: none;">
+      <div class="card-header" style="background: transparent; border-bottom: 1px solid #ddd; text-align: left; margin-top: 20px;">
+        <h2 style="font-size: 1rem; font-weight: bold; display: flex; align-items: center; gap: 0.4rem; color: black;">
+          <i class="bi bi-bar-chart-line-fill"></i>
+          Average Ratings by Category
+        </h2>
+        <p style="font-size: .8rem; color: gray;">Food, Ambiance, Service, Value, Staff & Bartender</p>
+      </div>
+      <div class="card-body d-flex justify-content-center align-items-center">
+        <canvas id="avgRatingsChart" style="max-height: 300px; width: 100%;"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rating Distribution -->
+  <div style="flex: 1; min-width: 0;">
+    <div class="card" style="background: #fff; color: #000; border: 1px solid #ccc; height: 450px; display: flex; flex-direction: column; box-shadow: none;">
+      <div class="card-header" style="background: transparent; border-bottom: 1px solid #ddd; text-align: left; margin-top: 20px;">
+        <h2 style="font-size: 1rem; font-weight: bold; display: flex; align-items: center; gap: 0.4rem; color: black;">
+          <i class="bi bi-star-fill"></i>
+          Ratings Distribution
+        </h2>
+        <p style="font-size: .8rem; color: gray;">Number of 1–5 star ratings</p>
+      </div>
+      <div class="card-body d-flex justify-content-center align-items-center">
+        <canvas id="ratingDistributionChart" style="max-height: 300px; width: 100%;"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Summary Modal -->
+<div class="modal fade" id="summaryModal" tabindex="-1" aria-labelledby="summaryModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content" style="border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+      <div class="modal-header" style="background-color: #f5f5f5; border-bottom: 1px solid #ddd; padding: 0.5rem 1rem;">
+        <h5 class="modal-title text-dark fw-bold" id="summaryModalLabel" style="font-size: 1rem;">Feedback Summary</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="margin:0;"></button>
+      </div>
+      <div class="modal-body" style="font-size: 0.85rem; color: #333; padding: 0.75rem 1rem;">
+        <div id="summaryContent" class="d-flex flex-column gap-2">
+          <!-- information here -->
+        </div>
+      </div>
+      <div class="modal-footer" style="border-top: 1px solid #ddd; background-color: #f5f5f5; padding: 0.5rem 1rem;">
+        <button type="button" class="btn btn-outline-dark btn-sm" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="card mb-3 w-100" style="background-color:#fff; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+  <div class="card-header" style="background-color:#f8f8f8; color:#000; font-weight:600; margin-top:8px; margin-bottom:8px;">
+    <h2 style="font-size: 1.1rem; font-weight: bold; display: flex; align-items: center; gap: 0.4rem;">
+      <i class="bi bi-chat-left-text-fill"></i>
+      Recent Feedback
+    </h2>
+    <p style="font-size: .8rem; color: gray;">Most recent customer feedback and ratings.</p>
+  </div>
+  <div class="card-body p-3" id="recentFeedback">
+    Loading...
+  </div>
+  <div class="text-center mt-3 mb-2">
+    <button id="showMoreBtn" class="btn btn-outline-dark w-100" style="max-width:900px; margin:0 auto;">Show More</button>
+  </div>
+</div>
+
+<script>
+function getInitials(name) {
+  return name
+    .split(' ')
+    .map(n => n[0])
+    .join('')
+    .toUpperCase();
+}
+
+let feedbackData = [];
+let showAll = false;
+
+async function loadRecentFeedback() {
+  try {
+    const res = await fetch('/analytics/recent-feedback');
+    const data = await res.json();
+    const container = document.getElementById('recentFeedback');
+
+    if (!data.profiles || data.profiles.length === 0) {
+      container.innerHTML = '<p style="color:#777;">No feedback found</p>';
+      document.getElementById('showMoreBtn').style.display = 'none';
+      return;
+    }
+
+    feedbackData = data.profiles;
+    renderFeedback();
+    
+  } catch (err) {
+    console.error(err);
+    document.getElementById('recentFeedback').innerHTML = '<p style="color:#777;">Failed to load feedback.</p>';
+    document.getElementById('showMoreBtn').style.display = 'none';
+  }
+}
+function renderStars(rating) {
+  if (!rating || isNaN(rating)) return 'N/A';
+  const fullStar = '★'; 
+  const emptyStar = '☆'; 
+  const maxStars = 5;
+  const stars = fullStar.repeat(rating) + emptyStar.repeat(maxStars - rating);
+  return `<span style="color:black; font-size:1rem;">${stars}</span>`;
+}
+
+function renderFeedback() {
+  const container = document.getElementById('recentFeedback');
+  container.innerHTML = '';
+
+  const toShow = showAll ? feedbackData : feedbackData.slice(0, 3);
+
+  toShow.forEach(fb => {
+    const name = fb.customerName || 'Anonymous';
+    const initials = getInitials(name);
+    const email = fb.customerEmail || '';
+    const rating = fb.ratings || {};
+    
+    let recommendText = 'N/A';
+    if (rating.recommendToOthers) {
+      if (rating.recommendToOthers === 'yes') recommendText = 'Yes, definitely';
+      else if (rating.recommendToOthers === 'maybe') recommendText = 'Maybe / Not Sure';
+      else if (rating.recommendToOthers === 'no') recommendText = "No, I wouldn't";
+    }
+
+    container.innerHTML += `
+      <div style="margin-bottom:1rem;">
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+          <div style="
+            width:40px; height:40px; border-radius:50%; 
+            background-color:#000; color:#fff; 
+            display:flex; align-items:center; justify-content:center;
+            font-weight:600; font-size:0.9rem;">
+            ${initials}
+          </div>
+          <div>
+            <div style="font-weight:600; color:#000;">${name}</div>
+            <div style="font-size:0.8rem; color:#555;">${email}</div>
+          </div>
+        </div>
+        <p style="margin:0.25rem 0; color:#000;">${fb.message}</p>
+        <p style="margin:0.25rem 0; color:#777; font-size:0.7rem;">Submitted: ${new Date(fb.createdAt).toLocaleString()}</p>
+        <hr style="border:0; border-top:1px solid #eee; margin:0.5rem 0;">
+        <div style="font-size:0.85rem; color:#000;">
+<div><strong>Overall:</strong> ${renderStars(rating.overallExperience)}</div>
+<div><strong>Food:</strong> ${renderStars(rating.foodQuality)}</div>
+<div><strong>Ambiance:</strong> ${renderStars(rating.ambiance)}</div>
+<div><strong>Service:</strong> ${renderStars(rating.service)}</div>
+<div><strong>Value:</strong> ${renderStars(rating.valueForMoney)}</div>
+<div><strong>Staff:</strong> ${renderStars(rating.staffAttitude)}</div>
+<div><strong>Bartender:</strong> ${renderStars(rating.bartenderAttitude)}</div>
+       </div>
+      </div>
+    `;
+  });
+
+  const btn = document.getElementById('showMoreBtn');
+  if (showAll || feedbackData.length <= 3) {
+    btn.style.display = 'none';
+  } else {
+    btn.style.display = 'block';
+  }
+}
+
+document.getElementById('showMoreBtn').addEventListener('click', () => {
+  showAll = true;
+  renderFeedback();
+});
+
+window.addEventListener('DOMContentLoaded', loadRecentFeedback);
+</script>
+
+<script>
+let feedbackChart = null;
+let avgRatingsChart = null;
+let ratingDistributionChart = null;
+let latestFeedbackData = <%- JSON.stringify(feedbackData) %> || null;
+
+const ratingLabels = {
+  foodQuality: "Food Quality",
+  ambiance: "Ambiance",
+  service: "Service",
+  valueForMoney: "Value for Money",
+  staffAttitude: "Staff Attitude",
+  bartenderAttitude: "Bartender Attitude"
+};
+
+const suggestionPool = {
+  foodQuality: ["Consider using fresher ingredients","Enhance taste consistency","Improve cooking techniques","Review portion sizes","Enhance plating and presentation"],
+  ambiance: ["Adjust lighting for a cozy feel","Reduce background noise","Ensure comfortable seating","Check music volume and selection","Enhance decor and atmosphere"],
+  service: ["Greet customers warmly","Improve service speed","Train staff for better efficiency","Enhance order accuracy","Be attentive and responsive"],
+  valueForMoney: ["Review pricing for fairness","Consider portion adjustments","Offer combo deals or packages","Ensure transparent pricing","Provide extra value where possible"],
+  staffAttitude: ["Ensure politeness at all times","Promote professional behavior","Train patience and understanding","Encourage teamwork and collaboration","Maintain a friendly demeanor"],
+  bartenderAttitude: ["Ensure prompt service at the bar","Maintain cleanliness and hygiene","Improve drink presentation","Train staff on drink knowledge","Promote polite and friendly interactions"]
+};
+
+function getRandomSuggestions(category, avg) {
+  if (avg >= 3.5) return [];
+  const pool = suggestionPool[category] || [];
+  const shuffled = pool.slice().sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, 2);
+}
+
+function renderImprovementGrid(data) {
+  const container = document.getElementById('improvementGrid');
+  if (!container) return;
+  container.innerHTML = '';
+  const firstRow = ["foodQuality","ambiance","service"];
+  const secondRow = ["valueForMoney","staffAttitude","bartenderAttitude"];
+  [firstRow, secondRow].forEach(row => {
+    const rowDiv = document.createElement('div');
+    rowDiv.className = 'd-flex gap-2 mb-2';
+    row.forEach(cat => {
+      const avg = Number((data?.avgRatings?.[cat] ?? 0));
+      if (avg < 3.5) {
+        const colDiv = document.createElement('div');
+        colDiv.className = 'flex-grow-1';
+        const labelDiv = document.createElement('div');
+        labelDiv.className = 'p-2 text-white rounded text-center mb-1';
+        labelDiv.style.backgroundColor = '#343a40';
+        labelDiv.textContent = ratingLabels[cat];
+        colDiv.appendChild(labelDiv);
+        getRandomSuggestions(cat, avg).forEach(s => {
+          const sugDiv = document.createElement('div');
+          sugDiv.className = 'p-2 border rounded text-center mb-1';
+          sugDiv.textContent = s;
+          colDiv.appendChild(sugDiv);
+        });
+        rowDiv.appendChild(colDiv);
+      }
+    });
+    container.appendChild(rowDiv);
+  });
+}
+
+function renderEmojiOverlay(avgRatings) {
+  const overlay = document.getElementById('emojiOverlay');
+  if (!overlay) return;
+  const keys = avgRatings ? Object.keys(avgRatings) : [];
+  const avg = keys.length ? Object.values(avgRatings).reduce((a,v)=>a+v,0)/keys.length : 0;
+  overlay.innerHTML = avg >= 3.5
+    ? `<div style="display:flex; flex-direction:column; align-items:center; transform: translateY(-120px);">
+         <img src="/images/emoji-happy-square-398-svgrepo-com.svg" style="width:120px;height:120px;">
+         <div style="color:#A8D5BA;font-weight:bold; margin-top:10px;">Ratings are good, keep it up!</div>
+       </div>`
+    : `<div style="display:flex; flex-direction:column; align-items:center; transform: translateY(-150px);">
+         <img src="/images/emoji-sad-missing-583-svgrepo-com.svg" style="width:150px;height:150px;">
+         <div style="color:#E57373;font-weight:bold; margin-top:10px;">Aww, your ratings are failing!</div>
+       </div>`;
+  overlay.style.display = 'flex';
+  overlay.style.justifyContent = 'center';
+  overlay.style.alignItems = 'center';
+  setTimeout(()=>overlay.style.display='none',3000);
+}
+
+function safeGetContext(id) {
+  const el = document.getElementById(id);
+  if (!el) return null;
+  try {
+    return el.getContext('2d');
+  } catch (e) {
+    return null;
+  }
+}
+
+function renderFeedbackChart(data) {
+  const ctx = safeGetContext('feedbackChart');
+  if (!ctx) return console.warn('feedbackChart canvas not found');
+
+  ctx.canvas.style.maxHeight = '400px';
+
+  if (feedbackChart) {
+    try { feedbackChart.destroy(); } catch(e){}
+    feedbackChart = null;
+  }
+
+  const labels = Object.values(ratingLabels);
+  const values = Object.keys(ratingLabels).map(k => Number(data?.avgRatings?.[k] ?? 0));
+
+  // compute regression
+  let regressionData = [];
+  if (values.length > 1) {
+    const n = values.length;
+    const x = Array.from({ length: n }, (_, i) => i);
+    const sumX = x.reduce((a,b)=>a+b,0);
+    const sumY = values.reduce((a,b)=>a+b,0);
+    const sumXY = x.reduce((s, xi, i)=> s + xi * values[i], 0);
+    const sumXX = x.reduce((s, xi)=> s + xi * xi, 0);
+    const denom = (n * sumXX - sumX * sumX);
+    let slope = 0;
+    if (denom !== 0) slope = (n * sumXY - sumX * sumY) / denom;
+    const intercept = (sumY - slope * sumX) / n;
+
+    regressionData = x.map(xi => {
+      const y = intercept + slope * xi;
+      return Math.max(0, Math.min(5, +y.toFixed(2)));
+    });
+    regressionData = regressionData.map((r,i)=>+(r*0.75+values[i]*0.25).toFixed(2));
+  } else {
+    regressionData = [...values];
+  }
+
+  feedbackChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Actual Ratings',
+          data: values,
+          borderColor: '#222',
+          backgroundColor: 'rgba(0,0,0,0.05)',
+          pointBackgroundColor: '#111',
+          pointBorderColor: '#111',
+          borderWidth: 2,
+          pointRadius: 4,
+          fill: true,
+          tension: 0.35
+        },
+        {
+          label: 'Regression Trend',
+          data: regressionData,
+          borderColor: '#888',
+          borderDash: [5,5],
+          borderWidth: 1.5,
+          pointRadius: 0,
+          tension: 0.25,
+          fill: false
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          labels: { color: '#444', font: { size: 12 } }
+        },
+        tooltip: {
+          backgroundColor: '#111',
+          titleColor: '#fff',
+          bodyColor: '#ddd',
+          borderColor: '#333',
+          borderWidth: 1,
+          callbacks: {
+            label: ctx => {
+              const val = ctx.parsed.y.toFixed(2);
+              const prev = ctx.dataIndex > 0 ? ctx.dataset.data[ctx.dataIndex - 1] : val;
+              const diff = val - prev;
+              const trend = diff > 0 ? '↑' : diff < 0 ? '↓' : '↑';
+              return `${ctx.dataset.label}: ${val} ${trend}`;
+            }
+          }
+        }
+        
+      },
+      scales: {
+        x: {
+          ticks: { color: '#555', font: { size: 11 } },
+          grid: { color: 'rgba(100,100,100,0.08)' },
+          title: { display: true, text: 'Feedback Categories', color: '#555', font: { size: 12 } }
+        },
+        y: {
+          min: 0,
+          max: 5,
+          ticks: { color: '#555', font: { size: 11 } },
+          grid: { color: 'rgba(100,100,100,0.08)' },
+          title: { display: true, text: 'Rating (0–5)', color: '#555', font: { size: 12 } }
+        }
+      }
+    }
+  });
+
+  renderImprovementGrid(data);
+  renderEmojiOverlay(data?.avgRatings ?? {});
+}
+
+
+function renderRatingsCharts(data) {
+  const avgRatingsData = data?.avgRatings ?? {};
+  const ratingDistributionData = Array.isArray(data?.ratingDistribution) ? data.ratingDistribution : [0,0,0,0,0];
+
+  // Average Ratings Bar Chart
+  const ctx1 = safeGetContext("avgRatingsChart");
+  if (!ctx1) {
+    console.warn('avgRatingsChart canvas not found');
+  } else {
+    if (avgRatingsChart) { try { avgRatingsChart.destroy(); } catch(e){}; avgRatingsChart = null; }
+    const barLabels = Object.keys(ratingLabels).map(k => ratingLabels[k]);
+    const barData = Object.keys(ratingLabels).map(k => Number(avgRatingsData[k] ?? 0));
+    avgRatingsChart = new Chart(ctx1, {
+      type: "bar",
+      data: {
+        labels: barLabels,
+        datasets: [{ label: "Average Rating", data: barData, backgroundColor: "rgba(0,0,0,0.8)", borderRadius: 6 }]
+      },
+      options: {
+        maintainAspectRatio: false,
+        scales: { y: { beginAtZero: true, max: 5, ticks: { stepSize: 1 } } },
+        plugins: { legend: { display: false } }
+      }
+    });
+  }
+
+  // Rating Distribution Doughnut
+  const ctx2 = safeGetContext("ratingDistributionChart");
+  if (!ctx2) {
+    console.warn('ratingDistributionChart canvas not found');
+  } else {
+    if (ratingDistributionChart) { try { ratingDistributionChart.destroy(); } catch(e){}; ratingDistributionChart = null; }
+    ratingDistributionChart = new Chart(ctx2, {
+      type: "doughnut",
+      data: {
+        labels: ["1 Star","2 Stars","3 Stars","4 Stars","5 Stars"],
+        datasets: [{ data: ratingDistributionData, backgroundColor: ["rgba(0,0,0,0.18)","rgba(0,0,0,0.28)","rgba(0,0,0,0.48)","rgba(0,0,0,0.68)","rgba(0,0,0,0.88)"] }]
+      },
+      options: { maintainAspectRatio: false, plugins: { legend: { position: "bottom", labels: { color: "#000" } } } }
+    });
+  }
+}
+
+async function fetchData(url, params = null) {
+  try {
+    const query = params ? `?${new URLSearchParams(params).toString()}` : '';
+    console.log('Fetching:', url + query);
+    const res = await fetch(url + query, { cache: 'no-store' });
+    if (!res.ok) throw new Error(`${url} ${res.status}`);
+    const json = await res.json();
+    return json;
+  } catch (err) {
+    console.error('Fetch error for', url, err);
+    return null;
+  }
+}
+
+async function applyFilter() {
+  const yearEl = document.getElementById('year');
+  const year = yearEl ? yearEl.value : null;
+  const month = document.getElementById('month')?.value;
+  const day = document.getElementById('day')?.value;
+  const hour = document.getElementById('hour')?.value;
+
+  if (!year) {
+    alert('Please select a year!');
+    return;
+  }
+
+  const params = { year };
+  if (month) params.month = month;
+  if (day) params.day = day;
+  if (hour) params.hour = hour;
+
+  // fetch filtered feedback
+  const feedbackData = await fetchData('/analytics/getFilteredFeedback', params);
+  if (feedbackData) {
+    latestFeedbackData = feedbackData;
+    // render summary and charts
+    renderSummaryCards(feedbackData);
+    renderFeedbackChart(feedbackData);
+  } else {
+    console.warn('No feedback data returned for filter; skipping chart update.');
+  }
+
+  // fetch ratings (independent)
+  const ratingsData = await fetchData('/analytics/ratings-data', params);
+  if (ratingsData) {
+    renderRatingsCharts(ratingsData);
+  } else {
+    console.warn('No ratings-data returned for filter; skipping ratings charts update.');
+  }
+}
+
+function renderSummaryCards(data) {
+  // Ensure DOM elements exist before updating
+  const tf = document.getElementById('totalFeedback');
+  const ar = document.getElementById('avgRating');
+  const ac = document.getElementById('activeCustomers');
+  const rs = document.getElementById('recentSubmissions');
+
+  if (tf) tf.textContent = data?.totalFeedback ?? 0;
+  if (ar) ar.textContent = (data?.avgRating ?? 0).toFixed?.(2) ?? '0.00';
+  if (ac) ac.textContent = data?.activeCustomers ?? 0;
+  if (rs) rs.textContent = data?.recentSubmissions ?? 0;
+}
+
+window.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth() + 1; // JS months are 0-based
+
+    // Default params = current month and year
+    const defaultParams = { year: currentYear, month: currentMonth };
+
+    // Load feedback data for current month by default
+    const feedbackData = latestFeedbackData || await fetchData('/analytics/getFilteredFeedback', defaultParams);
+    if (feedbackData) {
+      latestFeedbackData = feedbackData;
+      renderSummaryCards(feedbackData);
+      renderFeedbackChart(feedbackData);
+    } else {
+      console.info('No initial feedback data available for the current month.');
+    }
+
+    // Load ratings charts for current month
+    const ratingsData = await fetchData('/analytics/ratings-data', defaultParams);
+    if (ratingsData) {
+      renderRatingsCharts(ratingsData);
+    } else {
+      console.info('No initial ratings-data available for the current month.');
+    }
+  } catch (err) {
+    console.error('Initial render failed:', err);
+  }
+});
+
+</script>
+
+<script>
+function printDashboard() {
+  const dashboardContainer = document.querySelector('.dashboard-container');
+  const clone = dashboardContainer.cloneNode(true);
+
+  const canvases = clone.querySelectorAll('canvas');
+  canvases.forEach(canvas => {
+    const img = document.createElement('img');
+    img.src = canvas.toDataURL('image/png');
+    img.style.maxWidth = '100%';
+    canvas.parentNode.replaceChild(img, canvas);
+  });
+
+  const printWindow = window.open('', '', 'width=900,height=700');
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Dashboard Export</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+          body { font-family: 'Poppins', sans-serif; background-color: #fff; color: #000; }
+          .card { box-shadow: 0 2px 6px rgba(0,0,0,0.1); margin-bottom: 1rem; }
+          img { display: block; margin: 0 auto; }
+        </style>
+      </head>
+      <body>
+        ${clone.innerHTML}
+      </body>
+    </html>
+  `);
+
+  printWindow.document.close();
+  printWindow.focus();
+  setTimeout(() => {
+    printWindow.print();
+    printWindow.close();
+  }, 500);
+}
+</script>
+
+<script>
+  const messageBox = document.getElementById("messageBox");
+
+  function showMessage(type, text) {
+    messageBox.className = `alert alert-${type}`; 
+    messageBox.textContent = text;
+    messageBox.classList.remove("d-none");
+
+    // Auto-hide after 3 seconds
+    setTimeout(() => {
+      messageBox.classList.add("d-none");
+    }, 3000);
+  }
+
+  document.getElementById("addOrBtn").addEventListener("click", async () => {
+    const orNumber = document.getElementById("modalOrNumber").value.trim();
+    if (!orNumber) {
+      showMessage("warning", "Please enter OR Number");
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/add-or", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orNumber })
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        showMessage("danger", data.error || "Server error");
+        return;
+      }
+
+      showMessage("success", "OR Number added successfully!");
+      document.getElementById("modalOrNumber").value = "";
+      bootstrap.Modal.getInstance(document.getElementById("orModal")).hide();
+    } catch (err) {
+      console.error(err);
+      showMessage("danger", err.message);
+    }
+  });
+</script>
+
+
+<script>
+  const path = window.location.pathname.toLowerCase().replace('/', '');
+
+  document.querySelectorAll('.menu-item').forEach(item => {
+    const label = item.getAttribute('data-label')?.toLowerCase();
+    if (label && path === label) {
+      item.classList.add('active');
+    }
+  });
+</script>
+
+<script>
+  let inactivityTime = function () {
+    let timer;
+    const logoutTime = 3 * 60 * 1000; // 3 minutes in milliseconds
+
+    function resetTimer() {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        alert('You have been inactive for 3 minutes. Redirecting to login.');
+        window.location.href = '/users/login'; // change to your login route
+      }, logoutTime);
+    }
+
+    // Events that reset the timer
+    window.onload = resetTimer;
+    document.onmousemove = resetTimer;
+    document.onkeypress = resetTimer;
+    document.ontouchstart = resetTimer;
+    document.onclick = resetTimer;
+    document.onscroll = resetTimer;
+  };
+
+  inactivityTime();
+</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="/js/dashboard.js"></script>
+</body>
+</html>

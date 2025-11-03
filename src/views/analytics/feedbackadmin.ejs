@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Feedback Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel ="icon" href="images/iconup.png" type="image">
+
+</head>
+<body style="margin:0; background-color:#ffffff; display:flex;">
+
+
+  <%- include('../partials/navbaradmin') %>
+
+
+  <!-- Main Content -->
+  <div style="padding: 20px; flex:1; min-height: 100vh; overflow-y:auto;">
+<div id="approvalMessage" 
+     style="display:none; position:fixed; margin-top:20px; left:50%; transform:translateX(-50%); 
+            z-index:1050; padding:8px 15px; border-radius:12px; 
+            max-width:300px; text-align:center; font-weight:normal;">
+</div>
+
+<div style="font-size: 0.8rem; margin-top: 5px; margin-bottom: 10px; margin-left: 25px;">
+  <span style="color: gray;">Feedback Management</span>
+  <span style="margin: 0 6px;">/</span>
+  <a href="/feedbackadmin" style="color: black; text-decoration: none;">DoseSingko Feedback</a>
+</div>
+
+<div style="margin-top: 25px; display: flex; align-items: center; justify-content: space-between;">
+  <div>
+    <h4 style="font-size: 1.5rem; font-weight: 700;">Feedback Management</h4>
+    <p style="color: gray; font-size: 0.9rem;">Manage customer feedback, reviews, and responses</p>
+  </div>
+<div style="display: flex; align-items: center; gap: 4px;">
+  <button onclick="window.location.href='/feedbackadmin'" 
+    style="background-color: white; color: black; border: 1px solid black; padding: 4px 8px; border-radius: 3px; font-size: 14px; display: flex; align-items: center; gap: 3px;">
+    <i class="bi bi-arrow-clockwise"></i> Refresh
+  </button>
+  
+<button 
+  onclick="window.print()" 
+  style="background-color: white; color: black; border: 1px solid black; padding: 4px 8px; border-radius: 3px; font-size: 14px; display: flex; align-items: center; gap: 3px;">
+  <i class="bi bi-printer"></i> Print
+</button>
+
+<!-- Feedback Form Button -->
+<button type="button"
+  class="btn"
+  style="background-color: white; color: black; border: 1px solid black; padding: 4px 8px; border-radius: 3px; font-size: 14px; display: flex; align-items: center; gap: 3px;"
+  data-bs-toggle="modal"
+  data-bs-target="#feedbackModal">
+  <i class="bi bi-clipboard"></i> Feedback Form
+</button>
+
+<!-- Feedback Modal -->
+<div class="modal fade" id="feedbackModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content" style="border-radius:10px;">
+      <div class="modal-header bg-light">
+        <h5 class="modal-title fw-semibold" id="feedbackModalLabel">Edit Feedback</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <% if (feedbacks && feedbacks.length > 0) { 
+          const feedback = feedbacks[0]; 
+        %>
+
+        <form action="/feedback/edit/<%= feedback._id %>" method="POST" class="needs-validation">
+          <!-- Overall Experience -->
+          <div class="rating-group mb-3">
+            <label class="d-block fw-semibold">Overall Experience:</label>
+            <small class="text-muted d-block mb-1">e.g., Is everything good? Great service? Fast transaction?</small>
+            <div class="stars" data-input-name="overallExperience" data-initial="<%= feedback.ratingID ? feedback.ratingID.overallExperience : 0 %>"></div>
+            <input type="hidden" name="overallExperience" value="<%= feedback.ratingID ? feedback.ratingID.overallExperience : 0 %>">
+            <textarea name="overallExperienceReason" placeholder="Reason (optional)" class="form-control mt-1"><%= feedback.ratingID ? feedback.ratingID.overallExperienceReason : '' %></textarea>
+          </div>
+
+          <hr>
+          <h5 class="fw-semibold mb-3">Rate your Experience</h5>
+          <div class="row">
+            <!-- Left Fields -->
+            <div class="col-md-6">
+              <% const leftFields = [
+                { name: 'foodQuality', label: 'Food Quality', hint: 'Taste, Presentation, Freshness' },
+                { name: 'ambiance', label: 'Ambiance', hint: 'Clean, Comfortable, Pleasant' },
+                { name: 'service', label: 'Service', hint: 'Friendly, Fast, Attentive' }
+              ]; %>
+
+              <% leftFields.forEach(field => { %>
+              <div class="rating-group mb-3">
+                <label class="d-block fw-semibold"><%= field.label %>:</label>
+                <small class="text-muted d-block mb-1">e.g., <%= field.hint %></small>
+                <div class="stars" data-input-name="<%= field.name %>" data-initial="<%= feedback.ratingID ? feedback.ratingID[field.name] : 0 %>"></div>
+                <input type="hidden" name="<%= field.name %>" value="<%= feedback.ratingID ? feedback.ratingID[field.name] : 0 %>">
+                <textarea name="<%= field.name %>Reason" placeholder="Reason (optional)" class="form-control mt-1"><%= feedback.ratingID ? feedback.ratingID[field.name + 'Reason'] : '' %></textarea>
+              </div>
+              <% }) %>
+            </div>
+
+            <!-- Right Fields -->
+            <div class="col-md-6">
+              <% const rightFields = [
+                { name: 'valueForMoney', label: 'Value for Money', hint: 'Worth the price, Affordable' },
+                { name: 'staffAttitude', label: 'Staff Attitude', hint: 'Friendly, Helpful, Professional' },
+                { name: 'bartenderAttitude', label: 'Bartender Attitude', hint: 'Friendly, Efficient, Skilled' }
+              ]; %>
+
+              <% rightFields.forEach(field => { %>
+              <div class="rating-group mb-3">
+                <label class="d-block fw-semibold"><%= field.label %>:</label>
+                <small class="text-muted d-block mb-1">e.g., <%= field.hint %></small>
+                <div class="stars" data-input-name="<%= field.name %>" data-initial="<%= feedback.ratingID ? feedback.ratingID[field.name] : 0 %>"></div>
+                <input type="hidden" name="<%= field.name %>" value="<%= feedback.ratingID ? feedback.ratingID[field.name] : 0 %>">
+                <textarea name="<%= field.name %>Reason" placeholder="Reason (optional)" class="form-control mt-1"><%= feedback.ratingID ? feedback.ratingID[field.name + 'Reason'] : '' %></textarea>
+              </div>
+              <% }) %>
+            </div>
+          </div>
+
+          <hr>
+          <!-- Customer Type -->
+          <div class="mb-3">
+            <label class="fw-bold">Customer Type:</label>
+            <select name="customerType" class="form-select form-select-sm">
+              <option value="Dine-in" <%= feedback.customerType === 'Dine-in' ? 'selected' : '' %>>Dine-in</option>
+              <option value="Take-out" <%= feedback.customerType === 'Take-out' ? 'selected' : '' %>>Take-out</option>
+              <option value="Delivery" <%= feedback.customerType === 'Delivery' ? 'selected' : '' %>>Delivery</option>
+            </select>
+          </div>
+
+          <!-- Message -->
+          <div class="mb-3">
+            <label class="fw-bold">Message:</label>
+            <textarea name="message" class="form-control form-control-sm" rows="2"><%= feedback.message %></textarea>
+          </div>
+
+          <hr>
+          <!-- Menu Section -->
+          <h6 class="fw-semibold mb-2 d-flex justify-content-between align-items-center">
+            <span>What did you order?</span>
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#addMenuModal">
+                <i class="bi bi-plus"></i> Add Menu
+              </button>
+              <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#archivedMenuModal">
+                <i class="bi bi-archive"></i> View Archived
+              </button>
+            </div>
+          </h6>
+
+          <div id="menuList">
+            <% const groupedMenus = {}; 
+              menus.forEach(menu => {
+                if (!groupedMenus[menu.itemCategory]) groupedMenus[menu.itemCategory] = [];
+                groupedMenus[menu.itemCategory].push(menu);
+              });
+              Object.keys(groupedMenus).forEach(category => { %>
+              <div class="card mb-2 shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center" style="cursor:pointer;"
+                  onclick="this.nextElementSibling.classList.toggle('d-none'); this.querySelector('.chevron').classList.toggle('rotate');">
+                  <span class="fw-semibold"><i class="bi bi-list me-2"></i><%= category %></span>
+                  <i class="bi bi-chevron-down chevron transition"></i>
+                </div>
+                <div class="card-body d-none">
+                  <div class="row">
+                    <% groupedMenus[category].forEach(menu => { %>
+                      <div class="col-md-6 col-sm-12 mb-3">
+                        <div class="d-flex justify-content-between align-items-center border rounded p-2">
+                          <div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" name="menuID[]" value="<%= menu._id %>"
+                                <%= feedback.menuID && feedback.menuID.some(m => m._id.toString() === menu._id.toString()) ? 'checked' : '' %>>
+                              <label class="form-check-label fw-semibold"><%= menu.itemName %></label>
+                            </div>
+                            <small class="text-muted d-block" style="font-size: 0.85rem;"><%= menu.itemDescription || "No description" %></small>
+                            <span class="fw-bold" style="font-size: 0.9rem;">₱<%= menu.price %></span>
+                          </div>
+                          <div class="d-flex flex-column gap-1">
+                            <button type="button" class="btn btn-sm btn-dark" onclick="openEditMenu('<%= menu._id %>')">
+                              <i class="bi bi-pencil"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-dark" onclick="deleteMenu('<%= menu._id %>')">
+                              <i class="bi bi-trash"></i>
+                            </button>
+                            <% if (menu.archived) { %>
+                              <button type="button" class="btn btn-sm btn-outline-dark" onclick="unarchiveMenu('<%= menu._id %>')">
+                                <i class="bi bi-arrow-counterclockwise"></i>
+                              </button>
+                            <% } else { %>
+                              <button type="button" class="btn btn-sm btn-dark" onclick="archiveMenu('<%= menu._id %>')">
+                                <i class="bi bi-archive"></i>
+                              </button>
+                            <% } %>
+                          </div>
+                        </div>
+                      </div>
+                    <% }) %>
+                  </div>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+
+          <div class="text-end mt-4">
+            <button type="submit" class="btn btn-dark btn-sm"><i class="bi bi-save"></i> Update</button>
+            <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+          </div>
+        </form>
+
+        <% } else { %>
+          <p class="text-muted">No feedback available to edit.</p>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Menu Modal -->
+<div class="modal fade" id="addMenuModal" tabindex="-1" aria-labelledby="addMenuModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content" style="border-radius:10px;">
+      <div class="modal-header bg-light">
+        <h5 class="modal-title fw-semibold" id="addMenuModalLabel">Add Menu Item</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="addMenuForm">
+          <div class="mb-3">
+            <label class="fw-bold">Menu Name</label>
+            <input type="text" name="itemName" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="fw-bold">Category</label>
+            <input type="text" name="itemCategory" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="fw-bold">Description</label>
+            <textarea name="itemDescription" class="form-control"></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="fw-bold">Price</label>
+            <input type="number" name="price" class="form-control" required>
+          </div>
+          <div class="text-end">
+            <button type="submit" class="btn btn-success btn-sm"><i class="bi bi-plus"></i> Add</button>
+            <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Archived Menu Modal -->
+<div class="modal fade" id="archivedMenuModal" tabindex="-1" aria-labelledby="archivedMenuModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content" style="border-radius:10px;">
+      <div class="modal-header bg-light">
+        <h5 class="modal-title fw-semibold" id="archivedMenuModalLabel">Archived Menus</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div id="archivedMenuList" class="row g-2">
+          <!-- Archived menus will be loaded here dynamically -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<style>
+.transition { transition: transform 0.3s ease; }
+.rotate { transform: rotate(180deg); }
+</style>
+
+<script>
+window.deleteMenu = async (id) => {
+  if (!confirm("Delete this menu?")) return;
+  try {
+    const res = await fetch(`/menu/${id}`, { method: "DELETE" });
+    if (res.ok) location.reload();
+    else alert("Failed to delete menu");
+  } catch (err) {
+    console.error(err);
+    alert("Failed to delete menu");
+  }
+};
+
+window.archiveMenu = async (id) => {
+  if (!confirm("Archive this menu?")) return;
+  try {
+    const res = await fetch(`/menu/${id}/archive`, { method: "PUT" });
+    if (res.ok) location.reload();
+    else alert("Failed to archive menu");
+  } catch (err) {
+    console.error(err);
+    alert("Failed to archive menu");
+  }
+};
+
+window.unarchiveMenu = async (id) => {
+  if (!confirm("Unarchive this menu?")) return;
+  try {
+    const res = await fetch(`/menu/${id}/unarchive`, { method: "PUT" });
+    if (res.ok) location.reload();
+    else alert("Failed to unarchive menu");
+  } catch (err) {
+    console.error(err);
+    alert("Failed to unarchive menu");
+  }
+};
+
+document.getElementById("addMenuForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const data = {
+    itemName: form.itemName.value,
+    itemCategory: form.itemCategory.value,
+    itemDescription: form.itemDescription.value,
+    price: parseFloat(form.price.value)
+  };
+
+  try {
+    const res = await fetch("/menu", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+
+    if (res.ok) {
+      alert("Menu added successfully");
+      location.reload();
+    } else {
+      const err = await res.json();
+      alert(err.error || "Failed to add menu");
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Error adding menu");
+  }
+});
+
+window.loadArchivedMenus = async () => {
+  try {
+    const res = await fetch("/menu/archived"); // make sure this route returns archived menus
+    const menus = await res.json();
+    const container = document.getElementById("archivedMenuList");
+    container.innerHTML = "";
+
+    if (menus.length === 0) {
+      container.innerHTML = "<p class='text-muted'>No archived menus.</p>";
+      return;
+    }
+
+    menus.forEach(menu => {
+      const card = document.createElement("div");
+      card.className = "col-md-6 col-sm-12 mb-2";
+      card.innerHTML = `
+        <div class="border rounded p-2 d-flex justify-content-between align-items-center">
+          <div>
+            <div class="fw-semibold">${menu.itemName}</div>
+            <small class="text-muted d-block">${menu.itemDescription || "No description"}</small>
+            <span class="fw-bold">₱${menu.price}</span>
+          </div>
+          <button class="btn btn-sm btn-dark" onclick="unarchiveMenu('${menu._id}')">
+            <i class="bi bi-arrow-counterclockwise"></i> Restore
+          </button>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  } catch (err) {
+    console.error(err);
+    alert("Failed to load archived menus");
+  }
+};
+
+const archivedMenuModal = document.getElementById("archivedMenuModal");
+archivedMenuModal.addEventListener("show.bs.modal", loadArchivedMenus);
+</script>
+
+
+</div>
+</div>
+
+<!-- Search & Filter Container -->
+<div class="container my-3" 
+     style="background-color: white; padding: 20px; border-radius: 10px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); max-width: 100%;">
+
+  <h4 style="font-size: 1rem; font-weight: bold; color: black; margin-bottom: 15px;">Search & Filter</h4>
+
+  <form action="/feedbackadmin" method="GET" class="d-flex flex-wrap align-items-center gap-2">
+    <input type="text" id="searchInput" name="search" class="form-control" placeholder="Search feedback..." 
+           style="flex: 1; min-width: 500px; max-width: 1000px; background-color: #f1f1f1;" 
+           value="<%= query ? query.search : '' %>">
+
+    <select id="monthSelect" name="month" class="form-select" style="max-width: 120px;">
+      <option value="">Month</option>
+      <% for(let m=1; m<=12; m++) { %>
+        <option value="<%= m %>" <%= query && query.month == m.toString() ? 'selected' : '' %>>
+          <%= new Date(0, m-1).toLocaleString('en', { month: 'long' }) %>
+        </option>
+      <% } %>
+    </select>
+
+    <select id="daySelect" name="day" class="form-select" style="max-width: 80px;">
+      <option value="">Day</option>
+      <% for(let d=1; d<=31; d++) { %>
+        <option value="<%= d %>" <%= query && query.day == d.toString() ? 'selected' : '' %>><%= d %></option>
+      <% } %>
+    </select>
+
+    <% const currentYear = new Date().getFullYear(); %>
+    <select id="yearSelect" name="year" class="form-select" style="max-width: 100px;">
+      <option value="">Year</option>
+      <% for (let y = currentYear; y >= currentYear - 10; y--) { %>
+        <option value="<%= y %>" <%= query && query.year == y.toString() ? 'selected' : '' %>><%= y %></option>
+      <% } %>
+    </select>
+
+    <select id="ratingSelect" name="rating" class="form-select" style="max-width: 120px;">
+  <option value="">All Ratings</option>
+  <option value="5" <%= query && query.rating == '5' ? 'selected' : '' %>>5 Stars</option>
+  <option value="4" <%= query && query.rating == '4' ? 'selected' : '' %>>4 Stars</option>
+  <option value="3" <%= query && query.rating == '3' ? 'selected' : '' %>>3 Stars</option>
+  <option value="2" <%= query && query.rating == '2' ? 'selected' : '' %>>2 Stars</option>
+  <option value="1" <%= query && query.rating == '1' ? 'selected' : '' %>>1 Star</option>
+</select>
+
+
+    <button type="submit" class="btn btn-secondary btn-sm">Filter</button>
+  </form>
+</div>
+
+
+
+<div class="container-fluid p-0">
+  <div class="bg-white p-4 rounded shadow-sm w-100" style="box-shadow:0 6px 18px rgba(0,0,0,0.1); min-width: 1200px;">
+
+    <div class="mb-3">
+      <h4 class="fw-bold" style="font-size:1rem;color:black;">All Feedback</h4>
+      <p class="text-muted" style="font-size:0.85rem;">Complete list of customer feedback and reviews</p>
+    </div>
+
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2 w-100">
+
+  <!-- LEFT: Status Filter Buttons -->
+  <div class="d-flex gap-2 flex-wrap align-items-center">
+    <a href="/feedbackadmin" class="btn btn-outline-dark btn-sm">All Feedback (<%= statusCounts.all %>)</a>
+    <a href="/feedbackadmin?status=new" class="btn btn-outline-secondary btn-sm">New (<%= statusCounts.new %>)</a>
+    <a href="/feedbackadmin?status=pending" class="btn btn-outline-dark btn-sm">Pending (<%= statusCounts.pending %>)</a>
+    <a href="/feedbackadmin?status=urgent" class="btn btn-outline-secondary btn-sm">Urgent (<%= statusCounts.urgent %>)</a>
+    <a href="/feedbackadmin?status=responded" class="btn btn-outline-dark btn-sm">Responded (<%= statusCounts.responded %>)</a>
+  </div>
+
+  <!-- RIGHT: Pagination -->
+  <% if (typeof totalPages !== "undefined" && totalPages > 1) { %>
+    <nav>
+      <ul class="pagination mb-0 flex-wrap justify-content-end">
+        <% for (let i = 1; i <= totalPages; i++) { %>
+          <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+            <a class="page-link"
+              href="?page=<%= i %>
+              <%= query.search ? '&search=' + query.search : '' %>
+              <%= query.month ? '&month=' + query.month : '' %>
+              <%= query.day ? '&day=' + query.day : '' %>
+              <%= query.year ? '&year=' + query.year : '' %>
+              <%= query.status ? '&status=' + query.status : '' %>
+              <%= query.rating ? '&rating=' + query.rating : '' %>"
+              style="color:#000; background-color:#f8f9fa; border-color:#dee2e6;">
+              <%= i %>
+            </a>
+          </li>
+        <% } %>
+      </ul>
+    </nav>
+  <% } %>
+</div>
+
+<style>
+  .active-filter {
+    background-color: #e9ecef !important; /* light gray background */
+    color: #111 !important;
+    border: 1px solid #ccc !important; /* light gray border */
+  }
+
+  .pagination .page-link {
+    color: #000;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    transition: background-color 0.2s;
+  }
+
+  .pagination .page-link:hover {
+    background-color: #f0f0f0;
+  }
+
+  .pagination .active .page-link {
+    background-color: #555; /* dark gray active */
+    color: #fff;
+    border-color: #ccc; /* light gray outline */
+  }
+
+  .pagination .page-link:focus {
+    box-shadow: none !important; /* removes green focus outline */
+  }
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const links = document.querySelectorAll('.d-flex.gap-2.flex-wrap.align-items-center a');
+  const currentStatus = new URLSearchParams(window.location.search).get('status') || 'all';
+
+  links.forEach(link => {
+    const linkStatus = new URLSearchParams(link.search).get('status') || 'all';
+    if (linkStatus.toLowerCase() === currentStatus.toLowerCase()) {
+      link.classList.add('active-filter');
+      link.classList.remove('btn-outline-dark', 'btn-outline-secondary');
+    } else {
+      link.classList.remove('active-filter');
+    }
+  });
+});
+</script>
+
+<div id="approvalMessage" 
+     style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            width: 700px; padding: 8px 12px; background-color: rgba(40, 167, 69, 0.85); 
+            color: white; border-radius: 6px; display: none; z-index: 1050; 
+            font-size: 0.85rem; text-align: center;">
+  Approved!
+</div>
+
+
+
+<div id="feedbackTable" class="w-100" style="min-width: 1200px;">
+  <div class="table-responsive w-100">
+<form id="bulkDeleteForm" method="POST" action="/feedback/delete-multiple">
+  <div class="d-flex justify-content-between align-items-center mb-2">
+    <div>
+      <input type="checkbox" id="selectAll" class="form-check-input me-1">
+      <label for="selectAll" class="form-check-label">Select All</label>
+    </div>
+    <button type="button" id="bulkDeleteBtn" class="btn btn-danger btn-sm">
+  <i class="bi bi-trash"></i> Delete Selected
+</button>
+
+  </div>
+
+  <table class="table table-striped table-hover align-middle mb-0 w-100"
+         style="min-width: 1200px; font-size:0.85rem;">
+    <thead class="bg-light">
+      <tr>
+        <th></th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Message</th>
+        <th>Menu</th>
+        <th>Overall Experience</th>
+        <th>Replies</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% feedbacks.forEach(fb => { %>
+        <tr>
+          <td><input type="checkbox" name="ids" value="<%= fb._id %>" class="feedback-checkbox"></td>
+          <td>
+            <div class="d-flex align-items-center" style="font-size: 0.85rem;">
+              <div class="customer-avatar me-2 d-flex justify-content-center align-items-center rounded-circle bg-secondary text-white fw-bold" style="width:35px; height:35px; font-size:0.8rem;">
+                <%= fb.customerName.charAt(0).toUpperCase() %>
+              </div>
+              <span><%= fb.customerName %></span>
+            </div>
+          </td>
+          <td><%= fb.customerEmail %></td>
+          <td><%= fb.message %></td>
+          <td>
+            <% fb.menuID.forEach(menu => { %>
+              <div style="font-size: 0.8rem;"><%= menu.itemName %> (₱<%= menu.price %>)</div>
+            <% }) %>
+          </td>
+          <td>
+            <% if (fb.ratingID && fb.ratingID.overallExperience) { %>
+              <% for (let i = 1; i <= 5; i++) { %>
+                <i class="bi <%= i <= fb.ratingID.overallExperience ? 'bi-star-fill' : 'bi-star' %> text-dark"></i>
+              <% } %>
+            <% } else { %> N/A <% } %>
+          </td>
+          <td>
+            <% if (fb.replies && fb.replies.length > 0) { %>
+              <% fb.replies.forEach(r => { %>
+                <div class="d-flex justify-content-between align-items-start bg-light p-1 rounded mb-1" style="font-size:0.75rem;">
+                  <div>
+                    <strong><%= r.user.username %>:</strong>
+                    <span class="reply-text"><%= r.message || "N/A" %></span>
+                    <div style="font-size:0.65rem; color:#777;">(<%= new Date(r.createdAt).toLocaleString() %>)</div>
+                  </div>
+                  <div class="d-flex gap-1">
+                    <button class="btn btn-outline-secondary btn-sm p-1"
+                            data-bs-toggle="modal"
+                            data-bs-target="#editReplyModal<%= r._id %>">
+                      <i class="bi bi-pencil" style="font-size:0.75rem;"></i>
+                    </button>
+                    <form class="delete-reply-form" action="/feedback/reply/delete/<%= fb._id %>/<%= r._id %>" method="POST">
+                      <button type="submit" class="btn btn-outline-danger btn-sm p-1">
+                        <i class="bi bi-trash" style="font-size:0.75rem;"></i>
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              <% }) %>
+            <% } else { %>
+              <div class="text-muted fst-italic" style="font-size:0.75rem;">No replies yet</div>
+            <% } %>
+          </td>
+          <td>
+            <div class="d-grid"
+                 style="grid-template-columns: repeat(2, 1fr); gap: 4px; place-items: center; text-align: center;">
+              <button class="btn btn-secondary btn-sm d-flex align-items-center justify-content-center approve-btn"
+                      style="width:32px; height:32px; padding:0;"
+                      data-id="<%= fb._id %>">
+                <% if (fb.approved) { %>
+                  <i class="bi bi-check-circle-fill"></i>
+                <% } else { %>
+                  <i class="bi bi-check-circle"></i>
+                <% } %>
+              </button>
+
+              <button class="btn btn-primary btn-sm auto-reply-btn"
+                      data-id="<%= fb._id %>"
+                      style="width:32px; height:32px; padding:0;">
+                <i class="bi bi-robot"></i>
+              </button>
+
+              <form action="/feedback/delete/<%= fb._id %>" method="POST" style="margin:0;">
+                <button class="btn btn-danger btn-sm d-flex align-items-center justify-content-center"
+                        style="width:32px; height:32px; padding:0;"
+                        onclick="return confirm('Delete this feedback?');">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
+
+              <button class="btn btn-secondary btn-sm d-flex align-items-center justify-content-center"
+                      style="width:32px; height:32px; padding:0;"
+                      data-bs-toggle="modal"
+                      data-bs-target="#ratingModal<%= fb._id %>">
+                <i class="bi bi-eye"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</form>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  // Prevent default form submission
+  document.getElementById('bulkDeleteForm').addEventListener('submit', e => e.preventDefault());
+
+  document.getElementById('bulkDeleteBtn').addEventListener('click', async function(e) {
+    try {
+      // collect selected feedback IDs
+      const ids = Array.from(document.querySelectorAll('.feedback-checkbox:checked'))
+                        .map(cb => cb.value);
+
+      if (ids.length === 0) {
+        return Swal.fire({
+          title: 'No selection',
+          text: 'Please select at least one feedback to delete.',
+          icon: 'warning',
+          confirmButtonColor: '#000000',
+        });
+      }
+
+      // confirm deletion
+      const result = await Swal.fire({
+        title: 'Delete selected feedbacks?',
+        text: 'This action cannot be undone.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#000000',
+        cancelButtonColor: '#888888',
+        confirmButtonText: 'Yes, delete',
+        cancelButtonText: 'Cancel'
+      });
+
+      if (result.isConfirmed) {
+        // call your AJAX function
+        const response = await fetch('/feedback/delete-multiple', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ids })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          Swal.fire({
+            title: 'Deleted!',
+            text: data.message,
+            icon: 'success',
+            confirmButtonColor: '#000000'
+          });
+
+          // remove deleted rows from table dynamically
+          ids.forEach(id => {
+            const row = document.querySelector(`.feedback-checkbox[value="${id}"]`).closest('tr');
+            if (row) row.remove();
+          });
+        } else {
+          Swal.fire({
+            title: 'Error',
+            text: data.message,
+            icon: 'error',
+            confirmButtonColor: '#000000'
+          });
+        }
+      }
+
+    } catch (err) {
+      Swal.fire({
+        title: 'Error',
+        text: 'An unexpected error occurred.',
+        icon: 'error',
+        confirmButtonColor: '#000000',
+      });
+      console.error(err);
+    }
+  });
+
+  // select all checkbox
+  document.getElementById('selectAll').addEventListener('change', function() {
+    document.querySelectorAll('.feedback-checkbox').forEach(cb => cb.checked = this.checked);
+  });
+</script>
+
+  </div>
+</div>
+
+<!-- ✅ Place all reply modals AFTER the table -->
+<% feedbacks.forEach(fb => { %>
+  <% if(fb.replies && fb.replies.length > 0){ %>
+    <% fb.replies.forEach(r => { %>
+      <div class="modal fade" id="editReplyModal<%= r._id %>" tabindex="-1" aria-labelledby="editReplyModalLabel<%= r._id %>" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content bg-light border-dark text-dark">
+            <div class="modal-header border-bottom-dark">
+              <h5 class="modal-title" id="editReplyModalLabel<%= r._id %>">Edit Reply</h5>
+              <button type="button" class="btn-close btn-close-dark" data-bs-dismiss="modal"></button>
+            </div>
+            <form class="edit-reply-form" data-feedback-id="<%= fb._id %>" data-reply-id="<%= r._id %>">
+              <div class="modal-body">
+                <textarea class="form-control bg-white text-dark border-secondary" rows="3"><%= r.message %></textarea>
+              </div>
+              <div class="modal-footer border-top-dark">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-dark">Save changes</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  <% } %>
+<% }) %>
+
+
+<!-- Rating Modals -->
+<% feedbacks.forEach(fb => { %>
+  <div class="modal fade" id="ratingModal<%= fb._id %>" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content" style="background: #fdfdfd; border-radius:20px; box-shadow: 0 12px 40px rgba(0,0,0,0.18); border: 1px solid #e1e1e1; overflow: hidden;">
+        
+        <div class="modal-header d-flex justify-content-center align-items-center" style="background: linear-gradient(135deg,#f8f8f8,#efefef); border-top-left-radius:20px; border-top-right-radius:20px; border-bottom: 1px solid #ddd; padding: 1.5rem;">
+          <h5 class="modal-title text-center" style="color: #111; font-weight: 700; letter-spacing: 1px; font-size: 1.4rem; text-transform: uppercase; border-bottom: 2px solid #333; padding-bottom: .3rem;"><%= fb.customerName %> — Ratings</h5>
+          <button type="button" class="btn-close position-absolute end-0 me-3" data-bs-dismiss="modal" style="filter: invert(0.4); top: 1.2rem;"></button>
+        </div>
+        
+        <div class="modal-body" style="color: #222; font-size: 1rem; line-height: 1.8; padding: 2rem; background: repeating-linear-gradient(180deg,#fafafa,#fafafa 24px,#fdfdfd 24px,#fdfdfd 48px);">
+          <% if (fb.ratingID) { %>
+            
+            <div class="text-center mb-4">
+              <p style="font-weight:600; font-size:1.2rem; margin-bottom:0.5rem;">Overall Experience</p>
+              <div style="font-size:1.6rem; color:#f1c40f;">
+                <% for(let i=1;i<=5;i++){ %>
+                  <% if(i <= fb.ratingID.overallExperience){ %>
+                    ★
+                  <% } else { %>
+                    ☆
+                  <% } %>
+                <% } %>
+              </div>
+              <p style="font-style:italic; color:#555;"><%= fb.ratingID.overallExperienceReason || "N/A" %></p>
+            </div>
+            
+            <div class="row g-4 text-center">
+              <div class="col-md-6">
+                <div class="p-3 rounded shadow-sm" style="background:#fff; border:1px solid #ddd;">
+                  <p style="font-weight:600;">Food Quality</p>
+                  <div style="font-size:1.3rem; color:#f1c40f;">
+                    <% for(let i=1;i<=5;i++){ %>
+                      <% if(i <= fb.ratingID.foodQuality){ %>★<% } else { %>☆<% } %>
+                    <% } %>
+                  </div>
+                  <p style="font-style:italic; color:#555;"><%= fb.ratingID.foodQualityReason || "N/A" %></p>
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <div class="p-3 rounded shadow-sm" style="background:#fff; border:1px solid #ddd;">
+                  <p style="font-weight:600;">Ambiance</p>
+                  <div style="font-size:1.3rem; color:#f1c40f;">
+                    <% for(let i=1;i<=5;i++){ %>
+                      <% if(i <= fb.ratingID.ambiance){ %>★<% } else { %>☆<% } %>
+                    <% } %>
+                  </div>
+                  <p style="font-style:italic; color:#555;"><%= fb.ratingID.ambianceReason || "N/A" %></p>
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <div class="p-3 rounded shadow-sm" style="background:#fff; border:1px solid #ddd;">
+                  <p style="font-weight:600;">Service</p>
+                  <div style="font-size:1.3rem; color:#f1c40f;">
+                    <% for(let i=1;i<=5;i++){ %>
+                      <% if(i <= fb.ratingID.service){ %>★<% } else { %>☆<% } %>
+                    <% } %>
+                  </div>
+                  <p style="font-style:italic; color:#555;"><%= fb.ratingID.serviceReason || "N/A" %></p>
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <div class="p-3 rounded shadow-sm" style="background:#fff; border:1px solid #ddd;">
+                  <p style="font-weight:600;">Value for Money</p>
+                  <div style="font-size:1.3rem; color:#f1c40f;">
+                    <% for(let i=1;i<=5;i++){ %>
+                      <% if(i <= fb.ratingID.valueForMoney){ %>★<% } else { %>☆<% } %>
+                    <% } %>
+                  </div>
+                  <p style="font-style:italic; color:#555;"><%= fb.ratingID.valueForMoneyReason || "N/A" %></p>
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <div class="p-3 rounded shadow-sm" style="background:#fff; border:1px solid #ddd;">
+                  <p style="font-weight:600;">Staff Attitude</p>
+                  <div style="font-size:1.3rem; color:#f1c40f;">
+                    <% for(let i=1;i<=5;i++){ %>
+                      <% if(i <= fb.ratingID.staffAttitude){ %>★<% } else { %>☆<% } %>
+                    <% } %>
+                  </div>
+                  <p style="font-style:italic; color:#555;"><%= fb.ratingID.staffAttitudeReason || "N/A" %></p>
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <div class="p-3 rounded shadow-sm" style="background:#fff; border:1px solid #ddd;">
+                  <p style="font-weight:600;">Bartender Attitude</p>
+                  <div style="font-size:1.3rem; color:#f1c40f;">
+                    <% for(let i=1;i<=5;i++){ %>
+                      <% if(i <= fb.ratingID.bartenderAttitude){ %>★<% } else { %>☆<% } %>
+                    <% } %>
+                  </div>
+                  <p style="font-style:italic; color:#555;"><%= fb.ratingID.bartenderAttitudeReason || "N/A" %></p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="text-center mt-4">
+              <p style="font-weight:600; font-size:1.1rem;">Recommend to Others: <span style="color:#111;"><%= fb.ratingID.recommendToOthers ? "Yes" : "No" %></span></p>
+              <p style="font-style:italic; color:#555;"><%= fb.ratingID.recommendToOthersReason || "N/A" %></p>
+            </div>
+            
+          <% } else { %>
+            <p style="color: #999; font-style: italic; text-align:center;">No rating available for this feedback.</p>
+          <% } %>
+        </div>
+        
+        <div class="modal-footer border-0 d-flex justify-content-center" style="background:#f7f7f7; border-top:1px solid #ddd; border-bottom-left-radius:20px; border-bottom-right-radius:20px; padding: 1.2rem;">
+          <button type="button" class="btn btn-dark px-5 py-2" data-bs-dismiss="modal" style="border-radius: 12px; font-size:1rem; letter-spacing:0.5px;">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<% }) %>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+
+<!-- Reply Modal -->
+<% feedbacks.forEach(fb => { %>
+  <div class="modal fade" id="replyModal<%= fb._id %>" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content" style="background-color: white; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+        <div class="modal-header">
+          <h5 class="modal-title">Reply to <%= fb.customerName %></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <textarea id="replyInput<%= fb._id %>" class="form-control" rows="4" placeholder="Type your reply here..." required></textarea>
+          <div id="replyMessageDisplay<%= fb._id %>" style="display:none; padding:10px; margin-top:5px; border-radius:4px; color:white;"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary reply-btn" data-id="<%= fb._id %>">Send Reply</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<% }) %>
+
+<script>
+const showMessage = (message, success = true) => {
+  const msgBox = document.getElementById("approvalMessage");
+  msgBox.style.display = "block";
+  msgBox.style.width = "700px";
+  msgBox.textContent = message;
+  msgBox.style.backgroundColor = success ? "#8fd19e" : "#F28B82";
+  setTimeout(() => { msgBox.style.display = "none"; }, 3000);
+};
+
+// Approve/unapprove feedback
+document.querySelectorAll(".approve-btn").forEach(button => {
+  button.addEventListener("click", async () => {
+    const feedbackId = button.dataset.id;
+    try {
+      const res = await fetch(`/feedback/approve/${feedbackId}`, {
+        method: "POST",
+        credentials: "same-origin"
+      });
+      if (!res.ok) throw new Error(await res.text());
+      const data = await res.json();
+      showMessage(data.message, data.success);
+
+      const icon = button.querySelector("i");
+      if (data.approved) {
+        icon.classList.remove("bi-check-circle");
+        icon.classList.add("bi-check-circle-fill");
+      } else {
+        icon.classList.remove("bi-check-circle-fill");
+        icon.classList.add("bi-check-circle");
+      }
+    } catch (err) {
+      console.error(err);
+      showMessage(err.message || "An error occurred", false);
+    }
+  });
+});
+document.querySelectorAll("form[action^='/feedback/delete/']").forEach(form => {
+  form.addEventListener("submit", async e => {
+    e.preventDefault();
+
+    const feedbackId = form.action.split("/").pop();
+
+    const result = await Swal.fire({
+      title: 'Delete this feedback?',
+      text: "This action cannot be undone.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#888',
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel'
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+      const res = await fetch(`/feedback/delete/${feedbackId}`, {
+        method: "POST",
+        credentials: "same-origin"
+      });
+
+      if (!res.ok) throw new Error(await res.text());
+
+      const data = await res.json();
+
+      Swal.fire({
+        title: data.success ? 'Deleted!' : 'Error',
+        text: data.message,
+        icon: data.success ? 'success' : 'error',
+        confirmButtonColor: '#000'
+      });
+
+      if (data.success) {
+        const row = form.closest("tr");
+        if (row) row.remove();
+      }
+
+    } catch (err) {
+      console.error(err);
+      Swal.fire({
+        title: 'Error',
+        text: err.message || 'An unexpected error occurred',
+        icon: 'error',
+        confirmButtonColor: '#000'
+      });
+    }
+  });
+});
+// AI Reply (updated to show floating message instead of alert)
+document.querySelectorAll(".auto-reply-btn").forEach(button => {
+  button.addEventListener("click", async () => {
+    const feedbackId = button.dataset.id;
+    try {
+      const res = await fetch(`/ai-reply/${feedbackId}`, {
+        method: "GET",
+        credentials: "same-origin"
+      });
+      if (!res.ok) throw new Error(await res.text());
+      const data = await res.json();
+
+      if (data.success) {
+        showMessage(`AI Reply Sent: ${data.suggestedReply}`);
+      } else {
+        showMessage(data.message || "Failed to generate AI reply", false);
+      }
+    } catch (err) {
+      console.error(err);
+      showMessage(err.message || "An error occurred", false);
+    }
+  });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".delete-reply-form").forEach(form => {
+    form.addEventListener("submit", async e => {
+      e.preventDefault();
+
+      const result = await Swal.fire({
+        title: 'Delete this reply?',
+        text: "This action cannot be undone.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#888',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel'
+      });
+
+      if (!result.isConfirmed) return;
+
+      const parts = form.action.split("/");
+      const feedbackId = parts[parts.length - 2];
+      const replyId = parts[parts.length - 1];
+
+      try {
+        const res = await fetch(`/feedback/reply/delete/${feedbackId}/${replyId}`, {
+          method: "POST",
+          credentials: "same-origin"
+        });
+        if (!res.ok) throw new Error(await res.text());
+        const data = await res.json();
+
+        showMessage(data.message, data.success);
+
+        if (data.success) {
+          // safely remove the reply container
+          const replyContainer = form.closest(".reply-item") || form.parentElement;
+          if (replyContainer) replyContainer.remove();
+        }
+      } catch (err) {
+        console.error(err);
+        showMessage(err.message || "An error occurred", false);
+      }
+    });
+  });
+});
+
+
+// Edit reply
+document.addEventListener("submit", async e => {
+  if (!e.target.matches(".edit-reply-form")) return;
+  e.preventDefault();
+
+  const form = e.target;
+  const feedbackId = form.dataset.feedbackId;
+  const replyId = form.dataset.replyId;
+  const replyInput = form.querySelector("textarea").value.trim();
+  if (!replyInput) return;
+
+  try {
+    const res = await fetch(`/feedback/reply/edit/${feedbackId}/${replyId}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ replyMessage: replyInput }),
+      credentials: "same-origin"
+    });
+    if (!res.ok) throw new Error(await res.text());
+    const data = await res.json();
+    showMessage(data.message, data.success);
+
+    if (data.success) {
+      const replyTextElem = document.querySelector(
+        `button[data-bs-target="#editReplyModal${replyId}"]`
+      )?.closest(".d-flex.align-items-start")?.querySelector(".reply-text");
+
+      if (replyTextElem) replyTextElem.textContent = replyInput;
+
+      const modalEl = document.getElementById(`editReplyModal${replyId}`);
+      const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+      modal.hide();
+    }
+  } catch (err) {
+    console.error(err);
+    showMessage(err.message || "An error occurred", false);
+  }
+});
+</script>
+
+
+<script>
+  const path = window.location.pathname.toLowerCase();
+
+  document.querySelectorAll('.menu-item').forEach(item => {
+    const href = item.getAttribute('onclick')?.match(/'(.*)'/)?.[1]?.toLowerCase();
+    if (href && path === href) {
+      item.classList.add('active');
+    }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

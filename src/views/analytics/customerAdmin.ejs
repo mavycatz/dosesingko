@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Feedback Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel ="icon" href="images/iconup.png" type="image">
+
+</head>
+<body style="margin:0; font-family: 'Poppins', sans-serif; font-weight:400; background-color:#ffffff; display:flex;">
+
+  <%- include('../partials/navbaradmin') %>
+
+
+
+  <!-- Main Content -->
+  <div style="padding: 20px; flex:1; min-height: 100vh; overflow-y:auto;">
+<div id="approvalMessage" 
+     style="display:none; position:fixed; margin-top:20px; left:50%; transform:translateX(-50%); 
+            z-index:1050; padding:8px 15px; border-radius:12px; 
+            max-width:300px; text-align:center; font-weight:normal;">
+</div>
+<div style="font-size: 0.8rem; margin-top: 5px; margin-bottom: 10px; margin-left: 25px; font-weight: bold;">
+  <span style="color: rgb(147, 147, 147);">Feedback Management</span>
+  <span style="margin: 0 6px;">/</span>
+  <a href="/customer-admin" style="color: black; text-decoration: none; font-weight: bold;">DoseSingko Customers</a>
+</div>
+
+<div style="margin-top: 25px; display: flex; align-items: center; justify-content: space-between;">
+  <div>
+    <h4 style="font-size: 1.5rem; font-weight: 700;">Customer Management</h4>
+    <p style="color: gray; font-size: 0.9rem;">Overview of feedback with order details and menu selections.</p>
+  </div>
+    <div class="d-flex align-items-center gap-2">
+<button 
+  onclick="window.print()" 
+  style="background-color: white; color: black; border: 1px solid black; padding: 4px 8px; border-radius: 3px; font-size: 14px; display: flex; align-items: center; gap: 3px;">
+  <i class="bi bi-printer"></i> Print
+</button>
+
+<button class="btn btn-outline-secondary btn-sm" onclick="window.location.href='/customer-admin'">
+  <i class="fas fa-sync-alt me-1"></i> Refresh
+</button>
+
+      <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#orModal">
+        <i class="fas fa-plus me-1"></i> Add OR
+      </button>
+    </div>
+  </div>
+
+  <!-- OR Modal -->
+  <div class="modal fade" id="orModal" tabindex="-1" aria-labelledby="orModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="orModalLabel">Enter OR Number</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input type="text" id="modalOrNumber" class="form-control" placeholder="OR Number">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" id="addOrBtn">Add OR</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<% const safeQuery = query || {}; %>
+
+<form action="/customer-admin" method="GET" class="d-flex flex-wrap align-items-center gap-2">
+  <input type="text" name="search" class="form-control" placeholder="Search Customer..."
+         style="flex:1; min-width:500px; max-width:1000px; background-color:#f1f1f1;"
+         value="<%= safeQuery.search || '' %>">
+
+  <!-- Month -->
+  <select name="month" class="form-select" style="max-width:120px;">
+    <option value="">Month</option>
+    <% for(let m=1; m<=12; m++){ %>
+      <option value="<%= m %>" <%= safeQuery.month == m.toString() ? 'selected' : '' %>><%= monthNames[m-1] %></option>
+    <% } %>
+  </select>
+
+  <!-- Day -->
+  <select name="day" class="form-select" style="max-width:80px;">
+    <option value="">Day</option>
+    <% for(let d=1; d<=31; d++){ %>
+      <option value="<%= d %>" <%= safeQuery.day == d.toString() ? 'selected' : '' %>><%= d %></option>
+    <% } %>
+  </select>
+
+  <!-- Year -->
+  <select name="year" class="form-select" style="max-width:100px;">
+    <option value="">Year</option>
+    <% for(let y=currentYear; y>=currentYear-10; y--){ %>
+      <option value="<%= y %>" <%= safeQuery.year == y.toString() ? 'selected' : '' %>><%= y %></option>
+    <% } %>
+  </select>
+
+  <button type="submit" class="btn btn-secondary btn-sm">Filter</button>
+</form>
+
+<!-- Stats -->
+<div class="row mb-2 g-3 mt-4">
+  <div class="col-md-4">
+    <div class="card p-4 text-center" style="background-color: #f8f9fa; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+      <h3 id="totalCustomers" style="font-size: 2rem;"><%= feedbackData.totalCustomers %></h3>
+      <h5 style="font-size: 1rem;">Total Customers</h5>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div id="pendingFeedbackCard" class="card p-4 text-center" 
+         style="background-color: #f8f9fa; border-radius: 12px; 
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1); cursor: pointer;"
+         data-bs-toggle="modal"
+         data-bs-target="#pendingORsModal">
+      <h3 style="font-size: 2rem;"><%= feedbackData.pendingFeedback %></h3>
+      <h5 style="font-size: 1rem;">Pending Feedback</h5>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card p-4 text-center" style="background-color: #f8f9fa; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+      <h3 id="totalFeedback" style="font-size: 2rem;"><%= feedbackData.totalFeedback %></h3>
+      <h5 style="font-size: 1rem;">Total Feedback Submitted</h5>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Feedback Table Container -->
+<div class="container mt-4">
+  <div class="card shadow-sm p-3" style="background-color: #ffffff; border-radius: 8px;">
+<h3 class="mb-1 fw-bold" style="font-size:1.0rem;">Customer Feedback Overview</h3>
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h6 class="text-muted mb-0" style="font-size:0.8rem;">
+    Shows order details with customer information and selected menu.
+  </h6>
+
+  
+  <!-- Pagination -->
+  <nav aria-label="Page navigation">
+    <ul class="pagination mb-0" style="font-size:0.85rem;">
+      <% for(let i=1; i<=totalPages; i++) { %>
+        <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+          <a class="page-link" href="?page=<%= i %>" style="color:#000; background-color: <%= currentPage === i ? '#d3d3d3' : '#fff' %>; border:1px solid #ccc; padding:0.35rem 0.65rem;">
+            <%= i %>
+          </a>
+        </li>
+      <% } %>
+    </ul>
+  </nav>
+</div>
+<div class="table-responsive" id="feedbackTable" style="max-height: 400px; overflow-y: auto; overflow-x: hidden; width: 100%;">
+  <table class="table align-middle mb-0" style="font-size:0.85rem; width:100%;">
+    <thead class="bg-light">
+      <tr>
+        <th>OR Number</th>
+        <th>Customer Name</th>
+        <th>Customer Email</th>
+        <th>Customer Type</th>
+        <th>Menu Items</th>
+        <th>Date Submitted</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% feedbacks.forEach(fb => { %>
+        <tr>
+          <td><%= fb.orNumber || "N/A" %></td>
+          <td>
+            <div class="d-flex align-items-center" style="font-size: 0.85rem;">
+              <div class="customer-avatar me-2 d-flex justify-content-center align-items-center rounded-circle bg-secondary text-white fw-bold" style="width:35px; height:35px; font-size:0.8rem;">
+                  <%= (fb.customerName ? fb.customerName.charAt(0).toUpperCase() : '?') %>
+              </div>
+              <span><%= fb.customerName %></span>
+            </div>
+          </td>
+          <td><%= fb.customerEmail || "N/A" %></td>
+          <td><%= fb.customerType || "N/A" %></td>
+          <td>
+            <% if (fb.menuID && fb.menuID.length > 0) { %>
+              <% fb.menuID.forEach(menu => { %>
+                <div style="font-size: 0.8rem;"><%= menu.itemName %></div>
+              <% }) %>
+            <% } else { %>
+              N/A
+            <% } %>
+          </td>
+                <td>
+        <%= fb.createdAt ? new Date(fb.createdAt).toLocaleDateString() : "N/A" %> <!-- NEW -->
+      </td>
+
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+  </div>
+</div>
+    </div>
+  </div>
+<!-- Modal -->
+<div class="modal fade" id="pendingORsModal" tabindex="-1" aria-labelledby="pendingORsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content" style="border-radius: 12px; background-color: #ffffff; box-shadow: 0 6px 20px rgba(0,0,0,0.1);">
+      
+      <!-- Modal Header -->
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-bold" id="pendingORsModalLabel">Pending ORs</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      
+      <!-- Modal Body -->
+      <div class="modal-body">
+        <% if (pendingORs && pendingORs.length > 0) { %>
+          <p class="fw-semibold mb-3">Total Pending ORs: <%= pendingORs.length %></p>
+          
+          <div class="table-responsive" style="border-radius: 12px; border: 1px solid #e0e0e0; box-shadow: 0 2px 6px rgba(0,0,0,0.05); padding: 10px;">
+            <table class="table align-middle table-hover mb-0" style="border: none;">
+              <thead>
+                <tr style="background-color: #f7f7f7; color: #333; border-bottom: 2px solid #e0e0e0;">
+                  <th>#</th>
+                  <th>OR Number</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+<tbody>
+  <% pendingORs.slice().reverse().forEach((orNumber, index) => { %>
+    <tr style="border-bottom: 1px solid #e0e0e0; transition: all 0.2s;">
+      <td><%= index + 1 %></td>
+      <td><%= orNumber %></td>
+      <td>
+        <button class="btn btn-danger btn-sm" onclick="deleteOR('<%= orNumber %>')">
+          <i class="bi bi-trash"></i> Delete
+        </button>
+      </td>
+    </tr>
+  <% }) %>
+</tbody>
+
+            </table>
+          </div>
+          
+        <% } else { %>
+          <p class="text-muted">All OR numbers have feedback ✅</p>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+async function deleteOR(orNumber) {
+  if (!orNumber) {
+    Swal.fire({
+      title: "Error",
+      text: "Invalid OR number.",
+      icon: "error",
+      confirmButtonColor: "#000",
+    });
+    return;
+  }
+
+  const result = await Swal.fire({
+    title: `Delete OR #${orNumber}?`,
+    text: "This action cannot be undone.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, delete it!",
+    cancelButtonText: "Cancel",
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#888",
+  });
+
+  if (!result.isConfirmed) return;
+
+  try {
+    const res = await fetch(`/customer-admin/delete-or/${orNumber}`, {
+      method: "POST",
+      credentials: "same-origin",
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(errorText || "Server error");
+    }
+
+    const data = await res.json();
+
+    if (data.success) {
+      Swal.fire({
+        title: "Deleted!",
+        text: data.message,
+        icon: "success",
+        confirmButtonColor: "#000",
+      }).then(() => location.reload());
+    } else {
+      Swal.fire({
+        title: "Error",
+        text: data.message,
+        icon: "error",
+        confirmButtonColor: "#000",
+      });
+    }
+
+  } catch (err) {
+    console.error(err);
+    Swal.fire({
+      title: "Server Error",
+      text: err.message || "An unexpected server error occurred.",
+      icon: "error",
+      confirmButtonColor: "#000",
+    });
+  }
+}
+</script>
+
+<style>
+  /* Modal Content Hover */
+  .modal-content { transition: all 0.3s ease; }
+  /* Table Row Hover Effect */
+  .table tbody tr:hover { background-color: #f1f1f1; transform: translateX(2px); }
+  /* Monochrome Table Rows */
+  .table tbody tr:nth-child(odd) { background-color: #ffffff; }
+  .table tbody tr:nth-child(even) { background-color: #fafafa; }
+  /* Table Cell Styling */
+  .table th, .table td { border: none; padding: 12px 15px; }
+  .table th { font-weight: 600; }
+</style>
+
+<script>
+  const card = document.getElementById('pendingFeedbackCard');
+  const table = document.getElementById('pendingORsTable');
+
+  card.addEventListener('click', () => {
+    if (table.style.display === 'none') {
+      table.style.display = 'block';
+      table.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      table.style.display = 'none';
+    }
+  });
+</script>
+<script>
+  const messageBox = document.getElementById("messageBox");
+
+  function showMessage(type, text) {
+    messageBox.className = `alert alert-${type}`; // success, danger, warning, etc.
+    messageBox.textContent = text;
+    messageBox.classList.remove("d-none");
+
+    // Auto-hide after 3s
+    setTimeout(() => {
+      messageBox.classList.add("d-none");
+    }, 3000);
+  }
+
+  document.getElementById("addOrBtn").addEventListener("click", async () => {
+    const orNumber = document.getElementById("modalOrNumber").value.trim();
+    if (!orNumber) {
+      showMessage("warning", "Please enter an OR Number.");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/add-or", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orNumber })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        showMessage("danger", data.error || "Failed to add OR Number.");
+        return;
+      }
+
+      showMessage("success", "✅ OR Number added successfully!");
+      document.getElementById("modalOrNumber").value = ""; // clear input
+      const modal = bootstrap.Modal.getInstance(document.getElementById("orModal"));
+      modal.hide(); // close modal
+    } catch (err) {
+      showMessage("danger", "⚠️ Server error, please try again.");
+    }
+  });
+</script>
+<script>
+  const path = window.location.pathname.toLowerCase();
+
+  document.querySelectorAll('.menu-item').forEach(item => {
+    const href = item.getAttribute('onclick')?.match(/'(.*)'/)?.[1]?.toLowerCase();
+    if (href && path === href) {
+      item.classList.add('active');
+    }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

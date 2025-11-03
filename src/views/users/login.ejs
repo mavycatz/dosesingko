@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - DoseSingko</title>
+  <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="icon" href="images/iconup.png" type="image">
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      font-family: 'Segoe UI', sans-serif;
+      position: relative;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('/images/bglogin.jpg') no-repeat center center/cover;
+      filter: blur(8px);
+      z-index: -1;
+    }
+
+    .leaf {
+      position: absolute;
+      width: 20px;
+      /* very small */
+      height: 20px;
+      /* very small */
+      pointer-events: none;
+      animation: fall linear infinite;
+      opacity: 0.8;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(-50px) rotate(0deg);
+        opacity: 0;
+      }
+
+      10% {
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(110vh) rotate(360deg);
+        opacity: 0.8;
+      }
+    }
+
+    .split-container {
+      display: flex;
+      width: 100%;
+      height: 100vh;
+    }
+
+    .left-side,
+    .right-side {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .left-side {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      background-color: #000;
+    }
+
+    .coffee {
+      z-index: 2;
+    }
+
+    .leaf {
+      z-index: 1;
+    }
+
+    /* Animations */
+    @keyframes floatCoffee {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-8px);
+      }
+    }
+
+    @keyframes floatLeaf {
+
+      0%,
+      100% {
+        transform: translateY(0) rotate(0deg);
+      }
+
+      50% {
+        transform: translateY(-10px) rotate(5deg);
+      }
+    }
+
+    /* Login container (right) */
+    .right-side {
+      background-color: #fff;
+      padding: 40px;
+    }
+
+    h3 {
+      font-weight: 700;
+      color: #111;
+      text-align: center;
+      margin-bottom: 5px;
+    }
+
+    p.subtitle {
+      font-size: 0.9rem;
+      color: #555;
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .form-control {
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      padding: 10px 12px;
+      font-size: 0.95rem;
+    }
+
+    .position-relative {
+      position: relative;
+    }
+
+    #togglePassword {
+      position: absolute;
+      right: 12px;
+      top: 38px;
+      cursor: pointer;
+      color: #333;
+      font-size: 1.1rem;
+    }
+
+    .btn-primary {
+      background-color: #111;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      padding: 10px 0;
+      transition: 0.3s;
+    }
+
+    .btn-primary:hover {
+      background-color: #333;
+    }
+
+    label {
+      font-weight: 500;
+      margin-bottom: 5px;
+      display: inline-block;
+      color: #222;
+    }
+
+    .form-check-label {
+      color: #444;
+      font-size: 0.9rem;
+    }
+
+    .error-message {
+      color: #c91400;
+      background-color: #f2f2f2;
+      padding: 10px 15px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      text-align: center;
+      margin-bottom: 15px;
+      animation: fadeInOut 2s forwards;
+    }
+
+    @keyframes fadeInOut {
+      0% {
+        opacity: 0;
+      }
+
+      10% {
+        opacity: 1;
+      }
+
+      90% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+      }
+    }
+
+    a {
+      color: #111;
+      text-decoration: none;
+      font-size: 0.9rem;
+      display: block;
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    a:hover {
+      color: #555;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container vh-100 d-flex align-items-center">
+    <div class="row w-100 justify-content-center">
+      <div class="col-md-6 col-lg-5">
+        <div class="card shadow-sm p-4 rounded-4"
+          style="background-color: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px);">
+          <div class="text-center mb-4">
+            <div
+              style="background-color: #606060; border-radius: 50%; width: 70px; height: 70px; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+              <img src="/images/logoW.png" alt="Dose Singko Logo" style="width: 70px; height: auto;">
+            </div>
+            <h5 class="fw-bold mb-1 mt-3">Welcome to Dose Singko</h5>
+            <h6 class="text-secondary mt-2" style="font-size: 0.8rem;">
+              <i class="bi bi-cup-hot me-1"></i>Had a good coffee? Start your day right!
+            </h6>
+          </div>
+
+
+          <% if (typeof success !=='undefined' ) { %>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              <%= success %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <% } %>
+
+              <% if (error) { %>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                  <%= error %>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <% } %>
+
+                  <form action="/users/login" method="POST">
+                    <div class="mb-3">
+                      <label for="username" class="form-label">Email or Username</label>
+                      <input type="text" id="username" name="username" class="form-control"
+                        placeholder="Enter email or username" required
+                        value="<%= typeof username !== 'undefined' ? username : '' %>">
+                    </div>
+
+                    <% if (!otpRequired) { %>
+                      <div class="mb-3 position-relative">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" id="password" name="password" class="form-control"
+                          placeholder="Enter password" required>
+                        <span id="togglePassword"
+                          style="position:absolute; right:10px; top:38px; cursor:pointer; color:#333;">
+                          <i class="fa-solid fa-eye"></i>
+                        </span>
+                      </div>
+                      <% } %>
+
+                        <% if (captchaQuestion && !otpRequired) { %>
+                          <div class="mb-3">
+                            <label class="form-label">CAPTCHA: <%= captchaQuestion %></label>
+                            <input type="text" name="captchaAnswer" class="form-control" placeholder="Enter answer"
+                              required>
+                          </div>
+                          <% } %>
+
+                            <% if (typeof otpRequired !=='undefined' && otpRequired) { %>
+                              <div class="mb-3">
+                                <label class="form-label">OTP</label>
+                                <input type="text" name="otp" class="form-control"
+                                  placeholder="Enter OTP sent to your email" required>
+                                <small class="text-muted">Your account is not verified yet. Enter the OTP sent to your
+                                  email to verify and log in.</small>
+                              </div>
+                              <% } %>
+
+                                <div class="mb-3 form-check">
+                                  <input type="checkbox" name="remember" id="remember" class="form-check-input">
+                                  <label for="remember" class="form-check-label">Remember Me</label>
+                                </div>
+
+                                <button type="submit" class="btn btn-dark w-100">
+                                  <%= otpRequired ? 'Verify OTP' : 'Login' %>
+                                </button>
+                  </form>
+
+                  <div class="text-center mt-3">
+                    <a href="/users/register" class="text-decoration-none">Don't have an account? Register</a>
+                  </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <script>
+    const toggle = document.getElementById("togglePassword");
+    const passwordInput = document.getElementById("password");
+
+    toggle.addEventListener("click", () => {
+      const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+      passwordInput.setAttribute("type", type);
+
+      toggle.innerHTML = type === "password"
+        ? '<i class="fa-solid fa-eye"></i>'
+        : '<i class="fa-solid fa-eye-slash"></i>';
+    });
+
+  </script>
+  <script>
+    const leaves = [
+      '/images/leaf1.png',
+      '/images/leaf2.png',
+      '/images/leaf1.png',
+      '/images/leaf1.png',
+      '/images/leaf2.png',
+      '/images/leaf1.png',
+      '/images/leaf1.png',
+      '/images/leaf2.png',
+      '/images/leaf1.png',
+      '/images/leaf1.png',
+      '/images/leaf2.png',
+      '/images/leaf1.png'
+    ];
+
+    leaves.forEach(src => {
+      const leaf = document.createElement('img');
+      leaf.src = src;
+      leaf.classList.add('leaf');
+
+      leaf.style.left = Math.random() * 100 + 'vw';
+      leaf.style.animationDuration = (5 + Math.random() * 10) + 's';
+      const size = 15 + Math.random() * 10; // very small size
+      leaf.style.width = size + 'px';
+      leaf.style.height = size + 'px';
+
+      document.body.appendChild(leaf);
+    });
+  </script>
+  <script>
+
+    const usedPositions = [];
+
+    // Function to find a random safe position (avoiding overlap + same image clustering)
+    function getRandomPosition(width, height, src) {
+      let x, y, safe = false;
+      let attempts = 0;
+
+      while (!safe && attempts < 100) {
+        x = Math.random() * (width - 80) + 40;
+        y = Math.random() * (height - 80) + 40;
+
+        safe = true;
+        for (const pos of usedPositions) {
+          const dx = pos.x - x;
+          const dy = pos.y - y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          // Avoid overlap (80px minimum)
+          if (distance < 80) {
+            safe = false;
+            break;
+          }
+
+          // Avoid same image types being too close (150px min)
+          if (pos.src === src && distance < 150) {
+            safe = false;
+            break;
+          }
+        }
+
+        attempts++;
+      }
+
+      usedPositions.push({ x, y, src });
+      return { x, y };
+    }
+
+    // Shuffle array (to avoid consecutive duplicates)
+    function shuffle(arr) {
+      return arr.sort(() => Math.random() - 0.5);
+    }
+
+    // Add coffees
+    shuffle(coffees).forEach(src => {
+      const img = document.createElement('img');
+      img.src = src;
+      img.classList.add('coffee');
+      const pos = getRandomPosition(leftSide.offsetWidth, leftSide.offsetHeight, src);
+      img.style.position = 'absolute';
+      img.style.left = pos.x + 'px';
+      img.style.top = pos.y + 'px';
+      img.style.width = '80px';
+      img.style.animation = 'floatCoffee 3s ease-in-out infinite';
+      leftSide.appendChild(img);
+    });
+
+    // Add leaves
+    shuffle(leaves).forEach(src => {
+      const img = document.createElement('img');
+      img.src = src;
+      img.classList.add('leaf');
+      const pos = getRandomPosition(leftSide.offsetWidth, leftSide.offsetHeight, src);
+      img.style.position = 'absolute';
+      img.style.left = pos.x + 'px';
+      img.style.top = pos.y + 'px';
+      img.style.width = '40px';
+      img.style.animation = 'floatLeaf 4s ease-in-out infinite';
+      leftSide.appendChild(img);
+    });
+  </script>
+
+</body>
+
+</html>

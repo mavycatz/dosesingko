@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cafe Feedback Management System</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+  body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    min-height: 100vh;
+    background-color: #E5E5E5;
+    flex-direction: row;
+    font-weight: 600;
+  }
+
+  .sidebar {
+    min-height: 100vh;
+    max-width: 500px;
+    background-color: #F9F9F9;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+    transition: width 0.3s;
+  }
+
+  .sidebar.collapsed {
+    width: 70px;
+  }
+
+  .sidebar-header {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* reduced spacing */
+    padding: 16px; /* slightly smaller padding */
+  }
+
+  .sidebar-header i {
+    font-size: 28px; /* smaller icon */
+    color: #000;
+  }
+
+  .sidebar-header .title {
+    display: flex;
+    flex-direction: column;
+    white-space: nowrap;
+  }
+
+  .sidebar-header .title .line1 {
+    font-size: 18px; /* smaller main title */
+    font-weight: 600;
+  }
+
+  .sidebar-header .title .line2 {
+    font-size: 14px; /* smaller subtitle */
+    font-weight: 600;
+    color: #555;
+  }
+
+  .sidebar.collapsed .sidebar-header .title {
+    display: none;
+  }
+
+  .menu-group-header {
+    font-size: 12px; /* smaller group header */
+    font-weight: 500;
+    color: #888;
+    text-transform: uppercase;
+    padding: 10px 16px 4px 16px; /* smaller padding */
+  }
+
+  .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* smaller gap */
+    padding: 8px 16px; /* smaller padding */
+    border-radius: 6px;
+    color: #000;
+    font-size: 14px; /* smaller text */
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    width: 220px;
+  }
+
+  .menu-item i {
+    font-size: 18px; /* smaller icon */
+    color: inherit;
+    transition: transform 0.3s ease;
+  }
+
+.menu-item {
+  padding: 6px 12px;
+  margin: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: #000;
+  cursor: pointer;
+  transition: background-color 0.25s ease, font-weight 0.25s ease;
+  width: 90%;
+}
+
+/* hover effect: soft gray background */
+.menu-item:hover {
+  background-color: #f2f2f2;
+  font-weight: 500;
+  padding-left: 28px;
+}
+.menu-item:hover i {
+  transform: translateX(4px); 
+}
+/* active item: subtle highlight */
+.menu-item.active {
+  background-color: #eaeaea;
+  color: #000;
+  font-weight: 600;
+  border-left: 4px solid #000;
+}
+
+
+  .sidebar-footer {
+    padding: 16px;
+    font-size: 12px; /* smaller footer text */
+    font-weight: 400;
+    color: #555;
+    text-align: center;
+  }
+
+  .sidebar.collapsed .menu-item span {
+    display: none;
+  }
+
+  .sidebar.collapsed .menu-item:hover::after {
+    content: attr(data-label);
+    position: absolute;
+    left: 70px;
+    background-color: #F9F9F9;
+    padding: 4px 8px; /* smaller tooltip */
+    border-radius: 4px;
+    font-size: 10px;
+    color: #000;
+    white-space: nowrap;
+    box-shadow: 1px 1px 5px rgba(0,0,0,0.1);
+    z-index: 10;
+  }
+
+  .toggle-buckle {
+    position: absolute;
+    top: 50%;
+    right: -15px;
+    transform: translateY(-50%);
+    width: 28px; /* slightly smaller */
+    height: 50px; /* slightly smaller */
+    background-color: #F9F9F9;
+    border: 1px solid #CCC;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 1px 1px 5px rgba(0,0,0,0.1);
+    z-index: 20;
+  }
+
+  .toggle-buckle i {
+    font-size: 16px; /* smaller icon */
+    color: #000;
+  }
+
+  .content {
+    flex: 1;
+    padding: 16px; /* slightly smaller content padding */
+    background-color: #E5E5E5;
+  }
+  .content-inner {
+  flex: 1;
+  overflow-y: auto;
+}
+</style>
+
+</head>
+<body>
+    <% let activeItem = typeof active !== 'undefined' ? active : ''; %>
+  <div class="page-wrapper d-flex" style="min-height: 100vh;">
+    <div class="sidebar" id="sidebar">
+  <div style="position: relative;">
+    <div class="sidebar-header mt-3 mb-3">
+      <img src="/images/feedback.png" alt="Cafe Feedback Logo" class="me-2" style="width:30px; height:30px;">
+      <div class="title">
+        <span class="line1 d-block">Dose Singko Cafe</span>
+        <span class="line2 d-block text-muted">Feedback System</span>
+      </div>
+    </div>
+      <!-- Center buckle toggle -->
+<div id="sidebar-toggle" style="position: fixed; top: 20px; z-index: 50; cursor: pointer;">
+  <img src="/images/sidebar.png" alt="Toggle Sidebar" style="width:20px; height:20px;">
+</div>
+
+
+<div class="menu-group" style="font-weight:400;">
+  <div class="menu-group-header">Main</div>
+
+<div class="d-flex flex-column" style="gap: 0;">
+  <div class="menu-item d-flex align-items-center ms-2 <%= activeItem === 'Dashboard' ? 'active bg-secondary text-white rounded' : '' %>" 
+       data-label="Dashboard" 
+       onclick="window.location.href='/dashboard'">
+    <i class="fas fa-house me-2" style="width: 20px;"></i>
+    <span>Dashboard</span>
+  </div>
+
+<div class="menu-item d-flex align-items-center ms-2 <%= activeItem === 'Feedback' ? 'active bg-secondary text-white rounded' : '' %>" 
+     data-label="Feedback"
+     onclick="window.location.href='/feedbackadmin'"> 
+  <i class="fas fa-comment me-2" style="width: 20px;"></i>
+  <span>Feedback</span>
+</div>
+
+  <div class="menu-item d-flex align-items-center ms-2 <%= activeItem === 'Customers' ? 'active bg-secondary text-white rounded' : '' %>" 
+       data-label="Customers"
+       onclick="window.location.href='/customer-admin'">
+    <i class="fas fa-users me-2" style="width: 20px;"></i>
+    <span>Customers</span>
+  </div>
+    <% if (userRole !== 'cashier') { %>
+      <div class="menu-item d-flex align-items-center ms-2 <%= activeItem === 'Ratings' ? 'active bg-secondary text-white rounded' : '' %>" 
+           data-label="Ratings"
+           onclick="window.location.href='/ratingAdmin'">
+        <i class="fas fa-star me-2" style="width: 20px;"></i>
+        <span>Ratings</span>
+      </div>
+
+      <div class="menu-item d-flex align-items-center ms-2 <%= activeItem === 'Reports' ? 'active bg-secondary text-white rounded' : '' %>" 
+           data-label="Reports"
+           onclick="window.location.href='/reportsAdmin'">
+        <i class="fas fa-file-alt me-2" style="width: 20px;"></i>
+        <span>Reports</span>
+      </div>
+
+      <div class="menu-item d-flex align-items-center ms-2 <%= activeItem === 'Analytics' ? 'active bg-secondary text-white rounded' : '' %>" 
+           data-label="Analytics"
+           onclick="window.location.href='/analytics'">
+        <i class="fas fa-chart-line me-2" style="width: 20px;"></i>
+        <span>Analytics</span>
+      </div>
+    <% } %>
+  </div>
+
+  <div class="menu-group">
+    <div class="menu-group-header">System</div>
+
+<% if (userRole === 'admin') { %>
+  <div class="menu-item ms-2 <%= activeItem === 'Users' ? 'active' : '' %>" data-label="Users" onclick="window.location.href='/user-admin'">
+    <i class="fas fa-gear"></i>
+    <span>Users</span>
+  </div>
+<% } %>
+
+
+
+    <div class="menu-item ms-2 <%= activeItem === 'Logout' ? 'active' : '' %>" 
+         data-label="Logout" 
+         onclick="window.location.href='/users/logout'">
+      <i class="fas fa-sign-out-alt"></i>
+      <span>Logout</span>
+    </div>
+  </div>
+</div>
+</div>
+<div class="sidebar-footer" id="sidebarFooter">
+  Online: 
+</div>
+  </div>
+</div>
+<script>
+  const sidebar = document.getElementById('sidebar');
+  const toggleBtn = document.getElementById('sidebar-toggle');
+  const COLLAPSED_WIDTH = 70;
+  const EXPANDED_WIDTH = 230;
+  const MARGIN = 10;
+
+  function updateTogglePosition() {
+    if (sidebar.classList.contains('collapsed')) {
+      toggleBtn.style.left = COLLAPSED_WIDTH + MARGIN + 'px';
+    } else {
+      toggleBtn.style.left = EXPANDED_WIDTH + MARGIN + 'px';
+    }
+  }
+
+  function toggleSidebar() {
+    sidebar.classList.toggle('collapsed');
+    updateTogglePosition();
+  }
+
+  toggleBtn.addEventListener('click', toggleSidebar);
+  window.addEventListener('DOMContentLoaded', updateTogglePosition);
+</script>
+
+
+<script>
+function updateSidebarTime() {
+  const footer = document.getElementById('sidebarFooter');
+  const now = new Date();
+
+  const options = {
+    weekday: 'long',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true
+  };
+
+  footer.textContent = 'Online: ' + now.toLocaleString('en-US', options);
+}
+
+// Initial update
+updateSidebarTime();
+
+// Optional: auto-update every minute
+setInterval(updateSidebarTime, 60000);
+</script>
+</body>
+</html>

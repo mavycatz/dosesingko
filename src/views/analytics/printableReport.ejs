@@ -1,0 +1,77 @@
+<div class="container my-5">
+  <h2 class="mb-4">Printable Feedback Report</h2>
+
+  <!-- Filters -->
+  <form id="printableReportForm" method="POST" action="/reportsadmin/generate-printable">
+    <input type="hidden" name="type" value="Printable Report">
+    <div class="row g-2 align-items-end mb-4">
+      <div class="col-md-3">
+        <label for="monthFilter" class="form-label">Month:</label>
+        <select name="month" id="monthFilter" class="form-select">
+          <option value="">All Months</option>
+          <% for(let m=1; m<=12; m++) { %>
+            <option value="<%= new Date().getFullYear() %>-<%= m.toString().padStart(2,'0') %>" 
+              <%= selectedMonth === `${new Date().getFullYear()}-${m.toString().padStart(2,'0')}` ? "selected" : "" %>>
+              <%= new Date(0, m-1).toLocaleString('default', { month: 'long' }) %>
+            </option>
+          <% } %>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <button type="submit" class="btn btn-primary">Generate Report</button>
+      </div>
+    </div>
+  </form>
+
+  <!-- Stats -->
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card card-stats p-3 text-center">
+        <h6>Feedback Entries</h6>
+        <h3><%= stats.totalFeedback %></h3>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card card-stats p-3 text-center">
+        <h6>Average Rating</h6>
+        <h3><%= stats.avgRating %></h3>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card card-stats p-3 text-center">
+        <h6>Unique Customers</h6>
+        <h3><%= stats.uniqueCustomers %></h3>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feedback Table -->
+  <div class="mt-4">
+    <table class="table table-striped table-bordered">
+      <thead>
+        <tr>
+          <th>OR Number</th>
+          <th>Customer Name</th>
+          <th>Category</th>
+          <th>Menu Items</th>
+          <th>Message</th>
+          <th>Rating</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% stats.feedbacks?.forEach(fb => { %>
+          <tr>
+            <td><%= fb.orNumber %></td>
+            <td><%= fb.customerName %></td>
+            <td><%= fb.category %></td>
+            <td><%= fb.menuItems.join(", ") %></td>
+            <td><%= fb.message %></td>
+            <td><%= fb.rating %></td>
+            <td><%= fb.createdAt.toLocaleDateString() %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>

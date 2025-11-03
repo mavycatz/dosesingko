@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>
+    <%= report.title %>
+  </title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #fff;
+      color: #000;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .section {
+      margin-bottom: 25px;
+    }
+
+    .label {
+      font-weight: bold;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th,
+    td {
+      border: 1px solid #000;
+      padding: 6px;
+      text-align: center;
+      font-size: 12px;
+    }
+
+    th {
+      background-color: #000;
+      color: #fff;
+    }
+
+    .chart-container {
+      width: 90%;
+      max-width: 900px;
+      margin: 20px auto;
+    }
+
+    .summary {
+      border: 1px solid #000;
+      padding: 12px;
+      background: #f9f9f9;
+    }
+
+    .summary p {
+      margin: 5px 0;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>
+    <%= report.title %>
+  </h1>
+
+  <div class="section summary">
+    <p><span class="label">Status:</span>
+      <%= report.status %>
+    </p>
+    <p><span class="label">Description:</span>
+      <%= report.description %>
+    </p>
+    <p><span class="label">Date Range:</span>
+      <%= report.dateRange %>
+    </p>
+    <p><span class="label">Key Finding:</span>
+      <%= report.keyFinding %>
+    </p>
+  </div>
+
+  <div class="chart-container">
+    <canvas id="serviceChart"></canvas>
+  </div>
+
+  <div class="section">
+    <h2 style="text-align:center;">Feedback Details</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Customer</th>
+          <th>OR Number</th>
+          <th>Service</th>
+          <th>Food</th>
+          <th>Ambiance</th>
+          <th>Value</th>
+          <th>Staff</th>
+          <th>Bartender</th>
+          <th>Issue?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% report.feedbacks.forEach(f=> { %>
+          <tr>
+            <td>
+              <%= new Date(f.createdAt).toLocaleDateString() %>
+            </td>
+            <td>
+              <%= f.customerName || "Anonymous" %>
+            </td>
+            <td>
+              <%= f.orNumber || "-" %>
+            </td>
+            <td>
+              <%= f.ratingID?.service ?? "-" %>
+            </td>
+            <td>
+              <%= f.ratingID?.foodQuality ?? "-" %>
+            </td>
+            <td>
+              <%= f.ratingID?.ambiance ?? "-" %>
+            </td>
+            <td>
+              <%= f.ratingID?.valueForMoney ?? "-" %>
+            </td>
+            <td>
+              <%= f.ratingID?.staffAttitude ?? "-" %>
+            </td>
+            <td>
+              <%= f.ratingID?.bartenderAttitude ?? "-" %>
+            </td>
+            <td>
+              <%= f.ratingID?.service < 3 ? "Yes" : "No" %>
+            </td>
+          </tr>
+          <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    const ctx = document.getElementById('serviceChart').getContext('2d');
+    const labels = <% - JSON.stringify(report.trendData.labels) %>;
+    const values = <% - JSON.stringify(report.trendData.values) %>;
+
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Service Rating',
+          data: values,
+          backgroundColor: values.map(v => v < 3 ? 'rgba(200,0,0,0.7)' : 'rgba(0,0,0,0.7)'),
+          borderColor: '#000',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          title: { display: true, text: 'Service Ratings Over Time', color: '#000', font: { size: 16 } }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 5,
+            title: { display: true, text: 'Rating (1-5)', color: '#000' }
+          },
+          x: {
+            title: { display: true, text: 'Date', color: '#000' }
+          }
+        }
+      }
+    });
+  </script>
+
+</body>
+
+</html>

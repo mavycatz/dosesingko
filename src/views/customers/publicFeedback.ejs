@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Customer Feedback</title>
+  <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <link rel ="icon" href="images/iconup.png" type="image">
+  <style>
+    body { 
+      background: #ffffff; 
+      color: #000000; 
+      padding-top: 50px; /* space for fixed nav */
+    }
+
+    .card { 
+      background: #ffffff; 
+      color: #000000; 
+      border: 1px solid #ccc; 
+      border-radius: 6px;
+    }
+
+    .card-header { 
+      background: #f5f5f5; 
+      font-weight: 600;
+    }
+
+    a { color: #fff; }
+    a:hover { color: #ccc; text-decoration: none; }
+
+    /* Navigation Bar */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: black;
+      padding: 10px 20px;
+      width: 100%;
+      top: 0;
+      z-index: 100;
+      position: fixed;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    nav img {
+      height: 40px; 
+    }
+
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+      color: white;
+      line-height: 1.2;
+    }
+
+    .logo-text .welcome {
+      font-size: 12px;
+      font-weight: 400;
+    }
+
+    .logo-text .cafe-name {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 15px;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 12px;
+      transition: all 0.25s ease-in-out;
+    }
+
+    /* Hover Effect - monochrome glow */
+    nav ul li a:hover {
+      color: #e0e0e0;
+      text-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+      transform: scale(1.05);
+    }
+
+    /* Active Click Effect */
+    nav ul li a:active {
+      transform: scale(1.1);
+      color: #bfbfbf;
+    }
+
+    /* Button inside nav */
+    nav ul li .btn-outline-light {
+      padding: 4px 10px;
+      font-size: 12px;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="logo-container">
+<a href="/" style="text-decoration: none;">
+  <img src="/images/logoW.png" alt="Logo" style="height: 50px;">
+</a>
+      <div class="logo-text">
+        <span class="welcome">Welcome to</span>
+        <span class="cafe-name">Dose Singko Cafe</span>
+      </div>
+    </div>
+  </nav>
+
+<div class="container-fluid p-0">
+<!-- Hero Section -->
+<div class="hero-section animate__animated animate__fadeInUp" style="
+    background-image: 
+        linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.85) 70%, rgba(255,255,255,2.0) 100%), 
+        url('images/story2.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: white;
+    min-height: 90vh;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 80px 60px;
+    position: relative;
+    animation-duration: 1.2s;
+    animation-timing-function: ease-out;
+">
+
+  <!-- Left Content -->
+  <div class="animate__animated animate__fadeInUp" style="max-width: 50%; text-align: left; margin-left: 5%; animation-delay: 0.3s;">
+    <div style="
+        display: inline-block;
+        background: linear-gradient(135deg, #555, #777);
+        color: white;
+        border: 2px solid #d6fcd6;
+        border-radius: 50px;
+        padding: 6px 18px;
+        font-size: 14px;
+        font-weight: 700;
+        margin-bottom: 20px;
+    ">
+      🟢 Live Reviews
+    </div>
+
+    <h2 style="font-size: 16px; font-weight: 600; margin-bottom: 20px; line-height: 1.2;">
+      What Our<br> Coffee Lovers <br>Are Saying
+    </h2>
+
+    <p style="font-size: 20px; color: #ddd; line-height: 1.6; margin-bottom: 40px;">
+      Discover authentic experiences from our community. Real stories, real moments, real coffee excellence.
+    </p>
+
+    <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 0;">
+      <a href="/feedback" style="background-color: #111; color: white; padding: 14px 36px; border-radius: 30px; text-decoration: none; font-weight: 600;">
+        Write Your Review
+      </a>
+      <a href="https://maps.app.goo.gl/LGS87GjAAezfpcUU8" style="background-color: #f0f0f0; color: #111; padding: 14px 36px; border-radius: 30px; text-decoration: none; font-weight: 600;">
+        Find Locations
+      </a>
+    </div>
+  </div>
+
+  <!-- Right Floating Stats Panel -->
+  <div class="animate__animated animate__fadeInUp" style="
+      position: absolute;
+      top: 30%;
+      right: 40px;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+      max-width: 500px;
+      width: 100%;
+      z-index: 10;
+      margin-right: 5%;
+      animation-delay: 0.6s;
+  ">
+    <!-- Row 1 -->
+    <div style="
+        display: flex; 
+        gap: 20px; 
+        background: rgba(50,50,50,0.35);
+        border: 1px solid rgba(255,255,255,0.2);
+        padding: 20px 28px; 
+        border-radius: 16px; 
+        align-items: center;
+        backdrop-filter: blur(6px);
+        transition: 0.3s;
+    " onmouseover="this.style.background='rgba(255,255,255,0.1)'; this.style.boxShadow='0 0 20px rgba(255,255,255,0.2)'" 
+       onmouseout="this.style.background='rgba(50,50,50,0.35)'; this.style.boxShadow='none'">
+      <i class="bi bi-star-fill" style="font-size:36px; color:white;"></i>
+      <div style="text-align: left;">
+        <div style="font-size: 28px; font-weight: 700;"><%= fiveStarReviews ? fiveStarReviews : 0 %></div>
+        <div style="font-size: 14px; color: #ccc;">5-Star Reviews</div>
+      </div>
+    </div>
+
+    <!-- Row 2 -->
+    <div style="display: flex; gap: 20px;">
+      <div style="
+          display: flex; 
+          gap: 16px; 
+          background: rgba(50,50,50,0.35);
+          border: 1px solid rgba(255,255,255,0.2);
+          padding: 20px 28px; 
+          border-radius: 16px; 
+          align-items: center;
+          transition: 0.3s;
+          width: 235px;
+          backdrop-filter: blur(6px);
+      " onmouseover="this.style.background='rgba(255,255,255,0.1)'; this.style.boxShadow='0 0 20px rgba(255,255,255,0.2)'" 
+         onmouseout="this.style.background='rgba(50,50,50,0.35)'; this.style.boxShadow='none'">
+        <i class="bi bi-cup-straw" style="font-size:36px; color:white;"></i>
+        <div style="text-align: left;">
+          <div style="font-size: 28px; font-weight: 700;"><%= cupsServed ? cupsServed : 0 %></div>
+          <div style="font-size: 14px; color: #ccc;">Cups Served</div>
+        </div>
+      </div>
+
+      <div style="
+          display: flex; 
+          gap: 16px; 
+          background: rgba(50,50,50,0.35);
+          border: 1px solid rgba(255,255,255,0.2);
+          padding: 20px 28px; 
+          border-radius: 16px; 
+          align-items: center;
+          transition: 0.3s;
+          width: 235px;
+          backdrop-filter: blur(6px);
+      " onmouseover="this.style.background='rgba(255,255,255,0.1)'; this.style.boxShadow='0 0 20px rgba(255,255,255,0.2)'" 
+         onmouseout="this.style.background='rgba(50,50,50,0.35)'; this.style.boxShadow='none'">
+        <i class="bi bi-geo-alt-fill" style="font-size:36px; color:white;"></i>
+        <div style="text-align: left;">
+          <div style="font-size: 28px; font-weight: 700;">7+</div>
+          <div style="font-size: 14px; color: #ccc;">Locations in Nueva Ecija</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 3 -->
+    <div style="
+        display: flex; 
+        gap: 20px; 
+        background: rgba(50,50,50,0.35);
+        border: 1px solid rgba(255,255,255,0.2); 
+        padding: 20px 28px; 
+        border-radius: 16px; 
+        align-items: center;
+        transition: 0.3s;
+        backdrop-filter: blur(6px);
+    " onmouseover="this.style.background='rgba(255,255,255,0.1)'; this.style.boxShadow='0 0 20px rgba(255,255,255,0.2)'" 
+       onmouseout="this.style.background='rgba(50,50,50,0.35)'; this.style.boxShadow='none'">
+      <i class="bi bi-clock-fill" style="font-size:36px; color:white;"></i>
+      <div style="text-align: left;">
+        <div style="font-size: 28px; font-weight: 700;"><%= avgResponse %> hrs</div>
+        <div style="font-size: 14px; color: #ccc;">Avg Response Time</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+
+
+<div class="container mt-4">
+  <div class="row text-center g-3">
+    <div class="col-md-3">
+      <div class="card p-3" style="border: 1px solid #ccc; border-radius: 8px;">
+        <h2 class="fw-bold"><%= cupsServed %></h2>
+        <p>Cups Served</p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card p-3" style="border: 1px solid #ccc; border-radius: 8px;">
+        <h2 class="fw-bold"><%= fiveStarReviews %></h2>
+        <p>5-Star Reviews</p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card p-3" style="border: 1px solid #ccc; border-radius: 8px;">
+        <h2 class="fw-bold"><%= happyCustomers %></h2>
+        <p>Happy Customers</p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card p-3" style="border: 1px solid #ccc; border-radius: 8px;">
+        <h2 class="fw-bold"><%= avgResponse %> hrs</h2>
+        <p>Avg Response</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <!-- Feedback Section + Sidebar -->
+  <div class="container mt-5">
+    <div class="row">
+<!-- Recent Feedback -->
+<div class="col-md-8 mb-2">
+  <h2 class="mb-1" style="font-size: 18px; font-weight: 600; margin-bottom: 5px;">
+    Recent Feedback
+  </h2>
+  <p style="font-size: 14px; color: #aaa; margin-bottom: 16px;">
+    All approved feedback with team responses
+  </p>
+
+  <% if (feedbacks && feedbacks.length > 0) { %>
+    <div class="row g-4" id="feedback-container">
+      <% feedbacks.forEach((fb, index) => { %>
+        <div class="col-md-12 feedback-item" style="<%= index >= 5 ? 'display:none;' : '' %>">
+          <div class="card p-3" style="border: 1px solid #000; border-radius: 12px; background-color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+
+            <!-- Header -->
+            <div class="d-flex align-items-center mb-2">
+              <div class="me-3 d-flex justify-content-center align-items-center rounded-circle bg-dark text-white" style="width:50px; height:50px; font-weight:bold; font-size:18px;">
+                <%= fb.customerName.charAt(0).toUpperCase() %>
+              </div>
+              <div class="d-flex justify-content-between align-items-center w-100">
+                <div>
+                  <h5 class="mb-1 fw-bold" style="font-size: 16px;"><%= fb.customerName %></h5>
+                  <div style="font-size: 12px; color: #777;">
+                    <span><%= fb.customerType %></span>
+                    <span class="mx-2">•</span>
+                    <span><%= new Date(fb.createdAt).toLocaleDateString() %></span>
+                  </div>
+                </div>
+
+                <!-- Overall Rating Stars at the end -->
+                <% if(fb.ratingID && fb.ratingID.overallExperience !== undefined){ %>
+                  <div>
+                    <% for(let i=1; i<=5; i++){ %>
+                      <% if(i <= fb.ratingID.overallExperience){ %>
+                        <i class="bi bi-star-fill" style="color: black; font-size: 14px;"></i>
+                      <% } else { %>
+                        <i class="bi bi-star" style="color: black; font-size: 14px;"></i>
+                      <% } %>
+                    <% } %>
+                  </div>
+                <% } %>
+              </div>
+            </div>
+
+            <!-- Feedback message -->
+            <p style="margin-bottom: 10px; font-size: 14px; color: #333; line-height: 1.5;"><%= fb.message %></p>
+
+            <!-- Replies -->
+            <% if (fb.replies && fb.replies.length > 0) { %>
+              <div class="mt-3 p-3" style="background-color: #f7f7f7; border-radius: 8px;">
+                <h6 class="mb-2" style="font-size: 14px; font-weight: 600;">Replies:</h6>
+                <% fb.replies.forEach(r => { %>
+                  <div class="border-top pt-2 mt-1">
+                    <strong style="font-size: 13px;"><%= r.user.username %></strong> • 
+                    <small class="text-muted" style="font-size: 12px;"><%= new Date(r.createdAt).toLocaleDateString() %></small>
+                    <p style="margin:0; font-size: 13px; color: #444;"><%= r.message %></p>
+                  </div>
+                <% }) %>
+              </div>
+            <% } %>
+
+          </div>
+        </div>
+      <% }) %>
+    </div>
+
+    <% if (feedbacks.length > 5) { %>
+<div class="d-flex justify-content-center mt-3" style="width: 100%;">
+  <div style="width: 800px;">
+    <button id="showMoreBtn" class="btn btn-outline-dark w-100">Show More</button>
+  </div>
+</div>
+
+    <% } %>
+
+  <% } else { %>
+    <p>No feedbacks yet.</p>
+  <% } %>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.getElementById("showMoreBtn");
+    if (!btn) return;
+
+    btn.addEventListener("click", () => {
+      const hiddenItems = document.querySelectorAll(".feedback-item[style*='display:none']");
+      hiddenItems.forEach(item => item.style.display = "block");
+      btn.style.display = "none"; // hide button after click
+    });
+  });
+</script>
+
+
+<!-- Sidebar -->
+<div class="col-md-4 d-flex flex-column gap-3">
+
+<!-- Professional Location Card -->
+<div class="card mb-3" style="
+    background-color: #111; 
+    border-radius: 16px; 
+    overflow: hidden; 
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4); 
+    transition: transform 0.3s, box-shadow 0.3s;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    margin-top: 50px;
+">
+
+  <!-- Header -->
+  <div style="
+      padding: 1rem 1.5rem; 
+      background: linear-gradient(90deg, #1a1a1a, #222); 
+      border-bottom: 1px solid #333;
+  ">
+    <h5 style="
+        color: #fff; 
+        margin: 0; 
+        font-family: 'Poppins', sans-serif; 
+        font-weight: 600; 
+        font-size: 16px;
+        letter-spacing: 0.5px;
+    ">Visit Us</h5>
+  </div>
+
+  <!-- Google Map -->
+  <iframe 
+    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3843.5773515574906!2d120.8085355747462!3d15.56077198504747!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396d5b47238a45f%3A0x23dac9bbeb200531!2sDose%20Singko%20Cafe!5e0!3m2!1sen!2sph!4v1760317451322!5m2!1sen!2sph" 
+    width="100%" 
+    height="200" 
+    style="border:0; border-bottom-left-radius:16px; border-bottom-right-radius:16px;" 
+    allowfullscreen="" 
+    loading="lazy" 
+    referrerpolicy="no-referrer-when-downgrade">
+  </iframe>
+
+  <!-- Info Section -->
+  <div style="padding: 16px 20px; color: #fff; font-family: 'Poppins', sans-serif;">
+    
+    <!-- Address -->
+    <div style="margin-bottom: 12px;">
+      <h6 style="font-size: 14px; color: #ccc; margin-bottom: 4px;">Address</h6>
+      <p style="font-size: 13px; margin: 0;">Petron, Dulong Bayan, Quezon, Nueva Ecija, Philippines</p>
+    </div>
+
+    <!-- Contact -->
+    <div style="margin-bottom: 12px;">
+      <h6 style="font-size: 14px; color: #ccc; margin-bottom: 4px;">Contact</h6>
+      <p style="font-size: 13px; margin: 0;">Phone: 0956 597 04709</p>
+      <p style="font-size: 13px; margin: 0;">Email: dosesingkoq1205@gmail.com</p>
+    </div>
+
+    <!-- Opening Hours -->
+    <div style="margin-bottom: 12px;">
+      <h6 style="font-size: 14px; color: #ccc; margin-bottom: 4px;">Opening Hours</h6>
+      <p style="font-size: 13px; margin: 0;">Mon-Fri: 11:00 AM - 10:00 PM</p>
+      <p style="font-size: 13px; margin: 0;">Sat-Sun: 10:00 AM - 10:00 PM</p>
+    </div>
+
+    <!-- Social Links -->
+    <div style="margin-top: 8px; display: flex; gap: 12px;">
+      <a href="https://www.facebook.com/dosesingkocafe" style="color: #fff; font-size: 16px;"><i class="bi bi-facebook"></i></a>
+      <a href="https://www.instagram.com/explore/locations/105919764546693/dose-singko---quezon-ne-branch/" style="color: #fff; font-size: 16px;"><i class="bi bi-instagram"></i></a>
+      <a href="#" style="color: #fff; font-size: 16px;"><i class="bi bi-twitter"></i></a>
+    </div>
+
+  </div>
+</div>
+
+
+  <!-- This Month Stats Card -->
+  <div class="card p-3 mb-3" style="
+      background-color: #1a1a1a;
+      border-radius: 12px;
+      color: #fff;
+      width: 100%;
+      max-width: 400px;
+      font-family: 'Poppins', sans-serif;
+      margin: 0 auto;
+  ">
+    <h5 style="margin-bottom: 16px; font-weight: 600; font-size: 16px; color: #ccc;">This Month</h5>
+
+    <div style="display: flex; align-items: center; margin-bottom: 12px;">
+      <div style="
+          width: 32px;
+          height: 32px;
+          background-color: rgba(255,255,255,0.1);
+          border-radius: 50%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin-right: 12px;
+          color: #fff;
+          font-size: 18px;
+      "><i class="bi bi-cup-fill"></i></div>
+      <div>
+        <div style="font-weight: 600; font-size: 16px;"><%= cupsServed %></div>
+        <div style="font-size: 12px; color: #aaa;">Cups Served</div>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; margin-bottom: 12px;">
+      <div style="
+          width: 32px;
+          height: 32px;
+          background-color: rgba(255,255,255,0.1);
+          border-radius: 50%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin-right: 12px;
+          color: #fff;
+          font-size: 18px;
+      "><i class="bi bi-star-fill"></i></div>
+      <div>
+        <div style="font-weight: 600; font-size: 16px;"><%= fiveStarReviews %></div>
+        <div style="font-size: 12px; color: #aaa;">5-Star Reviews</div>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center;">
+      <div style="
+          width: 32px;
+          height: 32px;
+          background-color: rgba(255,255,255,0.1);
+          border-radius: 50%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin-right: 12px;
+          color: #fff;
+          font-size: 18px;
+      "><i class="bi bi-emoji-smile-fill"></i></div>
+      <div>
+        <div style="font-weight: 600; font-size: 16px;"><%= happyCustomers %></div>
+        <div style="font-size: 12px; color: #aaa;">Happy Customers</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Share Your Experience Card -->
+  <div class="card p-4 mb-3" style="
+      border-radius: 12px;
+      text-align: center;
+      background-color: #111;
+      color: #fff;
+      border: 1px solid #444;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto;
+  ">
+    <div style="font-size: 36px; color: #fff; margin-bottom: 12px;">
+      <i class="bi bi-chat-square-text-fill"></i>
+    </div>
+    <h5 style="margin-bottom: 8px; font-weight: 600;">Share Your Experience</h5>
+    <p style="font-size: 14px; color: #ccc; margin-bottom: 20px; line-height: 1.4;">
+      Let us know how your visit was! Your feedback helps us improve and create better coffee moments for everyone.
+    </p>
+    <a href="/feedback" class="btn" style="
+        background-color: #222; 
+        color: #fff; 
+        padding: 10px 24px; 
+        border-radius: 30px; 
+        text-decoration: none;
+        font-weight: 600;
+        border: 1px solid #555;
+        transition: 0.3s;
+    " onmouseover="this.style.background='#333'" onmouseout="this.style.background='#222'">
+      Leave Feedback
+    </a>
+  </div>
+
+</div>
+
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

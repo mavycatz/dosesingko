@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>
+    <%= report.title %>
+  </title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      color: #000;
+      background: #fff;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      margin-top: 30px;
+      color: #000;
+    }
+
+    p {
+      margin: 5px 0;
+      font-size: 14px;
+    }
+
+    strong {
+      font-weight: bold;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      font-size: 12px;
+    }
+
+    th,
+    td {
+      border: 1px solid #000;
+      padding: 6px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #000;
+      color: #fff;
+    }
+
+    .summary {
+      border: 1px solid #000;
+      padding: 10px;
+      margin-bottom: 20px;
+    }
+
+    canvas {
+      display: block;
+      margin: 20px auto;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>
+    <%= report.title %>
+  </h1>
+
+  <div class="summary">
+    <p><strong>Status:</strong>
+      <%= report.status %>
+    </p>
+    <p><strong>Description:</strong>
+      <%= report.description %>
+    </p>
+    <p><strong>Date Range:</strong>
+      <%= report.dateRange %>
+    </p>
+    <p><strong>Key Finding:</strong>
+      <%= report.keyFinding %>
+    </p>
+    <p><strong>Printed By:</strong>
+      <%= user.username %>
+    </p>
+    <p><strong>Printed On:</strong>
+      <%= new Date().toLocaleString() %>
+    </p>
+  </div>
+
+  <% if(report.trendData && report.trendData.labels.length) { %>
+    <h2>6-Month Trend Data</h2>
+    <canvas id="trendChart" width="800" height="400"></canvas>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Month</th>
+          <th>Average Overall Experience</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for(let i=0; i < report.trendData.labels.length; i++) { %>
+          <tr>
+            <td>
+              <%= report.trendData.labels[i] %>
+            </td>
+            <td>
+              <%= report.trendData.values[i] %>
+            </td>
+          </tr>
+          <% } %>
+      </tbody>
+    </table>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      const ctx = document.getElementById('trendChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: <% - JSON.stringify(report.trendData.labels) %>,
+          datasets: [{
+            label: 'Average Overall Experience',
+            data: <% - JSON.stringify(report.trendData.values) %>,
+            borderColor: 'rgba(75, 192, 192, 1)',
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            fill: true,
+            tension: 0.3,
+            pointRadius: 4
+          }]
+        },
+        options: {
+          responsive: false,
+          plugins: {
+            legend: { display: true },
+            title: { display: true, text: '6-Month Customer Satisfaction Trend', font: { size: 16 } }
+          },
+          scales: {
+            y: { beginAtZero: true, suggestedMax: 5, title: { display: true, text: 'Rating (1-5)' } },
+            x: { title: { display: true, text: 'Month' } }
+          }
+        }
+      });
+    </script>
+    <% } %>
+
+      <% if(report.feedbacks && report.feedbacks.length) { %>
+        <h2>Detailed Feedbacks</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Customer</th>
+              <th>OR Number</th>
+              <th>Overall</th>
+              <th>Service</th>
+              <th>Food</th>
+              <th>Ambiance</th>
+              <th>Value</th>
+              <th>Staff</th>
+              <th>Bartender</th>
+              <th>Issue?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% report.feedbacks.forEach(f=> { %>
+              <tr>
+                <td>
+                  <%= new Date(f.createdAt).toLocaleDateString() %>
+                </td>
+                <td>
+                  <%= f.customerName || "Anonymous" %>
+                </td>
+                <td>
+                  <%= f.orNumber || "-" %>
+                </td>
+                <td>
+                  <%= f.ratingID?.overallExperience ?? "-" %>
+                </td>
+                <td>
+                  <%= f.ratingID?.service ?? "-" %>
+                </td>
+                <td>
+                  <%= f.ratingID?.foodQuality ?? "-" %>
+                </td>
+                <td>
+                  <%= f.ratingID?.ambiance ?? "-" %>
+                </td>
+                <td>
+                  <%= f.ratingID?.valueForMoney ?? "-" %>
+                </td>
+                <td>
+                  <%= f.ratingID?.staffAttitude ?? "-" %>
+                </td>
+                <td>
+                  <%= f.ratingID?.bartenderAttitude ?? "-" %>
+                </td>
+                <td>
+                  <%= f.ratingID?.service < 3 ? "Yes" : "No" %>
+                </td>
+              </tr>
+              <% }) %>
+          </tbody>
+        </table>
+        <% } %>
+
+</body>
+
+</html>

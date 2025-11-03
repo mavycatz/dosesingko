@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Feedback Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel ="icon" href="images/iconup.png" type="image">
+
+</head>
+
+  <style>
+    body { background-color: #f8f9fa; }
+    .card-stats { cursor: pointer; transition: transform 0.2s; }
+    .card-stats:hover { transform: scale(1.05); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+    .tab-content { margin-top: 20px; }
+    .report-table { background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); padding: 15px; }
+  </style>
+<body style="margin:0; background-color:#ffffff; display:flex;">
+
+
+
+  <%- include('../partials/navbaradmin') %>
+
+
+  <!-- Main Content -->
+  <div style="padding: 20px; flex:1; min-height: 100vh; overflow-y:auto;">
+<div id="approvalMessage" 
+     style="display:none; position:fixed; margin-top:20px; left:50%; transform:translateX(-50%); 
+            z-index:1050; padding:8px 15px; border-radius:12px; 
+            max-width:300px; text-align:center; font-weight:normal;">
+</div>
+
+<div style="font-size: 0.8rem; margin-top: 5px; margin-bottom: 10px; margin-left: 25px;">
+  <span style="color: gray;">Feedback Management</span>
+  <span style="margin: 0 6px;">/</span>
+  <a href="/reportsAdmin" style="color: black; text-decoration: none;">DoseSingko Reports</a>
+</div>
+
+<div style="margin-top: 25px; display: flex; align-items: center; justify-content: space-between;">
+  <div>
+    <h4 style="font-size: 1.5rem; font-weight: 700;">Report Management</h4>
+    <p style="color: gray; font-size: 0.9rem;">Generate and view feedback reports, summaries, and insights</p>
+  </div>
+<div style="display: flex; align-items: center; gap: 4px;">
+  <button onclick="window.location.href='/reportsAdmin'" 
+    style="background-color: white; color: black; border: 1px solid black; padding: 4px 8px; border-radius: 3px; font-size: 14px; display: flex; align-items: center; gap: 4px;">
+    <i class="bi bi-arrow-clockwise"></i> Refresh
+  </button>
+  
+  <button onclick="printTable()" 
+    style="background-color: white; color: black; border: 1px solid black; padding: 4px 8px; border-radius: 3px; font-size: 14px; display: flex; align-items: center; gap: 4px;">
+    <i class="bi bi-printer"></i> Print
+  </button>
+</div>
+
+</div>
+<div class="container my-5">
+
+<!-- Stats Cards -->
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="card p-3 text-center shadow-sm" style="background-color:#fff; color:#333; border-radius:0.75rem; transition: transform 0.2s;">
+      <div class="mb-2">
+        <i class="fas fa-file-alt" style="font-size:1.8rem; color:#000;"></i>
+      </div>
+      <h6 class="mb-1">Generated Reports</h6>
+      <h3><%= stats.generatedReports %></h3>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card p-3 text-center shadow-sm" style="background-color:#fff; color:#333; border-radius:0.75rem; transition: transform 0.2s;">
+      <div class="mb-2">
+        <i class="fas fa-print" style="font-size:1.8rem; color:#000;"></i>
+      </div>
+      <h6 class="mb-1">Printable Reports</h6>
+      <h3><%= stats.printableReports %></h3>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card p-3 text-center shadow-sm" style="background-color:#fff; color:#333; border-radius:0.75rem; transition: transform 0.2s;">
+      <div class="mb-2">
+        <i class="fas fa-file-invoice" style="font-size:1.8rem; color:#000;"></i>
+      </div>
+      <h6 class="mb-1">Custom Reports</h6>
+      <h3><%= stats.customReports %></h3>
+    </div>
+  </div>
+</div>
+
+<!-- Optional Hover Effect -->
+<script>
+  document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('mouseenter', () => card.style.transform = 'translateY(-5px)');
+    card.addEventListener('mouseleave', () => card.style.transform = 'translateY(0)');
+  });
+</script>
+<!-- Tabs -->
+<ul class="nav nav-tabs nav-fill mb-3 border-0 shadow-sm p-2 rounded-pill" id="reportTabs" role="tablist" style="background-color:#f8f9fa;">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active fw-semibold py-2 px-3 rounded-pill"
+            id="generated-tab" data-bs-toggle="tab" data-bs-target="#generated" type="button" role="tab"
+            aria-controls="generated" aria-selected="true">
+      <i class="bi bi-file-earmark-text me-2"></i> Generated Reports
+    </button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link fw-semibold py-2 px-3 rounded-pill"
+            id="printable-tab" data-bs-toggle="tab" data-bs-target="#printable" type="button" role="tab"
+            aria-controls="printable" aria-selected="false">
+      <i class="bi bi-printer me-2"></i> Printable Report
+    </button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link fw-semibold py-2 px-3 rounded-pill"
+            id="custom-tab" data-bs-toggle="tab" data-bs-target="#custom" type="button" role="tab"
+            aria-controls="custom" aria-selected="false">
+      <i class="bi bi-journal-text me-2"></i> Custom Reports
+    </button>
+  </li>
+</ul>
+
+<style>
+  #reportTabs .nav-link {
+    background-color: #e9ecef;
+    color: #000;
+    transition: all 0.3s ease;
+    border: none;
+  }
+
+  #reportTabs .nav-link:hover {
+    background-color: #000;
+    color: #fff;
+  }
+
+  #reportTabs .nav-link.active {
+    background-color: #000 !important;
+    color: #fff !important;
+  }
+</style>
+
+<script>
+  const tabs = document.querySelectorAll('#reportTabs .nav-link');
+  tabs.forEach(tab => {
+    tab.addEventListener('shown.bs.tab', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+</script>
+
+
+
+  <div class="tab-content">
+
+<!-- Generated Reports -->
+<div class="tab-pane fade show active" id="generated" role="tabpanel" aria-labelledby="generated-tab">
+<!-- Generated Reports -->
+<div class="card p-3 bg-white shadow-sm mb-3 rounded-3">
+  <h5 class="mb-2 text-dark fw-bold">Generated Reports</h5>
+  <div class="table-responsive">
+    <table class="table table-borderless table-hover align-middle mb-0 text-dark">
+      <thead class="table-light text-dark" style="font-size:0.85rem;">
+        <tr>
+          <th scope="col">Report Type</th>
+          <th scope="col">Description</th>
+          <th scope="col" style="width:240px;">Period</th>
+        </tr>
+      </thead>
+      <tbody style="font-size:0.85rem;">
+        <% 
+          const reportTypes = [
+            { type: "Customer Report", desc: "Includes OR Number, Customer Name, Customer Type, and Created Date." },
+            { type: "Feedback Report", desc: "Includes Message, Category, Menu, Rating, and Customer Info." },
+            { type: "Menu Report", desc: "Shows feedback count and average ratings per menu item." },
+            { type: "Rating Report", desc: "Displays detailed rating scores for overall experience, food, service, ambiance, value, staff, and bartender." },
+            { type: "Summary Report", desc: "Provides totals for feedback, customers, and average rating." }
+          ]; 
+          const currentYear = new Date().getFullYear();
+        %>
+
+        <% reportTypes.forEach(r => { %>
+          <tr class="align-middle" style="height:50px;">
+            <td class="fw-semibold">
+              <i class="bi bi-file-earmark-text me-2 text-secondary"></i>
+              <%= r.type %>
+            </td>
+            <td class="text-muted"><%= r.desc %></td>
+            <td>
+              <form method="POST" action="/reportsadmin/generate" class="d-flex align-items-center gap-2 flex-wrap m-0 p-0" onsubmit="return generateCSV(event)">
+                <input type="hidden" name="type" value="<%= r.type %>">
+
+                <select name="month" class="form-select form-select-sm" style="width:90px; font-size:0.8rem;">
+                  <option value="">Month</option>
+                  <% for (let m = 1; m <= 12; m++) { 
+                       const monthVal = m.toString().padStart(2, '0'); %>
+                    <option value="<%= monthVal %>"><%= monthVal %></option>
+                  <% } %>
+                </select>
+
+                <select name="year" class="form-select form-select-sm" style="width:85px; font-size:0.8rem;">
+                  <option value="">Year</option>
+                  <% for (let y = currentYear; y >= currentYear - 5; y--) { %>
+                    <option value="<%= y %>"><%= y %></option>
+                  <% } %>
+                </select>
+
+                <button type="submit" class="btn btn-dark btn-sm rounded-3 px-2 py-1" style="font-size:0.8rem; white-space:nowrap;">
+                  Generate CSV
+                </button>
+              </form>
+            </td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+async function generateCSV(event) {
+  event.preventDefault();
+  const form = event.target;
+  const formData = new FormData(form);
+
+  const month = formData.get('month');
+  const year = formData.get('year');
+  const type = formData.get('type');
+
+  if (!month || !year) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Incomplete Selection',
+      text: 'Please select both month and year.'
+    });
+    return false;
+  }
+
+  try {
+    const res = await fetch(form.action, {
+      method: 'POST',
+      body: formData
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: text || 'Failed to generate report.'
+      });
+      return false;
+    }
+
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `${type.replace(/\s+/g, '_')}_${month}_${year}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Report Generated!',
+      text: `${type} for ${month}/${year} downloaded successfully.`,
+      timer: 2000,
+      showConfirmButton: false
+    });
+  } catch (err) {
+    console.error('Error generating CSV:', err);
+    Swal.fire({
+      icon: 'error',
+      title: 'Server Error',
+      text: 'Something went wrong while generating the report.'
+    });
+  }
+
+  return false;
+}
+</script>
+
+</div>
+<!-- Printable Report Container -->
+<div class="tab-pane fade" id="printable" role="tabpanel" aria-labelledby="printable-tab">
+  <div class="container py-4">
+    <div class="card p-4 shadow-sm rounded-4 bg-white">
+
+      <!-- Report Type Descriptions -->
+      <div class="card p-4 mb-4 shadow-sm rounded-4 bg-white">
+        <h5 class="fw-bold mb-3">Report Type Descriptions</h5>
+        <div class="row g-3">
+          <div class="col-md-6 d-flex align-items-start border-bottom border-2 border-light pb-3">
+            <i class="bi bi-person-lines-fill fs-2 text-dark me-3"></i>
+            <div>
+              <h6 class="fw-semibold mb-1">Customer Report</h6>
+              <p class="mb-0 small text-secondary">Lists all registered customers with their details and activity.</p>
+            </div>
+          </div>
+
+          <div class="col-md-6 d-flex align-items-start border-bottom border-2 border-light pb-3">
+            <i class="bi bi-chat-dots-fill fs-2 text-dark me-3"></i>
+            <div>
+              <h6 class="fw-semibold mb-1">Feedback Report</h6>
+              <p class="mb-0 small text-secondary">Shows all customer feedback submitted, including comments and ratings.</p>
+            </div>
+          </div>
+
+          <div class="col-md-6 d-flex align-items-start border-bottom border-2 border-light pb-3">
+            <i class="bi bi-list-task fs-2 text-dark me-3"></i>
+            <div>
+              <h6 class="fw-semibold mb-1">Menu Report</h6>
+              <p class="mb-0 small text-secondary">Displays all available services and menu items with their prices.</p>
+            </div>
+          </div>
+
+          <div class="col-md-6 d-flex align-items-start border-bottom border-2 border-light pb-3">
+            <i class="bi bi-star-fill fs-2 text-dark me-3"></i>
+            <div>
+              <h6 class="fw-semibold mb-1">Rating Report</h6>
+              <p class="mb-0 small text-secondary">Summarizes ratings given by customers, including averages per service.</p>
+            </div>
+          </div>
+
+          <div class="col-md-12 d-flex align-items-start pt-3">
+            <i class="bi bi-file-earmark-bar-graph-fill fs-2 text-dark me-3"></i>
+            <div>
+              <h6 class="fw-semibold mb-1">Summary Report</h6>
+              <p class="mb-0 small text-secondary">Provides an overall summary combining feedback, ratings, and customer counts.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter / Generate Report -->
+      <div class="card p-4 mb-4 shadow-sm rounded-3 bg-white text-dark">
+        <h5 class="mb-3 fw-bold">Generate Printable Report</h5>
+        <form id="printableReportForm" method="POST" action="/reportsadmin/print-report" target="_blank">
+          <div class="row g-3 align-items-end">
+            <div class="col-md-4">
+              <label for="monthFilter" class="form-label fw-semibold">Select Month</label>
+              <select name="month" id="monthFilter" class="form-select rounded-3">
+                <option value="">All Months</option>
+                <% for (let m = 1; m <= 12; m++) { 
+                     const monthValue = `${new Date().getFullYear()}-${m.toString().padStart(2,'0')}`;
+                     const monthName = new Date(0, m-1).toLocaleString('default', { month: 'long' });
+                %>
+                  <option value="<%= monthValue %>" <%= selectedMonth === monthValue ? "selected" : "" %>><%= monthName %></option>
+                <% } %>
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label for="typeFilter" class="form-label fw-semibold">Report Type</label>
+              <select name="type" id="typeFilter" class="form-select rounded-3">
+                <option value="">Select Report</option>
+                <option value="customer">Customer Report</option>
+                <option value="feedback">Feedback Report</option>
+                <option value="menu">Menu Report</option>
+                <option value="rating">Rating Report</option>
+                <option value="summary">Summary Report</option>
+              </select>
+            </div>
+
+            <div class="col-md-2">
+              <button type="submit" class="btn btn-dark w-100 rounded-3">
+                <i class="bi bi-file-earmark-arrow-down me-1"></i> Generate
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.getElementById("printableReportForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const form = e.target;
+  const month = document.getElementById("monthFilter").value;
+  const type = document.getElementById("typeFilter").value;
+
+  if (!type) {
+    Swal.fire({
+      icon: "warning",
+      title: "Missing Selection",
+      text: "Please choose a report type before generating."
+    });
+    return;
+  }
+
+  Swal.fire({
+    title: "Generate Report?",
+    text: `Generate ${type.charAt(0).toUpperCase() + type.slice(1)} Report for ${month || "all months"}?`,
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonColor: "#212529",
+    cancelButtonColor: "#6c757d",
+    confirmButtonText: "Yes, Generate"
+  }).then((result) => {
+    if (result.isConfirmed) {
+      Swal.fire({
+        title: "Generating...",
+        text: "Please wait while the report is being prepared.",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+          setTimeout(() => {
+            form.submit();
+            Swal.close();
+            Swal.fire({
+              icon: "success",
+              title: "Report Generated!",
+              text: "The report has been opened in a new tab for printing.",
+              timer: 2000,
+              showConfirmButton: false
+            });
+          }, 1000);
+        }
+      });
+    }
+  });
+});
+</script>
+<!-- Custom Reports -->
+<div class="tab-pane fade" id="custom" role="tabpanel" aria-labelledby="custom-tab">
+  <div class="container-sm my-3">
+    <div class="row g-3">
+      <% if (customReports && customReports.length > 0) { %>
+        <% customReports.forEach(report => { %>
+          <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm border-0 rounded-3 custom-report-card p-3"
+                 style="background-color:#fff; color:#000; transition:all 0.3s ease; cursor:pointer;">
+
+              <div class="position-relative">
+                <h6 class="fw-bold text-truncate" style="white-space:normal;"><%= report.title %></h6>
+                <span class="badge position-absolute top-0 end-0"
+                      style="background-color:#000; color:#fff; font-size:0.65rem;">
+                  <%= report.status %>
+                </span>
+              </div>
+
+              <small class="text-muted d-block mt-1" style="font-size:0.7rem;"><%= report.dateRange %></small>
+              <small class="text-muted d-block mb-2" style="font-size:0.7rem;">Printed by: <%= user.username %></small>
+
+              <div class="report-details" style="display:none; font-size:0.75rem;">
+                <p class="mb-1"><%= report.description %></p>
+                <p class="mb-1"><strong>Key Finding:</strong> <%= report.keyFinding %></p>
+
+                <% if (report.trendData && report.trendData.labels?.length) { %>
+                  <canvas id="chart-<%= report._id %>" height="100" class="mb-2"></canvas>
+                  <script>
+                    const ctx<%= report._id %> = document.getElementById('chart-<%= report._id %>').getContext('2d');
+                    new Chart(ctx<%= report._id %>, {
+                      type: 'line',
+                      data: {
+                        labels: <%- JSON.stringify(report.trendData.labels) %>,
+                        datasets: [{
+                          label: 'Trend',
+                          data: <%- JSON.stringify(report.trendData.values) %>,
+                          borderColor: '#000',
+                          backgroundColor: 'rgba(0,0,0,0.05)',
+                          fill: true,
+                          tension: 0.3
+                        }]
+                      },
+                      options: {
+                        responsive: true,
+                        plugins: { legend: { display: false } },
+                        scales: { y: { beginAtZero: true } }
+                      }
+                    });
+                  </script>
+                <% } %>
+              </div>
+
+              <div class="d-flex gap-1 mt-2 flex-wrap">
+                <% if (report.status === 'Ready') { %>
+                  <button class="btn btn-sm btn-dark flex-fill pdf-btn" 
+                          data-id="<%= report._id %>" 
+                          style="font-size:0.7rem;">PDF</button>
+                  <button class="btn btn-sm btn-secondary flex-fill csv-btn"
+                          data-id="<%= report._id %>" 
+                          style="font-size:0.7rem;">CSV</button>
+                  <button class="btn btn-sm btn-outline-dark flex-fill delete-report-btn"
+                          style="font-size:0.7rem;"
+                          data-id="<%= report._id %>">Delete</button>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      <% } else { %>
+        <div class="col-12 text-center text-muted py-5">No custom reports available.</div>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // PDF Download
+  document.querySelectorAll('.pdf-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = btn.dataset.id;
+      const url = `/reportsadmin/custom-reports/download/${id}?format=pdf`;
+      Swal.fire({
+        title: "Generate PDF Report?",
+        text: "This report will open in a new tab.",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#212529",
+        cancelButtonColor: "#6c757d",
+        confirmButtonText: "Yes, open PDF"
+      }).then(result => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            title: "Generating PDF...",
+            text: "Please wait.",
+            didOpen: () => {
+              Swal.showLoading();
+              setTimeout(() => {
+                window.open(url, "_blank");
+                Swal.close();
+                Swal.fire({
+                  icon: "success",
+                  title: "PDF Generated!",
+                  text: "The PDF report has been opened.",
+                  timer: 2000,
+                  showConfirmButton: false
+                });
+              }, 1000);
+            },
+            allowOutsideClick: false
+          });
+        }
+      });
+    });
+  });
+
+  // CSV Download
+  document.querySelectorAll('.csv-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = btn.dataset.id;
+      const url = `/reportsadmin/custom-reports/download/${id}?format=csv`;
+      Swal.fire({
+        title: "Download CSV Report?",
+        text: "The CSV file will start downloading shortly.",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#212529",
+        cancelButtonColor: "#6c757d",
+        confirmButtonText: "Yes, download"
+      }).then(result => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            title: "Preparing CSV...",
+            text: "Please wait.",
+            didOpen: () => {
+              Swal.showLoading();
+              setTimeout(() => {
+                window.open(url, "_blank");
+                Swal.close();
+                Swal.fire({
+                  icon: "success",
+                  title: "CSV Downloaded!",
+                  text: "Your CSV report is ready.",
+                  timer: 2000,
+                  showConfirmButton: false
+                });
+              }, 1000);
+            },
+            allowOutsideClick: false
+          });
+        }
+      });
+    });
+  });
+
+  // Delete Report
+  document.querySelectorAll('.delete-report-btn').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const reportId = btn.dataset.id;
+
+      const result = await Swal.fire({
+        title: 'Are you sure?',
+        text: "This report will be permanently deleted!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#212529',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Yes, delete it!'
+      });
+
+      if (!result.isConfirmed) return;
+
+      try {
+        const res = await fetch(`/reportsadmin/custom-reports/delete/${reportId}`, { method: 'POST' });
+
+        if (res.ok) {
+          btn.closest('.custom-report-card').remove();
+          Swal.fire({
+            icon: 'success',
+            title: 'Deleted!',
+            text: 'Report has been deleted.',
+            timer: 1500,
+            showConfirmButton: false
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Failed!',
+            text: 'Could not delete the report.'
+          });
+        }
+      } catch (err) {
+        console.error(err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Server error occurred while deleting the report.'
+        });
+      }
+    });
+  });
+});
+</script>
+
+
+<script>
+  const path = window.location.pathname.toLowerCase();
+
+  document.querySelectorAll('.menu-item').forEach(item => {
+    const href = item.getAttribute('onclick')?.match(/'(.*)'/)?.[1]?.toLowerCase();
+    if (href && path === href) {
+      item.classList.add('active');
+    }
+  });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

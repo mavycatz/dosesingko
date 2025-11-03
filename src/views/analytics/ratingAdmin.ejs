@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feedback Dashboard</title>
+  
+  <!-- Google Fonts: Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel ="icon" href="images/iconup.png" type="image">
+
+<body style="margin:0; display:flex; min-height:100vh; background-color:#ffffff;">
+
+  <!-- Navbar / Sidebar -->
+  <%- include('../partials/navbaradmin') %>
+
+  <!-- Main Content -->
+  <div class="dashboard-container d-flex flex-column flex-grow-1" style="min-height:100vh; overflow-y:auto;">
+    <div class="container-fluid mt-4 px-4">
+  <!-- Breadcrumb -->
+  <div class="dashboard-header mb-4" style="margin-left:20px; font-size:0.85rem;">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-1" style="color: gray; font-size:0.85rem;">
+        <li class="breadcrumb-item" style="color: gray;">Feedback Management</li>
+        <li class="breadcrumb-item">
+          <a href="/ratingAdmin" style="color: black; text-decoration: none;">DoseSingko Ratings</a>
+        </li>
+      </ol>
+    </nav>
+  </div>
+<div id="messageBox" class="alert d-none" role="alert"></div>
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <h4 class="mb-1 text-dark fw-bold">Rating Management</h4>
+      <p class="text-muted small mb-0">Comprehensive view of customer ratings and satisfaction metrics</p>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+<button 
+  onclick="window.print()" 
+  style="background-color: white; color: black; border: 1px solid black; padding: 4px 8px; border-radius: 3px; font-size: 14px; display: flex; align-items: center; gap: 3px;">
+  <i class="bi bi-printer"></i> Print
+</button>
+
+<button class="btn btn-outline-secondary btn-sm" onclick="window.location.href='/ratingAdmin'">
+  <i class="fas fa-sync-alt me-1"></i> Refresh
+</button>
+
+      <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#orModal">
+        <i class="fas fa-plus me-1"></i> Add OR
+      </button>
+    </div>
+  </div>
+
+<!-- Filter Container -->
+<div class="container my-3" 
+     style="background-color: white; padding: 20px; border-radius: 10px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); max-width: 100%;">
+
+  <h4 style="font-size: 1rem; font-weight: bold; color: black; margin-bottom: 15px;">Filter Feedback</h4>
+
+  <form action="/ratingAdmin" method="GET" class="d-flex flex-wrap align-items-center gap-2">
+
+    <% const currentYear = new Date().getFullYear(); %>
+
+    <!-- Year -->
+    <select id="yearSelect" name="year" class="form-select" style="max-width: 100px;">
+      <option value="">Year</option>
+      <% for (let y = currentYear; y >= currentYear - 10; y--) { %>
+        <option value="<%= y %>" <%= query?.year == y.toString() ? 'selected' : '' %>><%= y %></option>
+      <% } %>
+    </select>
+
+    <!-- Month -->
+    <select id="monthSelect" name="month" class="form-select" style="max-width: 120px;">
+      <option value="">Month</option>
+      <% for(let m=1; m<=12; m++) { %>
+        <option value="<%= m %>" <%= query?.month == m.toString() ? 'selected' : '' %>>
+          <%= new Date(0, m-1).toLocaleString('en', { month: 'long' }) %>
+        </option>
+      <% } %>
+    </select>
+
+    <!-- Day -->
+    <select id="daySelect" name="day" class="form-select" style="max-width: 80px;">
+      <option value="">Day</option>
+      <% for(let d=1; d<=31; d++) { %>
+        <option value="<%= d %>" <%= query?.day == d.toString() ? 'selected' : '' %>><%= d %></option>
+      <% } %>
+    </select>
+
+    <!-- Customer Type -->
+    <select id="customerTypeSelect" name="customerType" class="form-select" style="max-width: 150px;">
+      <option value="">Customer Type</option>
+      <% ["Dine-in","Take-out","Delivery"].forEach(type => { %>
+        <option value="<%= type %>" <%= query?.customerType == type ? 'selected' : '' %>><%= type %></option>
+      <% }) %>
+    </select>
+
+    <button type="submit" class="btn btn-secondary btn-sm">Apply</button>
+  </form>
+</div>
+
+
+<div class="container mt-4">
+
+<!-- Stats Cards (Monochrome) -->
+<div class="row g-3 mb-4">
+  <div class="col-md-3">
+    <div class="card text-center p-3 shadow-sm position-relative" style="border-radius:12px; background-color:#ffffff;">
+      <h3 style="color:#000;"><%= stats.overallRating.toFixed(1) %></h3>
+      <h6 style="color:#333;">Overall Rating</h6>
+      <i class="bi bi-star-fill position-absolute" style="bottom: 10px; right: 10px; font-size: 1rem; color: #000;"></i>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card text-center p-3 shadow-sm position-relative" style="border-radius:12px; background-color:#ffffff;">
+      <h3 style="color:#000;"><%= stats.totalRatings %></h3>
+      <h6 style="color:#333;">Total Ratings</h6>
+      <i class="bi bi-people-fill position-absolute" style="bottom: 10px; right: 10px; font-size: 1rem; color: #000;"></i>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card text-center p-3 shadow-sm position-relative" style="border-radius:12px; background-color:#ffffff;">
+      <h3 style="color:#000;"><%= stats.fourToFiveStarPercentage %>%</h3>
+      <h6 style="color:#333;">4-5 Star Ratings</h6>
+      <i class="bi bi-bar-chart-fill position-absolute" style="bottom: 10px; right: 10px; font-size: 1rem; color: #000;"></i>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card text-center p-3 shadow-sm position-relative" style="border-radius:12px; background-color:#ffffff;">
+      <h3 style="color:#000;"><%= stats.thisWeek %></h3>
+      <h6 style="color:#333;">This Week</h6>
+      <i class="bi bi-calendar-check-fill position-absolute" style="bottom: 10px; right: 10px; font-size: 1rem; color: #000;"></i>
+    </div>
+  </div>
+</div>
+
+<!-- Rating by Category (Vertical, Maximized Space) -->
+<div class="card p-4 mb-4 shadow-sm" style="border-radius:12px; background-color:#ffffff;">
+  <h5 class="mb-2">Rating by Category</h5>
+  <h6 class="text-muted mb-3" style="font-size:0.85rem;">Detailed breakdown of ratings across different service areas</h6>
+
+  <% Object.keys(categoryRatings).forEach(cat => { %>
+    <div class="d-flex flex-column mb-3 p-3 border rounded" style="background: #f9f9f9;">
+      
+      <!-- Top row: category, stars + avg, trend -->
+      <div class="d-flex align-items-center justify-content-between w-100">
+        
+        <!-- Left: Category + Stars + Avg -->
+        <div class="d-flex align-items-center" style="flex-grow:1;">
+          <span style="min-width: 150px;"><%= cat.charAt(0).toUpperCase() + cat.slice(1) %></span>
+
+          <span style="margin-left: 60px;"> <!-- Increased space -->
+            <% const stars = Math.round(categoryRatings[cat].average); 
+               for(let i=1; i<=5; i++) { %>
+              <i class="bi bi-star-fill" style="color: <%= i <= stars ? '#000' : '#888' %>; margin-right:0px;"></i>
+            <% } %>
+          </span>
+
+          <span style="font-size:0.85rem; color:#555; margin-left:6px;">(<%= categoryRatings[cat].average.toFixed(1) %>)</span>
+        </div>
+
+        <!-- Right: Trend -->
+        <div style="font-size:1rem; min-width: 80px; text-align:right;">
+          <% if(categoryRatings[cat].trend > 0) { %>
+            <span class="text-success">+<%= categoryRatings[cat].trend.toFixed(2) %> ↑</span>
+          <% } else if(categoryRatings[cat].trend < 0) { %>
+            <span class="text-danger"><%= categoryRatings[cat].trend.toFixed(2) %> ↓</span>
+          <% } else { %>
+            <span class="text-secondary">0.00 →</span>
+          <% } %>
+        </div>
+      </div>
+
+      <!-- Bottom row: number of ratings -->
+      <div style="font-size:0.75rem; color:#555; margin-top:2px;">
+        (<%= categoryRatings[cat].count %> ratings)
+      </div>
+
+    </div>
+  <% }) %>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-6 d-flex">
+    <div class="card p-4 shadow-sm h-100" style="border-radius:12px; background-color:#ffffff; width:100%; min-height:300px;">
+          <h5 class="mb-2">Rating Trends</h5>
+          <h6 class="mb-3" style="color:#6c757d; font-size:0.85rem; font-weight:400;">
+          6-month rating trends by category
+          </h6>
+      <canvas id="ratingTrendsChart" height="200"></canvas>
+    </div>
+  </div>
+
+ <div class="col-md-6 d-flex">
+  <div class="card p-4 shadow-sm h-100" style="border-radius:12px; background-color:#ffffff; width:100%; min-height:300px;">
+    <h5 class="mb-2">Rating Distribution</h5>
+    <h6 class="mb-3" style="color:#6c757d; font-size:0.85rem; font-weight:400;">
+      Breakdown of star ratings received. Hover over bars for details.
+    </h6>
+
+    <% 
+      const total = Object.values(ratingDistribution).reduce((sum, r) => sum + r.count, 0);
+      const maxCount = Math.max(...Object.values(ratingDistribution).map(r => r.count));
+    %>
+
+    <% [5,4,3,2,1].forEach(star => { 
+         const data = ratingDistribution[star] || { count: 0, percentage: 0 };
+         const fillPercent = total ? (data.count / maxCount) * 100 : 0;
+    %>
+      <div style="display:flex; align-items:center; margin-bottom:6px; height:22px;">
+        <span style="width:30px; font-weight:500;"><%= star %>★</span>
+        <div class="progress flex-grow-1" style="height:22px; margin:0 8px; border-radius:11px; background-color:#e0e0e0;" 
+             data-bs-toggle="tooltip" 
+             data-bs-placement="top" 
+             title="<%= data.count %> ratings — <%= data.percentage %>%">
+          <div class="progress-bar" role="progressbar" 
+               style="width:<%= fillPercent %>%; background-color:#555555; border-radius:11px;">
+          </div>
+        </div>
+        <div style="display:flex; width:90px; justify-content:space-between; font-weight:500;">
+          <span><%= data.count %></span>
+          <span><%= data.percentage %>%</span>
+        </div>
+      </div>
+    <% }) %>
+
+    <div style="margin-top:15px; font-weight:bold; font-size:0.9rem;">
+      Total: <%= total %> ratings
+    </div>
+  </div>
+</div>
+</div>
+
+
+<div class="d-flex gap-3" style="width:100%; margin-bottom:25px;">
+  
+  <!-- Category Performance (70%) -->
+  <div style="flex: 0 0 70%;">
+    <div class="card p-4 shadow-sm" style="border-radius:12px; background-color:#ffffff; height:100%;">
+      <h5 class="mb-3">Category Performance Score</h5>
+      <h6 class="mb-3" style="color:#6c757d; font-size:0.85rem; font-weight:400;">
+        Performance metrics based on customer satisfaction (out of 100)
+      </h6>
+  <canvas id="categoryPerformanceChart" style="height:400px;"></canvas>
+<div class="row" id="categoryPerformanceDetails" style="margin-top:20px;"></div>
+    </div>
+  </div>
+
+  <!-- Recent 5-Star Reviews (30%) -->
+  <div style="flex: 0 0 30%;">
+    <div class="card shadow-sm d-flex flex-column" 
+         style="border-radius:16px; background-color:rgba(255,255,255,0.85); height:100%; overflow:hidden;">
+      <h6 class="mb-3 d-flex align-items-center gap-2 text-dark" style="font-size:0.95rem; padding:15px;">
+        <i class="bi bi-star-fill"></i> Recent 5-Star Reviews
+      </h6>
+      <div class="flex-grow-1 overflow-auto d-flex flex-column gap-2" style="padding:0 15px 15px 15px;">
+        <% if(recentFiveStarReviews && recentFiveStarReviews.length > 0){ %>
+          <% recentFiveStarReviews.forEach(r => { %>
+            <div class="p-2 rounded" style="background-color:rgba(0,0,0,0.03);">
+              <div class="d-flex align-items-center justify-content-between mb-1" style="font-size:0.85rem;">
+                <div class="d-flex align-items-center gap-2 text-dark">
+                  <i class="bi bi-person-circle" style="font-size:1.1rem;"></i>
+                  <strong><%= r.customerName %></strong>
+                  <small class="text-secondary"><%= r.category %></small>
+                </div>
+              </div>
+              <p class="mb-0 text-dark" style="font-size:0.85rem;">"<%= r.message %>"</p>
+              <small class="text-secondary" style="font-size:0.75rem;"><%= r.timeAgo %></small>
+            </div>
+          <% }) %>
+        <% } else { %>
+          <div class="text-center text-secondary py-4">
+            <video autoplay loop muted playsinline 
+                   src="/assets/coffee-break.webm" 
+                   style="width:120px; background:transparent;"></video>
+            <p style="font-size:0.85rem; margin-top:8px;">No 5-star reviews yet</p>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="d-flex gap-3" style="width:100%; margin:25px auto;">
+
+  <!-- Low Ratings (30%) -->
+  <div style="flex:0 0 30%;">
+    <div class="card shadow-sm d-flex flex-column" 
+         style="border-radius:16px; background-color:rgba(255,255,255,0.85); height:100%; overflow:hidden;">
+      <h6 class="mb-3 d-flex align-items-center gap-2 text-dark" style="font-size:0.95rem; padding:15px;">
+        <i class="bi bi-exclamation-triangle-fill"></i> Low Ratings (Action Needed)
+      </h6>
+      <div class="flex-grow-1 overflow-auto d-flex flex-column gap-2" style="padding:0 15px 15px 15px;">
+        <% if(lowRatings && lowRatings.length > 0){ %>
+          <% lowRatings.forEach(r => { %>
+            <div class="p-2 rounded" style="background-color:rgba(0,0,0,0.03);">
+              <div class="d-flex align-items-center justify-content-between mb-1" style="font-size:0.85rem;">
+                <div class="d-flex align-items-center gap-2 text-dark">
+                  <i class="bi bi-person-circle" style="font-size:1.1rem;"></i>
+                  <strong><%= r.customerName %></strong>
+                  <small class="text-secondary"><%= r.category %></small>
+                  <small class="text-dark"><%= r.rating %>★</small>
+                </div>
+              </div>
+              <p class="mb-0 text-dark" style="font-size:0.85rem;">"<%= r.message %>"</p>
+                              <small class="text-secondary" style="font-size:0.75rem;"><%= r.timeAgo %></small>
+            </div>
+            
+          <% }) %>
+        <% } else { %>
+          <div class="text-center text-secondary py-4">
+            <video autoplay loop muted playsinline 
+                   src="/images/coffeegif.mp4" 
+                   style="width:120px; background:transparent;"></video>
+            <p style="font-size:0.85rem; margin-top:8px;">All good! No low ratings yet</p>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+  <!-- Peak Hour Ratings (70%) -->
+  <div style="flex:0 0 70%;">
+    <div style="padding:20px; background:#fff; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.08); height:100%;">
+          <h5 class="mb-2">Hourly Feedback Patterns</h5>
+          <h6 class="mb-3" style="color:#6c757d; font-size:0.85rem; font-weight:400;">
+          Feedback volume and ratings throughout the day
+          </h6>
+      <canvas id="peakHourChart" height="170"></canvas>
+    <div id="peakHourSummary" style="margin-top:20px; display:flex; gap:15px; flex-wrap:wrap;"></div>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  const allPeakData = <%- JSON.stringify(peakHours || {}) %>;
+
+  // Only include 10AM-11PM
+  const filteredPeakData = Object.fromEntries(
+    Object.entries(allPeakData).filter(([hour]) => parseInt(hour) >= 10 && parseInt(hour) <= 23)
+  );
+
+  const formatHour = (h) => {
+    const hour = parseInt(h);
+    const suffix = hour >= 12 ? 'PM' : 'AM';
+    const hour12 = hour % 12 === 0 ? 12 : hour % 12;
+    return `${hour12}:00 ${suffix}`;
+  };
+
+  const peakHourLabels = Object.keys(filteredPeakData).map(h => formatHour(h));
+  const peakHourCounts = Object.values(filteredPeakData).map(h => h.count);
+  const peakHourAvgRatings = Object.values(filteredPeakData).map(h => parseFloat(h.avgRating));
+
+  // Peak hour and best average rating hour
+  const maxCount = Math.max(...peakHourCounts);
+  const peakHourIndex = peakHourCounts.indexOf(maxCount);
+  const peakHourLabel = peakHourLabels[peakHourIndex];
+
+  const maxAvgRating = Math.max(...peakHourAvgRatings);
+  const bestHourIndex = peakHourAvgRatings.indexOf(maxAvgRating);
+  const bestHourLabel = peakHourLabels[bestHourIndex];
+
+  // Chart
+  const ctxPeak = document.getElementById('peakHourChart').getContext('2d');
+  new Chart(ctxPeak, {
+    type: 'bar',
+    data: {
+      labels: peakHourLabels,
+      datasets: [
+        {
+          type: 'bar',
+          label: 'Number of Ratings',
+          data: peakHourCounts,
+          backgroundColor: peakHourCounts.map((c, i) => i === peakHourIndex ? 'rgba(60,60,60,0.9)' : 'rgba(120,120,120,0.6)'),
+          yAxisID: 'y1'
+        },
+        {
+          type: 'line',
+          label: 'Average Rating',
+          data: peakHourAvgRatings,
+          borderColor: 'rgba(80,80,80,1)',
+          backgroundColor: 'rgba(80,80,80,0.2)',
+          fill: false,
+          tension: 0.2,
+          yAxisID: 'y2',
+          pointRadius: 4,
+          pointHoverRadius: 6
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      interaction: { mode: 'index', intersect: false },
+      stacked: false,
+      scales: {
+        y1: { type: 'linear', position: 'left', beginAtZero: true, title: { display: true, text: 'Number of Ratings' }, ticks: { color:'#333' } },
+        y2: { type: 'linear', position: 'right', beginAtZero: true, min: 0, max: 5, grid: { drawOnChartArea: false, color:'#eee' }, title: { display: true, text: 'Average Rating' }, ticks: { color:'#333' } }
+      },
+      plugins: {
+        legend: { position: 'bottom', labels: { color:'#333' } },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return context.dataset.label === 'Average Rating'
+                ? `${context.dataset.label}: ${context.raw.toFixed(2)}`
+                : `${context.dataset.label}: ${context.raw}`;
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // Stats Cards (Option 2)
+  const summaryEl = document.getElementById('peakHourSummary');
+
+  const allAvgRatings = Object.values(allPeakData).map(h => parseFloat(h.avgRating));
+  const overallAvg = allAvgRatings.length ? (allAvgRatings.reduce((a,b)=>a+b,0)/allAvgRatings.length).toFixed(2) : 0;
+
+  summaryEl.innerHTML = `
+    <div style="flex:1 1 30%; background:#f8f9fa; padding:15px; border-radius:12px; box-shadow:0 2px 6px rgba(0,0,0,0.08); text-align:center;">
+      <div style="font-size:0.85rem; color:#6c757d; display:flex; align-items:center; justify-content:center; gap:5px;">
+        <i class="bi bi-clock" style="color:#000;"></i> Peak Hour
+      </div>
+      <div style="font-size:1.2rem; font-weight:700; color:#333;">${peakHourLabel}</div>
+      <div style="font-size:0.85rem; color:#6c757d;">with ${maxCount} ratings</div>
+    </div>
+    <div style="flex:1 1 30%; background:#f8f9fa; padding:15px; border-radius:12px; box-shadow:0 2px 6px rgba(0,0,0,0.08); text-align:center;">
+      <div style="font-size:0.85rem; color:#6c757d; display:flex; align-items:center; justify-content:center; gap:5px;">
+        <i class="bi bi-star-fill" style="color:#000;"></i> Highest Avg Rating
+      </div>
+      <div style="font-size:1.2rem; font-weight:700; color:#333;">${bestHourLabel}</div>
+      <div style="font-size:0.85rem; color:#6c757d;">Rating: ${maxAvgRating.toFixed(2)}</div>
+    </div>
+    <div style="flex:1 1 30%; background:#f8f9fa; padding:15px; border-radius:12px; box-shadow:0 2px 6px rgba(0,0,0,0.08); text-align:center;">
+      <div style="font-size:0.85rem; color:#6c757d; display:flex; align-items:center; justify-content:center; gap:5px;">
+        <i class="bi bi-bar-chart-line-fill" style="color:#000;"></i> Overall Avg Rating
+      </div>
+      <div style="font-size:1.2rem; font-weight:700; color:#333;">${overallAvg}</div>
+      <div style="font-size:0.85rem; color:#6c757d;">All hours included</div>
+    </div>
+  `;
+</script>
+<script>
+const darkShades = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd'];
+
+const trends = <%- JSON.stringify(trends || { labels: [], datasets: [] }) %>;
+const ratingDistribution = <%- JSON.stringify(ratingDistribution || {5:{count:0,percentage:0},4:{count:0,percentage:0},3:{count:0,percentage:0},2:{count:0,percentage:0},1:{count:0,percentage:0}}) %>;
+
+// Rating Trends (6-Month)
+const ctxTrends = document.getElementById('ratingTrendsChart').getContext('2d');
+new Chart(ctxTrends, {
+  type: 'line',
+  data: {
+    labels: trends.labels,
+    datasets: trends.datasets.map((ds, idx) => ({
+      ...ds,
+      borderColor: darkShades[idx % darkShades.length],
+      backgroundColor: darkShades[idx % darkShades.length] + '33',
+      tension: 0.3,
+      fill: true,
+      pointRadius: 4,
+      pointHoverRadius: 6
+    }))
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: true, position: 'bottom', labels: { color: '#000' } },
+      tooltip: { mode: 'index', intersect: false }
+    },
+    scales: {
+      x: { 
+        ticks: { color: '#000' }, 
+        grid: { color: '#ddd' } 
+      },
+      y: { 
+        min: 0, max: 5,
+        ticks: { color: '#000', stepSize: 1 },
+        grid: { color: '#ddd' }
+      }
+    }
+  }
+});
+
+// Rating Distribution Horizontal Bar
+const labelsDist = [5,4,3,2,1].map(s => s + '★');
+const counts = [5,4,3,2,1].map(s => ratingDistribution[s].count);
+const percentages = [5,4,3,2,1].map(s => ratingDistribution[s].percentage);
+
+const ctxDist = document.getElementById('ratingDistributionChart').getContext('2d');
+new Chart(ctxDist, {
+  type: 'bar',
+  data: {
+    labels: labelsDist,
+    datasets: [{
+      label: 'Number of Ratings',
+      data: counts,
+      backgroundColor: darkShades.map(c => c + 'aa'),
+      borderRadius: 12,
+      barThickness: 25
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    plugins: {
+      legend: { display: false, labels: { color: '#000' } },
+      tooltip: { 
+        enabled: true,
+        callbacks: {
+          label: (ctx) => {
+            const idx = ctx.dataIndex;
+            return `${counts[idx]} ratings (${percentages[idx]}%)`;
+          }
+        }
+      },
+      datalabels: {
+        color: '#000',
+        anchor: 'end',
+        align: 'right',
+        formatter: (value, ctx) => {
+          const idx = ctx.dataIndex;
+          return `${value} (${percentages[idx]}%)`;
+        },
+        font: { weight: 'bold', size: 12 }
+      }
+    },
+    scales: {
+      x: { beginAtZero: true, ticks: { stepSize: 1, color: '#000' }, grid: { color: '#ddd' } },
+      y: { ticks: { autoSkip: false, color: '#000' }, grid: { color: '#ddd' } }
+    }
+  },
+  plugins: [ChartDataLabels]
+});
+</script>
+<script>
+const categoryPerformance = <%- JSON.stringify(categoryPerformance) %>;
+
+// Horizontal bar chart
+const labels = Object.keys(categoryPerformance);
+const dataValues = Object.values(categoryPerformance).map(v => parseFloat(v.percentage));
+
+const chartData = {
+  labels: labels,
+  datasets: [{
+    label: 'Performance',
+    data: dataValues,
+    backgroundColor: '#000',
+    borderRadius: 6,
+    barThickness: 20
+  }]
+};
+
+const chartConfig = {
+  type: 'bar',
+  data: chartData,
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            const idx = context.dataIndex;
+            const cat = Object.values(categoryPerformance)[idx];
+            return `${labels[idx]}: ${context.parsed.x}% - ${cat.performance} (Avg: ${cat.average}, Count: ${cat.count}, Min: ${cat.min}, Max: ${cat.max})`;
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        max: 100,
+        ticks: { callback: value => value + '%' },
+        grid: { color: '#e0e0e0' }
+      },
+      y: {
+        grid: { drawTicks: false, color: 'transparent' },
+        ticks: { font: { size: 13 } }
+      }
+    }
+  }
+};
+
+new Chart(document.getElementById('categoryPerformanceChart'), chartConfig);
+
+// Modern monochrome stats cards with progress bars
+const detailsContainer = document.getElementById('categoryPerformanceDetails');
+let detailsHTML = '';
+
+Object.entries(categoryPerformance).forEach(([cat, stats]) => {
+  let iconClass;
+  switch(stats.performance) {
+    case 'Excellent': iconClass = 'bi-check-circle-fill'; break;
+    case 'Good': iconClass = 'bi-hand-thumbs-up-fill'; break;
+    case 'Fair': iconClass = 'bi-exclamation-circle-fill'; break;
+    case 'Poor': iconClass = 'bi-x-circle-fill'; break;
+    default: iconClass = 'bi-question-circle-fill';
+  }
+
+  detailsHTML += `
+    <div class="col-lg-3 col-md-4 col-sm-6 mb-3 d-flex">
+      <div class="card p-3 shadow-sm flex-fill" style="border-radius:12px; background-color:#fff; border:1px solid #ccc;">
+        <div class="d-flex align-items-center mb-2">
+          <i class="bi ${iconClass}" style="font-size:2rem; color:#000;"></i>
+          <h6 class="mb-0 ms-2" style="font-weight:600; color:#000;">${cat}</h6>
+        </div>
+        <div class="progress mb-2" style="height:10px; border-radius:5px; background-color:#e0e0e0;">
+          <div class="progress-bar" role="progressbar" style="width:${stats.percentage}%; background-color:#000;" aria-valuenow="${stats.percentage}" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        <div class="d-flex justify-content-between" style="font-size:0.8rem; color:#555;">
+          <span>Avg: ${stats.average}</span>
+          <span>Count: ${stats.count}</span>
+        </div>
+        <div style="font-size:0.7rem; color:#777; text-align:right;">
+          Min: ${stats.min} | Max: ${stats.max}
+        </div>
+      </div>
+    </div>
+  `;
+});
+
+// Wrap in a responsive row, center cards if fewer than 4
+detailsContainer.innerHTML = `<div class="row justify-content-center">${detailsHTML}</div>`;
+</script>
+
+<script>
+  const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+  tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl)
+  })
+</script>
+<script>
+  const path = window.location.pathname.toLowerCase();
+
+  document.querySelectorAll('.menu-item').forEach(item => {
+    const href = item.getAttribute('onclick')?.match(/'(.*)'/)?.[1]?.toLowerCase();
+    if (href && path === href) {
+      item.classList.add('active');
+    }
+  });
+</script>
+</body>
+</html>

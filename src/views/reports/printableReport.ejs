@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>
+    <%= reportTypeName %>
+  </title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+      color: #000;
+      background: #fff;
+    }
+
+    h1,
+    h2,
+    h3 {
+      text-align: center;
+      margin: 5px 0;
+      color: #000;
+    }
+
+    p {
+      font-size: 13px;
+      margin: 3px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th,
+    td {
+      border: 1px solid #000;
+      padding: 6px;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    .summary,
+    .insights {
+      margin-top: 20px;
+      padding: 10px;
+      border: 1px solid #000;
+      background: #f9f9f9;
+    }
+
+    .section-title {
+      background: #e0e0e0;
+      padding: 8px;
+      margin-top: 25px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .chart-container {
+      width: 80%;
+      margin: 30px auto;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>DoseSingko <%= reportTypeName %>
+  </h1>
+  <h3>
+    <%= month ? `For ${month}` : "All Months" %>
+  </h3>
+  <hr>
+
+  <div class="summary">
+    <h3>Summary / Overview</h3>
+    <% if(reportType==="summary" ) { %>
+      <p><strong>Total Feedback:</strong>
+        <%= stats.totalFeedback %>
+      </p>
+      <p><strong>Average Overall Rating:</strong>
+        <%= stats.avgRating %> / 5
+      </p>
+      <p><strong>Unique Customers:</strong>
+        <%= stats.uniqueCustomers %>
+      </p>
+      <% } %>
+
+        <% if(reportType==="customer" ) { %>
+          <p><strong>Total Customers:</strong>
+            <%= stats.uniqueCustomers %>
+          </p>
+          <p><strong>Most Active Customer:</strong>
+            <%= stats.customerCounts && stats.customerCounts.length ?
+              stats.customerLabels[stats.customerCounts.indexOf(Math.max(...stats.customerCounts))] : "N/A" %>
+          </p>
+          <% } %>
+
+            <% if(reportType==="menu" ) { %>
+              <p><strong>Most Ordered Menu Item:</strong>
+                <%= stats.menuCounts && stats.menuCounts.length ?
+                  stats.menuLabels[stats.menuCounts.indexOf(Math.max(...stats.menuCounts))] : "N/A" %>
+              </p>
+              <p><strong>Total Menu Items:</strong>
+                <%= stats.menuLabels.length || 0 %>
+              </p>
+              <% } %>
+
+                <% if(reportType==="feedback" ) { %>
+                  <p><strong>Total Feedback:</strong>
+                    <%= stats.totalFeedback %>
+                  </p>
+                  <% } %>
+
+                    <% if(reportType==="rating" ) { %>
+                      <p><strong>Average Ratings:</strong></p>
+                      <ul>
+                        <li>Overall: <%= stats.avgRating || 0 %>
+                        </li>
+                        <li>Food: <%= stats.avgFood || 0 %>
+                        </li>
+                        <li>Service: <%= stats.avgService || 0 %>
+                        </li>
+                        <li>Ambiance: <%= stats.avgAmbiance || 0 %>
+                        </li>
+                        <li>Value: <%= stats.avgValue || 0 %>
+                        </li>
+                        <li>Staff: <%= stats.avgStaff || 0 %>
+                        </li>
+                        <li>Bartender: <%= stats.avgBartender || 0 %>
+                        </li>
+                      </ul>
+                      <% } %>
+  </div>
+
+  <div class="chart-container">
+    <canvas id="reportChart"></canvas>
+  </div>
+
+  <div class="insights">
+    <h3>Suggestions / Insights</h3>
+    <% if(reportType==="rating" ) { %>
+      <% const ratings=["Overall","Food","Service","Ambiance","Value","Staff","Bartender"]; const avgValues=[
+        parseFloat(stats.avgRating), parseFloat(stats.avgFood), parseFloat(stats.avgService),
+        parseFloat(stats.avgAmbiance), parseFloat(stats.avgValue), parseFloat(stats.avgStaff),
+        parseFloat(stats.avgBartender) ]; const worstIndex=avgValues.indexOf(Math.min(...avgValues)); %>
+        <p>🌟 Best Category: <strong>
+            <%= ratings[avgValues.indexOf(Math.max(...avgValues))] %>
+          </strong></p>
+        <p>⚠️ Needs Improvement: <strong>
+            <%= ratings[worstIndex] %>
+          </strong></p>
+        <p>💡 Suggested Improvement:
+          <% const suggestions={ Overall: "Maintain high performance in all areas." ,
+            Food: "Enhance taste and consistency." , Service: "Improve staff response time and friendliness." ,
+            Ambiance: "Upgrade lighting, music, and seating comfort." , Value: "Offer promotions or combo deals." ,
+            Staff: "Provide extra training for interactions." , Bartender: "Ensure drink quality and speed." } %>
+            <%= suggestions[ratings[worstIndex]] %>
+        </p>
+        <% } else { %>
+          <p>No specific insights available for this report type.</p>
+          <% } %>
+  </div>
+
+  <div class="section-title">
+    <%= reportTypeName %> Details Table
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <% if(reportType !=="summary" ) { %>
+          <th>OR Number</th>
+          <th>Customer</th>
+          <% } %>
+            <% if(["feedback","rating"].includes(reportType)) { %>
+              <th>Category</th>
+              <% } %>
+                <% if(["menu","feedback"].includes(reportType)) { %>
+                  <th>Menu Items</th>
+                  <% } %>
+                    <% if(reportType==="feedback" ) { %>
+                      <th>Message</th>
+                      <% } %>
+                        <% if(["feedback","rating"].includes(reportType)) { %>
+                          <th>Rating</th>
+                          <% } %>
+                            <th>Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% stats.feedbacks.forEach((fb, index)=> { %>
+        <tr>
+          <td>
+            <%= index + 1 %>
+          </td>
+          <% if(reportType !=="summary" ) { %>
+            <td>
+              <%= fb.orNumber || "-" %>
+            </td>
+            <td>
+              <%= fb.customerName || "-" %>
+            </td>
+            <% } %>
+              <% if(["feedback","rating"].includes(reportType)) { %>
+                <td>
+                  <%= fb.category || "-" %>
+                </td>
+                <% } %>
+                  <% if(["menu","feedback"].includes(reportType)) { %>
+                    <td>
+                      <%= fb.menuItems && fb.menuItems.length ? fb.menuItems.join(", ") : " -" %>
+                    </td>
+                    <% } %>
+                      <% if(reportType==="feedback" ) { %>
+                        <td>
+                          <%= fb.message || "-" %>
+                        </td>
+                        <% } %>
+                          <% if(["feedback","rating"].includes(reportType)) { %>
+                            <td>
+                              <%= fb.rating ?? 0 %>
+                            </td>
+                            <% } %>
+                              <td>
+                                <%= fb.createdAt ? new Date(fb.createdAt).toLocaleDateString() : "-" %>
+                              </td>
+        </tr>
+        <% }) %>
+    </tbody>
+  </table>
+
+  <div class="section-title">Generated Report Information</div>
+  <p><strong>Generated By:</strong>
+    <%= generatedBy || "System Administrator" %>
+  </p>
+  <p><strong>Date Generated:</strong>
+    <%= new Date().toLocaleString() %>
+  </p>
+
+  <script>
+    const ctx = document.getElementById('reportChart').getContext('2d');
+
+    let labels = [], data = [], chartLabel = '';
+
+  <% if (reportType === "rating") { %>
+      labels =["Overall", "Food", "Service", "Ambiance", "Value", "Staff", "Bartender"];
+      data = [
+      <%= stats.avgRating %>, <%= stats.avgFood %>, <%= stats.avgService %>,
+      <%= stats.avgAmbiance %>, <%= stats.avgValue %>, <%= stats.avgStaff %>, <%= stats.avgBartender %>
+    ];
+      chartLabel = 'Average Ratings per Category';
+  <% } else if (reportType === "menu") { %>
+      labels = <% - JSON.stringify(stats.menuLabels || []) %>;
+      data = <% - JSON.stringify(stats.menuCounts || []) %>;
+      chartLabel = 'Menu Item Popularity';
+  <% } else if (reportType === "customer") { %>
+      labels = <% - JSON.stringify(stats.customerLabels || []) %>;
+      data = <% - JSON.stringify(stats.customerCounts || []) %>;
+      chartLabel = 'Customer Activity';
+  <% } else if (reportType === "feedback") { %>
+      labels = <% - JSON.stringify(stats.feedbackLabels || []) %>;
+      data = <% - JSON.stringify(stats.feedbackCounts || []) %>;
+      chartLabel = 'Feedback Ratings Distribution';
+  <% } %>
+
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: chartLabel,
+            data: data,
+            fill: true,
+            borderColor: '#000',
+            backgroundColor: 'rgba(0,0,0,0.1)',
+            tension: 0.3,
+            pointRadius: 5
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: true, position: 'top' },
+            title: { display: true, text: chartLabel, font: { size: 16 } }
+          },
+          scales: { y: { beginAtZero: true } }
+        }
+      });
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,122 @@
+[
+  {
+    "customer": "68fa212b6269f2658c1668ea",
+    "ratingID": "68fa24323c56ed81259eeb40",
+    "orNumber": "1300001",
+    "customerName": "Anonymous",
+    "customerEmail": "",
+    "message": "",
+    "approved": false,
+    "customerType": "Dine-in",
+    "timestamp": "2025-09-01T10:00:00.000Z",
+    "createdAt": "2025-09-01T10:00:00.000Z"
+  },
+  {
+    "customer": "68fa212b6269f2658c1668e8",
+    "ratingID": "68fa24323c56ed81259eeb42",
+    "orNumber": "1300002",
+    "customerName": "Anonymous",
+    "customerEmail": "",
+    "message": "",
+    "approved": false,
+    "customerType": "Dine-in",
+    "timestamp": "2025-09-05T14:30:00.000Z",
+    "createdAt": "2025-09-05T14:30:00.000Z"
+  },
+  {
+    "customer": "68fa212b6269f2658c1668eb",
+    "ratingID": "68fa24323c56ed81259eeb44",
+    "orNumber": "1300003",
+    "customerName": "Anonymous",
+    "customerEmail": "",
+    "message": "",
+    "approved": false,
+    "customerType": "Dine-in",
+    "timestamp": "2025-09-10T12:15:00.000Z",
+    "createdAt": "2025-09-10T12:15:00.000Z"
+  },
+  {
+    "customer": "68fa212b6269f2658c1668ec",
+    "ratingID": "68fa24323c56ed81259eeb46",
+    "orNumber": "1300004",
+    "customerName": "Anonymous",
+    "customerEmail": "",
+    "message": "",
+    "approved": false,
+    "customerType": "Dine-in",
+    "timestamp": "2025-09-15T09:45:00.000Z",
+    "createdAt": "2025-09-15T09:45:00.000Z"
+  },
+  {
+    "customer": "68fa212b6269f2658c1668e7",
+    "ratingID": "68fa24323c56ed81259eeb48",
+    "orNumber": "1300005",
+    "customerName": "Anonymous",
+    "customerEmail": "",
+    "message": "",
+    "approved": false,
+    "customerType": "Dine-in",
+    "timestamp": "2025-09-20T16:00:00.000Z",
+    "createdAt": "2025-09-20T16:00:00.000Z"
+  },
+  {
+    "customer": "68fa212b6269f2658c1668e6",
+    "ratingID": "68fa24323c56ed81259eeb4a",
+    "orNumber": "1300006",
+    "customerName": "Anonymous",
+    "customerEmail": "",
+    "message": "",
+    "approved": false,
+    "customerType": "Dine-in",
+    "timestamp": "2025-09-22T11:30:00.000Z",
+    "createdAt": "2025-09-22T11:30:00.000Z"
+  },
+  {
+    "customer": "68fa212b6269f2658c1668e9",
+    "ratingID": "68fa24323c56ed81259eeb4c",
+    "orNumber": "1300007",
+    "customerName": "Anonymous",
+    "customerEmail": "",
+    "message": "",
+    "approved": false,
+    "customerType": "Dine-in",
+    "timestamp": "2025-09-25T13:00:00.000Z",
+    "createdAt": "2025-09-25T13:00:00.000Z"
+  },
+  {
+    "customer": "68fa212b6269f2658c1668ef",
+    "ratingID": "68fa24323c56ed81259eeb4e",
+    "orNumber": "1300008",
+    "customerName": "Anonymous",
+    "customerEmail": "",
+    "message": "",
+    "approved": false,
+    "customerType": "Dine-in",
+    "timestamp": "2025-09-27T15:20:00.000Z",
+    "createdAt": "2025-09-27T15:20:00.000Z"
+  },
+  {
+    "customer": "68fa212b6269f2658c1668ee",
+    "ratingID": "68fa24323c56ed81259eeb50",
+    "orNumber": "1300009",
+    "customerName": "Anonymous",
+    "customerEmail": "",
+    "message": "",
+    "approved": false,
+    "customerType": "Dine-in",
+    "timestamp": "2025-09-28T17:10:00.000Z",
+    "createdAt": "2025-09-28T17:10:00.000Z"
+  },
+  {
+    "customer": "68fa212b6269f2658c1668ed",
+    "ratingID": "68fa24323c56ed81259eeb52",
+    "orNumber": "1300010",
+    "customerName": "Anonymous",
+    "customerEmail": "",
+    "message": "",
+    "approved": false,
+    "customerType": "Dine-in",
+    "timestamp": "2025-09-30T18:00:00.000Z",
+    "createdAt": "2025-09-30T18:00:00.000Z"
+  }
+]

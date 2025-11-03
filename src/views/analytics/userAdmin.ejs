@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feedback Dashboard</title>
+  
+  <!-- Google Fonts: Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel ="icon" href="images/iconup.png" type="image">
+
+<body style="margin:0; display:flex; min-height:100vh; background-color:#ffffff;">
+
+  <!-- Navbar / Sidebar -->
+  <%- include('../partials/navbaradmin') %>
+
+  <!-- Main Content -->
+  <div class="dashboard-container d-flex flex-column flex-grow-1" style="min-height:100vh; overflow-y:auto;">
+    <div class="container-fluid mt-4 px-4">
+  <!-- Breadcrumb -->
+  <div class="dashboard-header mb-4" style="margin-left:20px; font-size:0.85rem;">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-1" style="color: gray; font-size:0.85rem;">
+        <li class="breadcrumb-item" style="color: gray;">Feedback Management</li>
+        <li class="breadcrumb-item">
+          <a href="/ratingAdmin" style="color: black; text-decoration: none;">DoseSingko Ratings</a>
+        </li>
+      </ol>
+    </nav> 
+<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 25px;">
+  <div>
+    <h4 style="font-size: 1.5rem; font-weight: 700; margin:0;">User Management</h4>
+    <p style="color: gray; font-size: 0.9rem; margin-top: 5px;">Manage system users, roles, and permissions</p>
+  </div>
+<% if (successMessage) { %>
+  <div style="padding:12px 20px; background:#e0ffe0; border:1px solid #00aa00; color:#006600; border-radius:6px; margin-bottom:15px; font-weight:500;">
+    <%= successMessage %>
+  </div>
+<% } %>
+
+
+
+<a href="javascript:void(0);" 
+   onclick="document.getElementById('addUserModal').style.display='flex';"
+   style="display:inline-flex; align-items:center; gap:5px; padding:8px 15px; font-size:0.9rem; font-weight:500; color:#fff; background:#000; border-radius:6px; text-decoration:none; transition:0.3s;"
+   onmouseover="this.style.background='#222';" onmouseout="this.style.background='#000';">
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" viewBox="0 0 16 16">
+    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+  </svg>
+  Add a User
+</a>
+<!-- Modal -->
+<div id="addUserModal" 
+     style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; 
+            background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:9999;">
+
+  <div style="background:#fff; color:#000; padding:25px; border-radius:10px; width:400px; 
+              box-shadow:0 5px 20px rgba(0,0,0,0.15); position:relative; display:flex; flex-direction:column; gap:12px;">
+    
+    <!-- Close Button -->
+    <span onclick="document.getElementById('addUserModal').style.display='none';" 
+          style="position:absolute; top:10px; right:15px; cursor:pointer; font-size:1.2rem; font-weight:bold;">&times;</span>
+    
+    <h4 style="margin-bottom:10px; font-weight:600;">Add New User</h4>
+    
+    <form action="/users/add" method="POST" style="display:flex; flex-direction:column; gap:12px;">
+      <input type="text" name="username" placeholder="Username" required
+             style="padding:8px 12px; border:1px solid #999; border-radius:6px; font-size:0.9rem; width:100%;">
+      <input type="email" name="email" placeholder="Email" required
+             style="padding:8px 12px; border:1px solid #999; border-radius:6px; font-size:0.9rem; width:100%;">
+      <input type="password" name="password" placeholder="Password" required
+             style="padding:8px 12px; border:1px solid #999; border-radius:6px; font-size:0.9rem; width:100%;">
+<select name="role" required
+        style="padding:8px 12px; border:1px solid #999; border-radius:6px; font-size:0.9rem; width:100%; background:#fff; color:#000;">
+  <option value="cashier">Cashier</option>
+  <option value="manager">Manager</option>
+  <option value="admin">Admin</option>
+</select>
+
+
+      <button type="submit" 
+              style="padding:10px; font-weight:500; background:#000; color:#fff; border:none; border-radius:6px; cursor:pointer; transition:0.3s;"
+              onmouseover="this.style.background='#222';" onmouseout="this.style.background='#000';">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" viewBox="0 0 16 16" style="margin-right:5px; vertical-align:middle;">
+          <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+        </svg>
+        Add User
+      </button>
+    </form>
+    
+  </div>
+</div>
+</div>
+
+
+
+<div class="container-sm my-3">
+  <div class="row g-3">
+
+    <div class="col-md-3">
+      <div class="card p-3 shadow-sm d-flex flex-column" style="border-radius:12px; background-color:#fff; color:#000;">
+        <h6 style="margin:0; font-weight:400;">Total Users</h6>
+        <div class="d-flex justify-content-between align-items-baseline">
+          <h3 style="margin:0; font-weight:700;"><%= totalUsers %></h3>
+          <i class="bi bi-people-fill" style="font-size:1rem; color:#000;"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card p-3 shadow-sm d-flex flex-column" style="border-radius:12px; background-color:#fff; color:#000;">
+        <h6 style="margin:0; font-weight:400;">Active Users</h6>
+        <div class="d-flex justify-content-between align-items-baseline">
+          <h3 style="margin:0; font-weight:700;"><%= activeUsers %></h3>
+          <i class="bi bi-person-check-fill" style="font-size:1rem; color:#000;"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card p-3 shadow-sm d-flex flex-column" style="border-radius:12px; background-color:#fff; color:#000;">
+        <h6 style="margin:0; font-weight:400;">Administrators</h6>
+        <div class="d-flex justify-content-between align-items-baseline">
+          <h3 style="margin:0; font-weight:700;"><%= administrators %></h3>
+          <i class="bi bi-shield-lock-fill" style="font-size:1rem; color:#000;"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card p-3 shadow-sm d-flex flex-column" style="border-radius:12px; background-color:#fff; color:#000;">
+        <h6 style="margin:0; font-weight:400;">Active Today</h6>
+        <div class="d-flex justify-content-between align-items-baseline">
+          <h3 style="margin:0; font-weight:700;"><%= activeToday %></h3>
+          <i class="bi bi-clock-fill" style="font-size:1rem; color:#000;"></i>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="container my-4">
+
+<ul class="nav nav-tabs" id="adminTabs" role="tablist" style="margin-bottom:20px; display:flex; gap:8px; font-family: 'Segoe UI', sans-serif;">
+<li class="nav-item" role="presentation">
+  <button class="nav-link active" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button" role="tab"
+    style="color:white; background: linear-gradient(145deg, #000000, #222222); font-weight:600; width:150px; padding:12px 0; border-top-left-radius:8px; border-top-right-radius:8px; border-bottom-left-radius:0; border-bottom-right-radius:0; box-shadow: 0 -4px 8px rgba(0,0,0,0.15); transition: all 0.3s ease;">
+    Users
+  </button>
+</li>
+
+
+</ul>
+
+<div class="my-4">
+  <input 
+    type="text" 
+    id="searchInput" 
+    class="form-control mb-2" 
+    placeholder="Search users by name, email, or role..." 
+    value="<%= search %>"
+  >
+  <select id="roleFilter" class="form-select mb-2">
+    <option value="">Filter by role</option>
+    <option value="admin" <%= selectedRole === 'admin' ? 'selected' : '' %>>Admin</option>
+    <option value="manager" <%= selectedRole === 'manager' ? 'selected' : '' %>>Manager</option>
+    <option value="cashier" <%= selectedRole === 'cashier' ? 'selected' : '' %>>Cashier</option>
+    <option value="staff" <%= selectedRole === 'staff' ? 'selected' : '' %>>Staff</option>
+  </select>
+</div>
+
+<script>
+  const searchInput = document.getElementById('searchInput');
+  const roleFilter = document.getElementById('roleFilter');
+
+  // Trigger on Enter key for search
+  searchInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      const search = searchInput.value.trim();
+      const role = roleFilter.value;
+      const query = new URLSearchParams({ search, role }).toString();
+      window.location.href = `/user-admin?${query}`;
+    }
+  });
+
+  // Trigger instantly when selecting role
+  roleFilter.addEventListener('change', () => {
+    const search = searchInput.value.trim();
+    const role = roleFilter.value;
+    const query = new URLSearchParams({ search, role }).toString();
+    window.location.href = `/user-admin?${query}`;
+  });
+</script>
+
+<!-- Tab Contents -->
+<div class="tab-content mt-3" id="adminTabsContent">
+  <div style="background-color: #fff; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); font-family: Arial, sans-serif;">
+
+    <!-- Header -->
+    <div style="margin-bottom:20px;">
+      <h5 style="margin:0; font-weight:600; color:#000;">System Users</h5>
+      <p style="margin:5px 0 15px 0; color:#555;">Manage user accounts and access permissions</p>
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive">
+      <table style="width:100%; border-collapse: separate; border-spacing:0; font-size:0.95rem; background:#fff; border-radius:8px; overflow:hidden; text-align:left;">
+        <thead>
+          <tr style="background-color:#f0f0f0; color:#000;">
+            <th style="padding:12px 15px;">User</th>
+            <th style="padding:12px 15px;">Role</th>
+            <th style="padding:12px 15px;">Status</th>
+            <th style="padding:12px 15px;">Last Login</th>
+            <th style="padding:12px 15px;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% users.forEach(user => { %>
+          <tr style="transition: background 0.3s; cursor: default;" 
+              onmouseover="this.style.background='#f9f9f9';" 
+              onmouseout="this.style.background='';">
+            <td style="padding:12px 15px; color:#000;"><%= user.username %></td>
+            <td style="padding:12px 15px; color:#333;"><%= user.role.charAt(0).toUpperCase() + user.role.slice(1) %></td>
+            <td style="padding:12px 15px; color:#333;"><%= user.lockUntil && user.lockUntil > new Date() ? 'Inactive' : 'Active' %></td>
+            <td style="padding:12px 15px; color:#555;"><%= user.lastLogin ? new Date(user.lastLogin).toLocaleString() : '-' %></td>
+            <td style="padding:12px 15px; display:flex; gap:5px; justify-content:flex-start;">
+<!-- View Button -->
+<button type="button" 
+        style="display:inline-flex; align-items:center; justify-content:center; padding:5px 10px; font-size:0.85rem; background:#fff; color:#000; border:1px solid #000; border-radius:6px; text-decoration:none; transition:0.2s;"
+        onmouseover="this.style.background='#f0f0f0';"
+        onmouseout="this.style.background='#fff';"
+        data-bs-toggle="modal" data-bs-target="#viewUserModal<%= user._id %>">
+  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="black" viewBox="0 0 16 16" style="margin-right:5px;">
+    <path d="M16 8s-3-5.333-8-5.333S0 8 0 8s3 5.333 8 5.333S16 8 16 8zM8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+    <circle cx="8" cy="8" r="1.5"/>
+  </svg>
+  View
+</button>
+
+<!-- Edit Button -->
+<button type="button" 
+        style="display:inline-flex; align-items:center; justify-content:center; padding:5px 10px; font-size:0.85rem; background:#fff; color:#000; border:1px solid #000; border-radius:6px; text-decoration:none; transition:0.2s;"
+        onmouseover="this.style.background='#f0f0f0';"
+        onmouseout="this.style.background='#fff';"
+        data-bs-toggle="modal" data-bs-target="#editUserModal<%= user._id %>">
+  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="black" viewBox="0 0 16 16" style="margin-right:5px;">
+    <path d="M15.502 1.94a.5.5 0 0 1 0 .706l-1.793 1.793-2.121-2.121L13.38.525a.5.5 0 0 1 .707 0l1.414 1.414zM1 13.5V16h2.5l9.147-9.146-2.121-2.121L1 13.5z"/>
+  </svg>
+  Edit
+</button>
+
+<!-- Delete Button -->
+<button type="button" 
+        style="display:inline-flex; align-items:center; justify-content:center; padding:5px 10px; font-size:0.85rem; background:#fff; color:#000; border:1px solid #000; border-radius:6px; text-decoration:none; transition:0.2s;"
+        onmouseover="this.style.background='#f0f0f0';"
+        onmouseout="this.style.background='#fff';"
+        onclick="confirmDelete('<%= user._id %>')">
+  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="black" viewBox="0 0 16 16" style="margin-right:5px;">
+    <path d="M5.5 5.5a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0v-6a.5.5 0 0 1 .5-.5zm5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0v-6a.5.5 0 0 1 .5-.5z"/>
+    <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1h-1v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-1a1 1 0 1 1 0-2h3.5v-.5A1.5 1.5 0 0 1 7 0h2a1.5 1.5 0 0 1 1.5 1.5V2H14a1 1 0 0 1 1 1zM6 2v-.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5V2H6z"/>
+  </svg>
+  Delete
+</button>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  function confirmDelete(userId) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "This action cannot be undone!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Redirect to delete route or call your delete API
+        window.location.href = `/feedbackadmin/delete/${userId}`;
+      }
+    });
+  }
+</script>
+
+<% users.forEach(user => { %>
+  <!-- View Modal -->
+  <div class="modal fade" id="viewUserModal<%= user._id %>" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">User Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <p><strong>Username:</strong> <%= user.username %></p>
+          <p><strong>Email:</strong> <%= user.email %></p>
+          <p><strong>Role:</strong> <%= user.role %></p>
+          <p><strong>Status:</strong> <%= user.lockUntil && user.lockUntil > new Date() ? 'Inactive' : 'Active' %></p>
+          <p><strong>Last Login:</strong> <%= user.lastLogin ? new Date(user.lastLogin).toLocaleString() : '-' %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div class="modal fade" id="editUserModal<%= user._id %>" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form action="/users/<%= user._id %>/edit" method="POST">
+          <div class="modal-header">
+            <h5 class="modal-title">Edit User</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label>Username</label>
+              <input type="text" name="username" class="form-control" value="<%= user.username %>" required>
+            </div>
+            <div class="mb-3">
+              <label>Email</label>
+              <input type="email" name="email" class="form-control" value="<%= user.email %>" required>
+            </div>
+            <div class="mb-3">
+              <label>Role</label>
+              <select name="role" class="form-select" required>
+                <option value="admin" <%= user.role === 'admin' ? 'selected' : '' %>>Admin</option>
+                <option value="manager" <%= user.role === 'manager' ? 'selected' : '' %>>Manager</option>
+                <option value="cashier" <%= user.role === 'cashier' ? 'selected' : '' %>>Cashier</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Modal -->
+  <div class="modal fade" id="deleteUserModal<%= user._id %>" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Delete User</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to delete <strong><%= user.username %></strong>?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <a href="/users/<%= user._id %>/delete" class="btn btn-danger">Delete</a>
+        </div>
+      </div>
+    </div>
+  </div>
+<% }) %>
+
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+    <!-- Roles & Permissions -->
+    <div class="tab-pane fade" id="roles" role="tabpanel">
+      <h5 class="text-dark">System Users</h5>
+      <p class="text-secondary">Manage user accounts and access permissions</p>
+    </div>
+
+    <!-- Activity Log -->
+    <div class="tab-pane fade" id="activity" role="tabpanel">
+      <h5 class="text-dark">Activity Log</h5>
+      <p class="text-secondary">Track user actions and login history</p>
+    </div>
+
+    <!-- Security Settings -->
+    <div class="tab-pane fade" id="security" role="tabpanel">
+      <h5 class="text-dark">Password Policy</h5>
+      <p class="text-secondary">Configure password requirements and security settings</p>
+      <ul class="text-black">
+        <li>Minimum Password Length: Require at least 8 characters</li>
+        <li>Require Special Characters: Include symbols and numbers</li>
+        <li>Password Expiration: Force password change every 90 days</li>
+        <li>Two-Factor Authentication: Require 2FA for admin accounts</li>
+        <li>Session Management: Control user session behavior and timeout settings</li>
+        <li>Auto Logout: After 30 minutes of inactivity</li>
+        <li>Multiple Sessions: Allow users to login from multiple devices</li>
+        <li>Login Notifications: Email alerts for new logins</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+<script>
+  const path = window.location.pathname.toLowerCase();
+
+  document.querySelectorAll('.menu-item').forEach(item => {
+    const href = item.getAttribute('onclick')?.match(/'(.*)'/)?.[1]?.toLowerCase();
+    if (href && path === href) {
+      item.classList.add('active');
+    }
+  });
+</script>
+<script>
+  const path = window.location.pathname.toLowerCase();
+
+  document.querySelectorAll('.menu-item').forEach(item => {
+    const href = item.getAttribute('onclick')?.match(/'(.*)'/)?.[1]?.toLowerCase();
+    if (href && path === href) {
+      item.classList.add('active');
+    }
+  });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

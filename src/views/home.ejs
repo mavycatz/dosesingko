@@ -1,0 +1,2342 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dose Singko Cafe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <link rel="icon" href="images/iconup.png" type="image">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #f3f3f3;
+      color: #000;
+      padding-top: 30px;
+      opacity: 0;
+      animation: fadeIn 1s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+
+    *::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Hide scrollbars globally for Firefox */
+    * {
+      scrollbar-width: none;
+      /* Firefox */
+      -ms-overflow-style: none;
+      /* IE 10+ */
+    }
+
+    /* Navigation Bar */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: black;
+      padding: 3px 20px;
+      width: 100%;
+      top: 0;
+      z-index: 100;
+      position: fixed;
+    }
+
+    nav ul li a {
+      position: relative;
+      z-index: 10000;
+      cursor: pointer;
+      /* siguradong clickable */
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    nav img {
+      height: 40px;
+    }
+
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+      color: white;
+      line-height: 1.2;
+    }
+
+    .logo-text .welcome {
+      font-size: 12px;
+      font-weight: 400;
+    }
+
+    .logo-text .cafe-name {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 15px;
+    }
+
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 12px;
+      transition: all 0.25s ease-in-out;
+      /* smooth animation */
+    }
+
+    /* Hover Effect - monochrome glow */
+    nav ul li a:hover {
+      color: #e0e0e0;
+      /* light gray highlight */
+      text-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+      /* white glow */
+      transform: scale(1.05);
+      /* slight zoom on hover */
+    }
+
+    /* Active Click Effect */
+    nav ul li a:active {
+      transform: scale(1.1);
+      /* konting zoom pag click */
+      color: #bfbfbf;
+      /* darker gray when pressed */
+    }
+
+    /* Stats Section */
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      background-color: white;
+      padding: 20px 0;
+      border-top: 1px solid #f3f3f3;
+      border-bottom: 1px solid #f3f3f3;
+      max-height: 350px;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat h2 {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .stat p {
+      font-size: 16px;
+      color: gray;
+    }
+
+
+    /* Why Choose Section */
+    .why-choose {
+      width: 100vw;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .why-choose h2 {
+      font-size: 36px;
+      margin-bottom: 15px;
+    }
+
+    .why-choose p {
+      font-size: 16px;
+      margin-bottom: 40px;
+      color: gray;
+    }
+
+    .cards {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .cards .card {
+      background-color: black;
+      color: white;
+      padding: 20px;
+      width: 300px;
+      border-radius: 10px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+    .cards .card:hover {
+      transform: scale(1.05);
+      /* lumalaki ng konti */
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+      /* soft shadow para 3D effect */
+    }
+
+    .card {
+      background-color: black;
+      color: white;
+      padding: 20px;
+      width: 300px;
+      border-radius: 10px;
+    }
+
+    .card img {
+      width: 100%;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+
+    /* Best Sellers Section */
+    .best-sellers {
+      text-align: center;
+      padding: 50px;
+      width: 100vw;
+      /* buong screen width */
+      margin-left: 0;
+      margin-right: 0;
+      padding-left: 0;
+      padding-right: 0;
+      overflow: hidden;
+      /* para walang sumilip na scroll */
+    }
+
+    .best-sellers h2 {
+      font-size: 36px;
+      margin-bottom: 5px;
+    }
+
+    .best-sellers p {
+      color: gray;
+      margin-bottom: 20px;
+    }
+
+    .products {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .product {
+      background-color: white;
+      width: 220px;
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .product img {
+      width: 100%;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    .product h3 {
+      font-size: 18px;
+      margin-bottom: 5px;
+    }
+
+    .product p {
+      font-size: 14px;
+      color: gray;
+    }
+
+    /* Scroll effect for desktop */
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <nav>
+
+    <div class="logo-container">
+      <img src="/images/logoW.png" alt="Logo">
+      <div class="logo-text">
+        <span class="welcome">Welcome to</span>
+        <span class="cafe-name">Dose Singko Cafe</span>
+      </div>
+    </div>
+    <ul>
+      <li><a href="#home">Home</a></li>
+      <li><a href="#menu">Menu</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#location" id="location-link">Location</a></li>
+      <li>
+        <a href="/publicfeedback" class="btn btn-outline-light">View Feedback</a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- ✅ Smooth Scroll Script -->
+  <script>
+    document.querySelectorAll('a[href^="#"]').forEach(link => {
+      link.addEventListener("click", function (e) {
+        const targetId = this.getAttribute("href");
+        if (targetId.startsWith("#") && targetId.length > 1) {
+          e.preventDefault();
+          const targetEl = document.querySelector(targetId);
+          if (targetEl) {
+            targetEl.scrollIntoView({ behavior: "smooth" });
+          }
+        }
+      });
+    });
+  </script>
+  <section class="hero position-relative text-white" id="home"
+    style="height:100vh; overflow:hidden; display:flex; align-items:center; justify-content:center; text-align:center; width:100vw;">
+
+    <!-- Slideshow Container -->
+    <div id="hero-slideshow"
+      style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:-2; overflow:hidden;">
+      <div class="slide"
+        style="position:absolute; width:100%; height:100%; background-size:cover; background-position:center; opacity:1; transform: scale(1) translateX(0); transition: opacity 1.5s ease-in-out, transform 20s linear;">
+      </div>
+      <div class="slide"
+        style="position:absolute; width:100%; height:100%; background-size:cover; background-position:center; opacity:0; transform: scale(1) translateX(0); transition: opacity 1.5s ease-in-out, transform 20s linear;">
+      </div>
+    </div>
+
+    <!-- Cinematic Gradient Overlay (Blurry with Yellow Highlight) -->
+    <div style="
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background: radial-gradient(circle, rgba(0,0,0,0) 10%, rgba(0,0,0,2)95%);
+  pointer-events:none;
+  z-index:-1;
+"></div>
+
+    <!-- Bokeh Light Overlay -->
+    <div id="bokeh-overlay" style="
+      position:absolute; top:0; left:0; width:100%; height:100%;
+      background: url('/images/bokeh.svg') center/cover no-repeat;
+      background-size: 200% 200%;
+      opacity:0.4;
+      pointer-events:none;
+      mix-blend-mode: screen;
+      z-index:-1;
+      animation: drift 60s linear infinite;
+  "></div>
+
+    <!-- Hero Content -->
+    <div class="hero-text d-flex flex-column align-items-center justify-content-center"
+      style="color:white; height:100%; width:100%; text-align:center; margin:0; padding:0; position:relative;">
+
+      <!-- Hero Title -->
+      <h1 id="hero-title"
+        style="font-size:10vw; font-weight:bold; line-height:1; margin:20px auto 1rem; text-align:center; color:white; margin-top:30px;">
+        Dose Singko
+      </h1>
+
+      <!-- Decorative Line -->
+      <img src="/images/linedose.png" alt="Decorative Line"
+        style="margin:1rem auto; display:block; width:50%; max-width:800px;">
+
+      <!-- Subtitle -->
+      <p id="hero-subtitle" style="font-size:1.25rem; min-height:2em; margin-bottom:2rem;">Welcome to Your Coffee Haven
+      </p>
+
+      <!-- Stats Cards Horizontal -->
+      <div class="hero-stats"
+        style="display:flex; flex-direction:row; gap:1rem; flex-wrap:nowrap; justify-content:center; align-items:center; width:100%; overflow-x:auto;">
+        <div class="card text-center"
+          style="background: rgba(255,255,255,0.1); border-radius:16px; padding:1rem; width:250px; flex:0 0 auto; backdrop-filter: blur(10px); display:flex; flex-direction:column; align-items:center; justify-content:center;">
+          <i class="bi bi-house-fill" style="font-size:2rem; color:white; margin-bottom:0.5rem;"></i>
+          <h5>Ambiance</h5>
+          <p style="font-size:0.9rem;">Step In, Relax, Stay a While.</p>
+        </div>
+        <div class="card text-center"
+          style="background: rgba(255,255,255,0.1); border-radius:16px; padding:1rem; width:250px; flex:0 0 auto; backdrop-filter: blur(10px); display:flex; flex-direction:column; align-items:center; justify-content:center;">
+          <i class="bi bi-cup-fill" style="font-size:2rem; color:white; margin-bottom:0.5rem;"></i>
+          <h5>Coffee</h5>
+          <p style="font-size:0.9rem;">Crafted to Perfection, Served with Passion.</p>
+        </div>
+        <div class="card text-center"
+          style="background: rgba(255,255,255,0.1); border-radius:16px; padding:1rem; width:250px; flex:0 0 auto; backdrop-filter: blur(10px); display:flex; flex-direction:column; align-items:center; justify-content:center;">
+          <i class="bi bi-people-fill" style="font-size:2rem; color:white; margin-bottom:0.5rem;"></i>
+          <h5>Staff</h5>
+          <p style="font-size:0.9rem;">Friendly Faces, Warm Welcomes.</p>
+        </div>
+      </div>
+      <div style="
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  gap: 16px; 
+  text-align: center;
+  margin-top: 20px;
+">
+        <a href="/feedback" style="
+      background-color: #111; 
+      color: white; 
+      padding: 10px 26px; 
+      border-radius: 25px; 
+      text-decoration: none; 
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+  " onmouseover="this.style.background='#333';" onmouseout="this.style.background='#111';">
+          <i class="bi bi-chat-dots-fill"></i>
+          Share your Experience
+        </a>
+
+        <a href="#menu" style="
+      background-color: #f0f0f0; 
+      color: #111; 
+      padding: 10px 26px; 
+      border-radius: 25px; 
+      text-decoration: none; 
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+  " onmouseover="this.style.background='#ddd';" onmouseout="this.style.background='#f0f0f0';">
+          <i class="bi bi-cup-hot-fill"></i>
+          View our Menu
+        </a>
+      </div>
+
+
+      <!-- Text Slider at Bottom -->
+      <div
+        style="position:absolute; bottom:0; left:0; width:100%; background-color:black; padding:0.5rem 0; overflow:hidden;">
+        <div class="text-slider"
+          style="display:flex; gap:3rem; white-space:nowrap; align-items:center; font-size: 18px;">
+          <span style="color:white;"><i class="bi bi-cup-fill"></i> Freshly Brewed Coffee Every Morning</span>
+          <span style="color:white;"><i class="bi bi-house-fill"></i> Cozy Ambiance for Your Relaxation</span>
+          <span style="color:white;"><i class="bi bi-basket-fill"></i> Pastries Made with Love</span>
+          <span style="color:white;"><i class="bi bi-people-fill"></i> Friendly Staff & Warm Welcomes</span>
+          <span style="color:white;"><i class="bi bi-heart-fill"></i> Your Comfort, Our Priority</span>
+          <span style="color:white;"><i class="bi bi-lightning-fill"></i> Fresh Ingredients Daily</span>
+          <span style="color:white;"><i class="bi bi-emoji-smile-fill"></i> Happy Customers Always</span>
+          <span style="color:white;"><i class="bi bi-star-fill"></i> Quality Service Guaranteed</span>
+          <span style="color:white;"><i class="bi bi-clock-fill"></i> Open Early, Close Late</span>
+          <span style="color:white;"><i class="bi bi-music-note-beamed"></i> Enjoy Chill Music While You Sip</span>
+        </div>
+      </div>
+
+      <div class="cursor-light" id="cursor-light"></div>
+    </div>
+  </section>
+  <style>
+    .text-slider {
+      display: inline-block;
+      animation: rollText 40s linear infinite;
+      font-size: 1.25rem;
+      color: white;
+    }
+
+    @keyframes rollText {
+      0% {
+        transform: translateX(100%);
+      }
+
+      100% {
+        transform: translateX(-100%);
+      }
+    }
+
+    @keyframes drift {
+      0% {
+        transform: translate(0, 0);
+      }
+
+      50% {
+        transform: translate(40px, 30px);
+      }
+
+      100% {
+        transform: translate(0, 0);
+      }
+    }
+
+    /* Bigger Cursor Light */
+    .cursor-light {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 250px;
+      height: 250px;
+      border-radius: 50%;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 0 40px 16px rgba(255, 255, 255, 0.2);
+      transition: transform 0.1s ease-out, width 0.2s, height 0.2s;
+      z-index: 9999;
+    }
+
+    .cursor-light.shrink {
+      width: 40px;
+      height: 40px;
+      box-shadow: 0 0 20px 8px rgba(255, 255, 255, 0.1);
+    }
+
+    /* Parallax effect on hover */
+    #hero-slideshow .slide {
+      transition: transform 0.2s ease-out;
+    }
+  </style>
+
+  <script>
+    const images = [
+      '/images/dosesingkohero1.png',
+      '/images/dosesingkohero2.png',
+      '/images/dosesingkohero4.png',
+      '/images/dosesingkohero3.png',
+      '/images/dosesingkohero5.jpg',
+      '/images/dosehero2.jpg',
+      '/images/dosehero3.jpg',
+      '/images/dosehero5.jpg'
+    ];
+
+    const texts = [
+      "Cozy Ambiance, Perfect Coffee",
+      "Taste the Best Pastries in Town",
+      "Relax and Enjoy Your Time",
+      "Freshly Brewed, Every Day",
+      "A Place for Conversations",
+      "Quality Service You Deserve",
+      "Savor Every Bite",
+      "Your Comfort, Our Priority"
+    ];
+
+    const slides = document.querySelectorAll('#hero-slideshow .slide');
+    const subtitle = document.getElementById('hero-subtitle');
+    const bokehOverlay = document.getElementById('bokeh-overlay');
+    const cursor = document.getElementById('cursor-light');
+    const heroSection = document.querySelector('.hero');
+
+    let currentSlideDiv = 0;
+    let currentImageIndex = 0;
+
+    // Initialize first slide
+    slides[0].style.background = `url('${images[0]}') center/cover no-repeat`;
+    slides[0].style.filter = 'blur(8px)';
+    subtitle.textContent = texts[0];
+
+    // Slideshow function
+    function showSlide() {
+      const nextImageIndex = (currentImageIndex + 1) % images.length;
+      const fadeInDiv = slides[1 - currentSlideDiv];
+      const fadeOutDiv = slides[currentSlideDiv];
+
+      fadeInDiv.style.background = `url('${images[nextImageIndex]}') center/cover no-repeat`;
+      fadeInDiv.style.filter = 'blur(8px)';
+      fadeInDiv.style.opacity = 1;
+      fadeInDiv.style.transform = 'scale(1.05)';
+
+      fadeOutDiv.style.opacity = 0;
+      fadeOutDiv.style.transform = 'scale(1.05)';
+
+      bokehOverlay.style.opacity = 0.4;
+
+      subtitle.style.opacity = 0;
+      setTimeout(() => {
+        subtitle.textContent = texts[nextImageIndex];
+        subtitle.style.transition = 'opacity 1s ease-in-out';
+        subtitle.style.opacity = 1;
+      }, 300);
+
+      currentSlideDiv = 1 - currentSlideDiv;
+      currentImageIndex = nextImageIndex;
+    }
+
+    setInterval(showSlide, 5000);
+
+    // Cursor initially hidden
+    cursor.style.opacity = 0;
+
+    heroSection.addEventListener('mouseenter', () => { cursor.style.opacity = 1; });
+    heroSection.addEventListener('mouseleave', () => {
+      cursor.style.opacity = 0;
+      slides.forEach(slide => slide.style.backgroundPosition = 'center');
+    });
+
+    // Cursor and image follow
+    heroSection.addEventListener('mousemove', (e) => {
+      const rect = heroSection.getBoundingClientRect();
+      const percentX = (e.clientX - rect.left) / rect.width - 0.5;
+      const percentY = (e.clientY - rect.top) / rect.height - 0.5;
+
+      slides.forEach((slide, index) => {
+        const depth = (index + 1) / slides.length;
+        const moveX = percentX * 20 * depth; // px movement
+        const moveY = percentY * 20 * depth;
+        slide.style.backgroundPosition = `calc(50% + ${moveX}px) calc(50% + ${moveY}px)`;
+      });
+
+      cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+    });
+  </script>
+
+
+
+  </div>
+
+  <script>
+    // ✅ Smooth scroll to Menu when "View Our Menu" is clicked
+    document.getElementById("view-menu-btn").addEventListener("click", () => {
+      const menuSection = document.querySelector("#menu");
+      if (menuSection) {
+        menuSection.scrollIntoView({ behavior: "smooth" });
+      }
+    });
+  </script>
+
+
+  </section>
+
+  <script>
+    const texts = [
+      "Welcome to Dose Singko Café",
+      "Enjoy our freshly brewed coffee",
+      "Share your experience with us"
+    ];
+
+    let textIndex = 0;
+    let charIndex = 0;
+    let currentText = "";
+    let isDeleting = false;
+
+    function typeWriter() {
+      currentText = texts[textIndex];
+
+      if (!isDeleting) {
+        document.getElementById("hero-title").innerHTML =
+          currentText.substring(0, charIndex + 1) + "<span class='cursor'>|</span>";
+        charIndex++;
+
+        if (charIndex === currentText.length) {
+          isDeleting = true;
+          setTimeout(typeWriter, 1500);
+          return;
+        }
+      } else {
+        document.getElementById("hero-title").innerHTML =
+          currentText.substring(0, charIndex - 1) + "<span class='cursor'>|</span>";
+        charIndex--;
+
+        if (charIndex === 0) {
+          isDeleting = false;
+          textIndex = (textIndex + 1) % texts.length;
+        }
+      }
+
+      setTimeout(typeWriter, isDeleting ? 70 : 100);
+    }
+
+    window.onload = typeWriter;
+
+    // ✅ Function to replay animation
+    function replayEntrance() {
+      const heroElements = document.querySelectorAll(".hero-text, .hero-logo");
+      heroElements.forEach(el => {
+        el.classList.remove("grand-entrance");
+        void el.offsetWidth; // reflow
+        el.classList.add("grand-entrance");
+      });
+    }
+
+    // ✅ Replay entrance when clicking "Home"
+    document.querySelectorAll('a[href="#home"]').forEach(link => {
+      link.addEventListener("click", () => {
+        replayEntrance();
+      });
+    });
+
+    // ✅ Replay entrance when Hero is visible on scroll
+    const heroSection = document.querySelector("#home");
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          replayEntrance();
+        }
+      });
+    }, { threshold: 0.4 }); // trigger when 40% visible
+
+    observer.observe(heroSection);
+  </script>
+
+  <style>
+    #hero-title {
+      font-size: 3rem;
+      font-weight: bold;
+      color: #2c2c2c;
+      text-align: start;
+    }
+
+    .cursor {
+      display: inline-block;
+      animation: blink 0.7s steps(1) infinite;
+    }
+
+    @keyframes blink {
+      50% {
+        opacity: 0;
+      }
+    }
+
+    /* ✅ Grand Entrance Animation */
+    .grand-entrance {
+      opacity: 0;
+      transform: translateY(40px);
+      animation: grandEntrance 1.3s ease-out forwards;
+    }
+
+    .hero-text.grand-entrance {
+      animation-delay: 0.2s;
+    }
+
+    .hero-logo.grand-entrance {
+      animation-delay: 0.6s;
+    }
+
+    @keyframes grandEntrance {
+      from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.98);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+  </style>
+
+
+  <!-- Stats Section -->
+  <section class="stats">
+    <div class="stat">
+      <h2>5+</h2>
+      <p>Years of Excellence</p>
+    </div>
+    <div class="stat">
+      <h2>15k+</h2>
+      <p>Happy Customers</p>
+    </div>
+    <div class="stat">
+      <h2>12+</h2>
+      <p>Coffee Varieties</p>
+    </div>
+    <div class="stat">
+      <h2>7+</h2>
+      <p>Branches in Nueva Ecija</p>
+    </div>
+  </section>
+
+
+  <!-- Why Choose Section -->
+  <section class="why-choose" style="margin-top:20px">
+    <h2>Why Choose Dose Singko?</h2>
+    <p>Here are the reasons that will make you love coming back – delicious flavors, a cozy place to relax, and a café
+      experience made just for you.</p>
+
+    <div class="why-carousel-wrapper" tyle="margin-top: 50px;">
+      <div class="why-carousel">
+        <!-- 6 Cards -->
+        <div class="card"><img src="/images/drinks.png">
+          <p>Freshly crafted drinks made with high-quality ingredients daily.</p>
+        </div>
+        <div class="card"><img src="/images/cozy.png">
+          <p>A cozy café atmosphere, perfect for studying, bonding, or relaxing.</p>
+        </div>
+        <div class="card"><img src="/images/affordable.png">
+          <p>Delicious and affordable treats that fit your budget without compromise.</p>
+        </div>
+        <div class="card"><img src="/images/variety.png">
+          <p>A wide variety of coffee, snacks, and meals for every taste and mood.</p>
+        </div>
+
+        <!-- Duplicate for infinite -->
+        <div class="card"><img src="/images/drinks.png">
+          <p>Freshly crafted drinks made with high-quality ingredients daily.</p>
+        </div>
+        <div class="card"><img src="/images/cozy.png">
+          <p>A cozy café atmosphere, perfect for studying, bonding, or relaxing.</p>
+        </div>
+        <div class="card"><img src="/images/affordable.png">
+          <p>Delicious and affordable treats that fit your budget without compromise.</p>
+        </div>
+        <div class="card"><img src="/images/variety.png">
+          <p>A wide variety of coffee, snacks, and meals for every taste and mood.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const carousel = document.querySelector('.why-carousel');
+    const cards = document.querySelectorAll('.why-carousel .card');
+    const cardWidth = cards[0].offsetWidth + 40; // card + gap
+    let position = 0;
+
+    function animateCarousel() {
+      position -= 0.9; // speed
+      carousel.style.transform = `translateX(${position}px)`;
+
+      // reset loop
+      if (Math.abs(position) >= cardWidth * (cards.length / 2)) {
+        position = 0;
+      }
+
+      // highlight center card
+      const wrapperCenter = carousel.parentElement.offsetWidth / 2;
+      cards.forEach(card => {
+        const rect = card.getBoundingClientRect();
+        const cardCenter = rect.left + rect.width / 2;
+        if (Math.abs(wrapperCenter - cardCenter) < rect.width / 2) {
+          card.classList.add('active');
+        } else {
+          card.classList.remove('active');
+        }
+      });
+
+      requestAnimationFrame(animateCarousel);
+    }
+
+    animateCarousel();
+  </script>
+
+
+  <style>
+    /* Title adjustments */
+    .why-choose h2 {
+      text-align: center;
+      margin-top: 50px;
+      /* space above title */
+      margin-bottom: 15px;
+    }
+
+    /* Description adjustments */
+    .why-choose p {
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto 20px auto;
+      /* smaller space below description */
+    }
+
+    /* Cards wrapper */
+    .why-carousel-wrapper {
+      width: 100vw;
+      position: relative;
+      padding: 10px 0 30px;
+      /* mas malapit sa description */
+      margin: 0;
+    }
+
+    .why-carousel {
+      display: flex;
+      gap: 40px;
+      will-change: transform;
+    }
+
+    .why-carousel .card {
+      min-width: 280px;
+      max-width: 280px;
+      background: black;
+      color: white;
+      border-radius: 25px;
+      padding: 20px;
+      text-align: center;
+      flex-shrink: 0;
+      transition: transform 0.6s ease, box-shadow 0.6s ease;
+    }
+
+    .why-carousel .card img {
+      width: 100%;
+      border-radius: 20px;
+      margin-bottom: 15px;
+    }
+
+    .why-carousel .card p {
+      color: white;
+    }
+
+    .why-carousel .card.active {
+      transform: scale(1.15);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+      border-radius: 25px;
+      z-index: 2;
+    }
+  </style>
+
+  <!-- Best Sellers Section -->
+  <section class="best-sellers">
+    <h2 class="category-title">Top 6 Best Selling Products</h2>
+    <p class="category-sub">Discover our customer favorites that you just can’t miss!</p>
+
+    <div class="products-carousel-wrapper">
+      <div class="products-carousel">
+        <div class="product">
+          <img src="/images/signature.png" alt="Dose Signature">
+          <h3>Dose Signature</h3>
+          <p>Our signature coffee blend, rich and creamy, perfect for any time of the day.</p>
+        </div>
+        <div class="product">
+          <img src="/images/siomai.png" alt="Chinese Siomai">
+          <h3>Chinese Siomai</h3>
+          <p>Steamed dumplings packed with savory pork flavor and a hint of ginger.</p>
+        </div>
+        <div class="product">
+          <img src="/images/cajun.png" alt="Creamy Cajun Pasta">
+          <h3>Creamy Cajun Pasta</h3>
+          <p>Pasta tossed in a spicy creamy Cajun sauce with vegetables and herbs.</p>
+        </div>
+        <div class="product">
+          <img src="/images/ashbulbul.png" alt="Ashbulbul Pizza">
+          <h3>Ashbulbul Pizza</h3>
+          <p>Thin-crust pizza loaded with mozzarella, pepperoni, and special toppings.</p>
+        </div>
+        <div class="product">
+          <img src="/images/hazelnutfrappe.png" alt="Hazelnut Frappe">
+          <h3>Hazelnut Frappe</h3>
+          <p>A sweet and nutty frappe topped with whipped cream, perfect for dessert lovers.</p>
+        </div>
+        <div class="product">
+          <img src="/images/shrimppasta.png" alt="Shrimp Aglio e Olio Pasta">
+          <h3>Shrimp Aglio e Olio Pasta</h3>
+          <p>Classic Italian pasta with shrimp, garlic, and olive oil, lightly spiced.</p>
+        </div>
+
+        <!-- Duplicate cards para seamless -->
+        <div class="product">
+          <img src="/images/signature.png" alt="Dose Signature">
+          <h3>Dose Signature</h3>
+          <p>Our signature coffee blend, rich and creamy, perfect for any time of the day.</p>
+        </div>
+        <div class="product">
+          <img src="/images/siomai.png" alt="Chinese Siomai">
+          <h3>Chinese Siomai</h3>
+          <p>Steamed dumplings packed with savory pork flavor and a hint of ginger.</p>
+        </div>
+        <div class="product">
+          <img src="/images/cajun.png" alt="Creamy Cajun Pasta">
+          <h3>Creamy Cajun Pasta</h3>
+          <p>Pasta tossed in a spicy creamy Cajun sauce with vegetables and herbs.</p>
+        </div>
+        <div class="product">
+          <img src="/images/ashbulbul.png" alt="Ashbulbul Pizza">
+          <h3>Ashbulbul Pizza</h3>
+          <p>Thin-crust pizza loaded with mozzarella, pepperoni, and special toppings.</p>
+        </div>
+        <div class="product">
+          <img src="/images/hazelnutfrappe.png" alt="Hazelnut Frappe">
+          <h3>Hazelnut Frappe</h3>
+          <p>A sweet and nutty frappe topped with whipped cream, perfect for dessert lovers.</p>
+        </div>
+        <div class="product">
+          <img src="/images/shrimppasta.png" alt="Shrimp Aglio e Olio Pasta">
+          <h3>Shrimp Aglio e Olio Pasta</h3>
+          <p>Classic Italian pasta with shrimp, garlic, and olive oil, lightly spiced.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .products-carousel-wrapper {
+      overflow: hidden;
+      width: 100vw;
+      /* wag 100vw para walang extra space */
+    }
+
+    .products-carousel {
+      display: flex;
+      gap: 20px;
+      animation: scroll 40s linear infinite;
+      width: max-content;
+      /* adjust sa content mismo */
+    }
+
+    .product {
+      flex: 0 0 250px;
+      text-align: center;
+    }
+
+    .product img {
+      width: 100%;
+      border-radius: 10px;
+    }
+
+    @keyframes scroll {
+      0% {
+        transform: translateX(0);
+      }
+
+      100% {
+        transform: translateX(-50%);
+      }
+
+      /* kalahati lang kasi may duplicate */
+    }
+
+    /* Center title and subtitle */
+    .best-sellers .category-title,
+    .best-sellers .category-sub {
+      text-align: center;
+    }
+  </style>
+
+
+  <!-- ✅ MENU SECTION -->
+  <section id="menu" data-aos="fade-right" data-aos-duration="1200" style="margin: 0 auto; max-width: 1200px;">
+    <h2 class="menu-title">Menu</h2> <!-- ✅ Centered Main Title -->
+
+    <div class="menu-container">
+      <!-- Sidebar -->
+      <div class="menu-sidebar"
+        style="max-height: 100vh; overflow-y: scroll; scrollbar-width: none; -ms-overflow-style: none;">
+        <h3>Menu Category</h3>
+        <ul>
+          <li><a href="#" class="active" onclick="toggleMenu(event, 'iced-coffee')">Iced Coffee</a></li>
+          <li><a href="#" onclick="toggleMenu(event, 'non-coffee-iced')">Non-Coffee Iced</a></li>
+          <li><a href="#" onclick="toggleMenu(event, 'hot-coffee')">Hot Coffee</a></li>
+          <li><a href="#" onclick="toggleMenu(event, 'non-coffee-hot')">Non-Coffee Hot</a></li>
+          <li><a href="#" onclick="toggleMenu(event, 'cfrappe')">Coffee Frappe</a></li>
+          <li><a href="#" onclick="toggleMenu(event, 'ncfrappe')">Non-Coffee Frappe</a></li>
+          <li><a href="#" onclick="toggleMenu(event, 'soda-fizz')">Soda Fizz Coolers</a></li>
+          <li><a href="#" onclick="toggleMenu(event, 'burger')">Burger/Sandwich</a></li>
+          <li><a href="#" onclick="toggleMenu(event, 'pasta')">Pasta</a></li>
+          <li><a href="#" onclick="toggleMenu(event, 'pizza')">Pizza</a></li>
+          <li><a href="#" onclick="toggleMenu(event, 'tacos')">Tacos</a></li>
+          <li><a href="#" onclick="toggleMenu(event, 'snacks')">Snacks</a></li>
+          <li><a href="#" onclick="toggleMenu(event, 'dessert')">Dessert</a></li>
+          <li><a href="#" onclick="toggleMenu(event, 'add-ons')">Add-Ons</a></li>
+        </ul>
+      </div>
+
+      <!-- ✅ ICED COFFEE -->
+      <div id="iced-coffee" class="menu-category active">
+        <h3 class="category-title">Iced Coffee</h3>
+        <div class="menu-grid collapsible collapsed">
+          <div class="menu-item"><img src="/images/icedblack.png">
+            <p class="name">Iced Long Black</p>
+            <p class="desc">Bold espresso poured over refreshing ice water.</p>
+          </div>
+          <div class="menu-item"><img src="/images/icedtoffee.png">
+            <p class="name">Iced Toffee Latte</p>
+            <p class="desc">Sweet buttery toffee flavor in an iced latte blend.</p>
+          </div>
+          <div class="menu-item"><img src="/images/icedmocha.png">
+            <p class="name">Iced Mocha</p>
+            <p class="desc">Chocolate and espresso over chilled milk and ice.</p>
+          </div>
+          <div class="menu-item"><img src="/images/icedmatcha.png">
+            <p class="name">Iced Dirty Matcha</p>
+            <p class="desc">Matcha green tea infused with a bold espresso shot.</p>
+          </div>
+          <div class="menu-item"><img src="/images/icedbutternut.png">
+            <p class="name">Choco Butternut Latte</p>
+            <p class="desc">Chocolate latte with a nutty butternut twist.</p>
+          </div>
+          <div class="menu-item"><img src="/images/icedcaramel.png">
+            <p class="name">Iced Caramel Mocha</p>
+            <p class="desc">Espresso, caramel, and chocolate blended over ice.</p>
+          </div>
+          <div class="menu-item"><img src="/images/signature.png">
+            <p class="name">Dose Signature</p>
+            <p class="desc">House blend specialty iced coffee, our pride.</p>
+          </div>
+        </div>
+        <button class="toggle-btn" onclick="toggleSeeMore(this)">See More</button>
+      </div>
+
+      <!-- ✅ HOT COFFEE -->
+      <div id="hot-coffee" class="menu-category">
+        <h3 class="category-title">Hot Coffee</h3>
+        <div class="menu-grid collapsible collapsed">
+          <div class="menu-item"><img src="/images/hotblack.png" alt="Long Black">
+            <p class="name">Long Black</p>
+            <p class="desc">Strong and bold black coffee served hot.</p>
+          </div>
+          <div class="menu-item"><img src="/images/hotlatte.png" alt="Latte">
+            <p class="name">Latte</p>
+            <p class="desc">Smooth espresso blended with steamed milk.</p>
+          </div>
+          <div class="menu-item"><img src="/images/hotcapuccino.png" alt="Cappuccino">
+            <p class="name">Cappuccino</p>
+            <p class="desc">Espresso topped with frothy milk foam and cocoa dust.</p>
+          </div>
+          <div class="menu-item"><img src="/images/hottoffee.png" alt="Toffee Latte">
+            <p class="name">Toffee Latte</p>
+            <p class="desc">Caramel-toffee twist on a classic hot latte.</p>
+          </div>
+          <div class="menu-item"><img src="/images/hotmocha.png" alt="Mocha Latte">
+            <p class="name">Mocha Latte</p>
+            <p class="desc">Espresso mixed with creamy chocolate and milk.</p>
+          </div>
+          <div class="menu-item"><img src="/images/vietnamese.png" alt="Vietnamese Latte">
+            <p class="name">Vietnamese Latte</p>
+            <p class="desc">Strong Vietnamese-style brew with condensed milk.</p>
+          </div>
+          <div class="menu-item"><img src="/images/hotmatcha.png" alt="Matcha Latte">
+            <p class="name">Matcha Latte</p>
+            <p class="desc">Earthy green tea matcha steamed with milk.</p>
+          </div>
+        </div>
+        <button class="toggle-btn" onclick="toggleSeeMore(this)">See More</button>
+      </div>
+
+      <!-- NON-COFFEE HOT -->
+      <div id="non-coffee-hot" class="menu-category">
+        <h3 class="category-title">Non-Coffee Hot</h3>
+        <div class="menu-grid">
+          <div class="menu-item"><img src="/images/nchazelnut.png">
+            <p class="name">Choco Hazelnut</p>
+            <p class="desc">Rich hot chocolate with a nutty hazelnut finish.</p>
+          </div>
+          <div class="menu-item"><img src="/images/ncmatcha.png">
+            <p class="name">Matcha Green Tea</p>
+            <p class="desc">Smooth and earthy matcha brewed to perfection.</p>
+          </div>
+          <div class="menu-item"><img src="/images/ncgreentea.png">
+            <p class="name">Green Tea</p>
+            <p class="desc">Light and soothing classic green tea.</p>
+          </div>
+          <div class="menu-item"><img src="/images/ncredtea.png">
+            <p class="name">Red Tea</p>
+            <p class="desc">Aromatic red tea with a calming warmth.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- NON-COFFEE ICED -->
+      <div id="non-coffee-iced" class="menu-category">
+        <h3 class="category-title">Non-Coffee Iced</h3>
+        <div class="menu-grid">
+          <div class="menu-item"><img src="/images/scavocado.png">
+            <p class="name">Salt Cream Avocado</p>
+            <p class="desc">Creamy avocado smoothie topped with salted cream.</p>
+          </div>
+          <div class="menu-item"><img src="/images/scstrawberry.png">
+            <p class="name">Salt Cream Strawberry</p>
+            <p class="desc">Refreshing strawberry shake with rich salted cream.</p>
+          </div>
+          <div class="menu-item"><img src="/images/scube.png">
+            <p class="name">Salt Cream UBE</p>
+            <p class="desc">Purple yam dessert drink finished with salted cream.</p>
+          </div>
+          <div class="menu-item"><img src="/images/scmatcha.png">
+            <p class="name">Salt Cream Matcha</p>
+            <p class="desc">Chilled matcha latte topped with salted cream.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- COFFEE FRAPPE -->
+      <div id="cfrappe" class="menu-category">
+        <h3 class="category-title">Coffee Frappe</h3>
+        <div class="menu-grid">
+          <div class="menu-item"><img src="/images/dirtymatcha.png">
+            <p class="name">Dirty Matcha Frappe</p>
+            <p class="desc">Icy frappe with espresso and creamy matcha.</p>
+          </div>
+          <div class="menu-item"><img src="/images/frenchvanillafrappe.png">
+            <p class="name">French Vanilla Frappe</p>
+            <p class="desc">Smooth vanilla frappe topped with whipped cream.</p>
+          </div>
+          <div class="menu-item"><img src="/images/toffeefrappe.png">
+            <p class="name">Caramel Toffee Frappe</p>
+            <p class="desc">Sweet caramel and toffee blended frappe.</p>
+          </div>
+          <div class="menu-item"><img src="/images/hazelnutfrappe.png">
+            <p class="name">Hazelnut Frappe</p>
+            <p class="desc">Nutty hazelnut frappe with a creamy finish.</p>
+          </div>
+          <div class="menu-item"><img src="/images/caramelhazelnutfrappe.png">
+            <p class="name">Caramel Hazelnut Frappe</p>
+            <p class="desc">Caramel sweetness and hazelnut richness in a frappe.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- NON-COFFEE FRAPPE -->
+      <div id="ncfrappe" class="menu-category">
+        <h3 class="category-title">Non-Coffee Frappe</h3>
+        <div class="menu-grid">
+          <div class="menu-item"><img src="/images/oreofrappe.png">
+            <p class="name">Choco Oreo Frappe</p>
+            <p class="desc">Oreo cookies blended with rich chocolate.</p>
+          </div>
+          <div class="menu-item"><img src="/images/cookiesfrappe.png">
+            <p class="name">Cookies & Cream Frappe</p>
+            <p class="desc">Classic cookies and cream frappe with whipped top.</p>
+          </div>
+          <div class="menu-item"><img src="/images/mixedberriesfrappe.png">
+            <p class="name">Mixed Berries Frappe</p>
+            <p class="desc">Refreshing blend of strawberries, blueberries, and cream.</p>
+          </div>
+          <div class="menu-item"><img src="/images/avocadofrappe.png">
+            <p class="name">Avocado Frappe</p>
+            <p class="desc">Smooth avocado frappe with creamy texture.</p>
+          </div>
+          <div class="menu-item"><img src="/images/ubefrappe.png">
+            <p class="name">Ube Frappe</p>
+            <p class="desc">Creamy purple yam frappe topped with cream.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- SODA FIZZ -->
+      <div id="soda-fizz" class="menu-category">
+        <h3 class="category-title">Soda Fizz Coolers</h3>
+        <div class="menu-grid">
+          <div class="menu-item"><img src="/images/sflychee.png">
+            <p class="name">Strawberry Lychee</p>
+            <p class="desc">Fizzy soda with strawberry and tropical lychee.</p>
+          </div>
+          <div class="menu-item"><img src="/images/sfpeach.png">
+            <p class="name">Strawberry Peach</p>
+            <p class="desc">Refreshing soda with sweet strawberry and peach.</p>
+          </div>
+          <div class="menu-item"><img src="/images/sfblueberry.png">
+            <p class="name">Blueberry Strawberry</p>
+            <p class="desc">Tangy blueberry soda fused with strawberry.</p>
+          </div>
+          <div class="menu-item"><img src="/images/sflime.png">
+            <p class="name">Lime Peach</p>
+            <p class="desc">Zesty lime fizz with the sweetness of peach.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- BURGER / SANDWICH -->
+      <div id="burger" class="menu-category">
+        <h3 class="category-title">Burger / Sandwich</h3>
+        <div class="menu-grid">
+          <div class="menu-item"><img src="/images/doseburger.png" alt="Dose Burger">
+            <p class="name">Dose Burger</p>
+            <p class="desc">Juicy grilled burger with our signature sauce.</p>
+          </div>
+          <div class="menu-item"><img src="/images/overdose.png" alt="Overdose Burger">
+            <p class="name">Overdose Burger</p>
+            <p class="desc">A double-stacked burger overloaded with flavor.</p>
+          </div>
+          <div class="menu-item"><img src="/images/chickenburger.png" alt="Crispy Chicken Burger">
+            <p class="name">Crispy Chicken Burger</p>
+            <p class="desc">Crunchy chicken fillet with lettuce and mayo.</p>
+          </div>
+          <div class="menu-item"><img src="/images/mushroomburger.png" alt="Cheesy Mushroom Burger">
+            <p class="name">Cheesy Mushroom Burger</p>
+            <p class="desc">Beef patty topped with mushrooms and melted cheese.</p>
+          </div>
+          <div class="menu-item"><img src="/images/beefburger.png" alt="Beef Bacon Burger">
+            <p class="name">Beef Bacon Burger</p>
+            <p class="desc">Savory beef patty layered with smoky bacon.</p>
+          </div>
+          <div class="menu-item"><img src="/images/sausage.png" alt="Hungarian Sausage">
+            <p class="name">Hungarian Sausage</p>
+            <p class="desc">Grilled Hungarian sausage packed with spices.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- PASTA -->
+      <div id="pasta" class="menu-category">
+        <h3 class="category-title">Pasta</h3>
+        <div class="menu-grid">
+          <div class="menu-item"><img src="/images/shrimppasta.png" alt="Shrimp Aglio e Olio Pasta">
+            <p class="name">Shrimp Aglio e Olio Pasta</p>
+            <p class="desc">Pasta sautéed with garlic, olive oil, chili, and shrimp.</p>
+          </div>
+          <div class="menu-item"><img src="/images/cajun.png" alt="Creamy Cajun Pasta">
+            <p class="name">Creamy Cajun Pasta</p>
+            <p class="desc">Pasta in a spicy, creamy Cajun sauce with herbs.</p>
+          </div>
+          <div class="menu-item"><img src="/images/dosepasta.png" alt="Dose Singko Pasta">
+            <p class="name">Dose Singko Pasta</p>
+            <p class="desc">Our special pasta dish with signature sauce and flavor.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- PIZZA -->
+      <div id="pizza" class="menu-category">
+        <h3 class="category-title">Pizza</h3>
+        <div class="menu-grid">
+          <div class="menu-item"><img src="/images/alohapizza.png" alt="Aloha Pizza">
+            <p class="name">Aloha Pizza</p>
+            <p class="desc">Hawaiian-style pizza with pineapple and ham.</p>
+          </div>
+          <div class="menu-item"><img src="/images/cajunpizza.png" alt="Chicken BBQ Cajun Pizza">
+            <p class="name">Chicken BBQ Cajun Pizza</p>
+            <p class="desc">BBQ chicken pizza spiced with Cajun flavors.</p>
+          </div>
+          <div class="menu-item"><img src="/images/ashbulbul.png" alt="Ashbulbul Pizza">
+            <p class="name">Ashbulbul Pizza</p>
+            <p class="desc">Cheesy thin crust pizza with pepperoni and toppings.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- TACOS -->
+      <div id="tacos" class="menu-category">
+        <h3 class="category-title">Tacos</h3>
+        <div class="menu-grid">
+          <div class="menu-item"><img src="/images/chickentacos.png" alt="Grilled Chicken Tacos">
+            <p class="name">Grilled Chicken Tacos</p>
+            <p class="desc">Soft tacos filled with seasoned grilled chicken.</p>
+          </div>
+          <div class="menu-item"><img src="/images/beeftacos.png" alt="Beef Barbecue Tacos">
+            <p class="name">Beef Barbecue Tacos</p>
+            <p class="desc">Tacos stuffed with juicy barbecue beef.</p>
+          </div>
+          <div class="menu-item"><img src="/images/fishtacos.png" alt="Crispy Fish Tacos">
+            <p class="name">Crispy Fish Tacos</p>
+            <p class="desc">Golden fish fillet with tangy slaw in tacos.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- SNACKS -->
+      <div id="snacks" class="menu-category">
+        <h3 class="category-title">Snacks</h3>
+        <div class="menu-grid">
+          <div class="menu-item"><img src="/images/siomai.png">
+            <p class="name">Chinese Siomai</p>
+            <p class="desc">Steamed dumplings with soy-calamansi dip.</p>
+          </div>
+          <div class="menu-item"><img src="/images/nachos.png">
+            <p class="name">Dose Nachos</p>
+            <p class="desc">Nachos topped with cheese sauce, beef, and salsa.</p>
+          </div>
+          <div class="menu-item"><img src="/images/fish.png">
+            <p class="name">Fish and Chips</p>
+            <p class="desc">Crispy fish fillet with fries and tartar dip.</p>
+          </div>
+          <div class="menu-item"><img src="/images/fries.png">
+            <p class="name">Fries Overload</p>
+            <p class="desc">French fries smothered with toppings and sauces.</p>
+          </div>
+          <div class="menu-item"><img src="/images/friessmall.png">
+            <p class="name">Fries</p>
+            <p class="desc">Golden fried potato fries, simple and classic.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- DESSERT -->
+      <div id="dessert" class="menu-category">
+        <h3 class="category-title">Dessert</h3>
+        <div class="menu-grid">
+          <div class="menu-item"><img src="/images/newyorkcc.png">
+            <p class="name">New York Cheesecake</p>
+            <p class="desc">Rich and creamy classic cheesecake slice.</p>
+          </div>
+          <div class="menu-item"><img src="/images/strawberrycc.png">
+            <p class="name">Strawberry Cheesecake</p>
+            <p class="desc">Cheesecake topped with strawberry compote.</p>
+          </div>
+          <div class="menu-item"><img src="/images/mangocc.png">
+            <p class="name">Mango Cheesecake</p>
+            <p class="desc">Tropical mango topping on creamy cheesecake.</p>
+          </div>
+          <div class="menu-item"><img src="/images/blueberrycc.png">
+            <p class="name">Blueberry Cheesecake</p>
+            <p class="desc">Cheesecake topped with blueberry preserve.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADD-ONS -->
+      <div id="add-ons" class="menu-category">
+        <h3 class="category-title">Add-Ons</h3>
+        <div class="menu-grid">
+          <div class="menu-item"><img src="/images/chilioil.png">
+            <p class="name">Chili Garlic Oil</p>
+            <p class="desc">Spicy chili-garlic mix for extra kick.</p>
+          </div>
+          <div class="menu-item"><img src="/images/cheese.png">
+            <p class="name">Cheese Sauce</p>
+            <p class="desc">Creamy cheese dip for fries, nachos, or burgers.</p>
+          </div>
+          <div class="menu-item"><img src="/images/espressoshot.png">
+            <p class="name">Espresso Shot</p>
+            <p class="desc">A single, bold shot of espresso.</p>
+          </div>
+          <div class="menu-item"><img src="/images/whip.png">
+            <p class="name">Whipped Cream</p>
+            <p class="desc">Soft cream topping for drinks or desserts.</p>
+          </div>
+          <div class="menu-item"><img src="/images/milk.png">
+            <p class="name">Milk</p>
+            <p class="desc">Fresh creamy milk to enhance your drinks.</p>
+          </div>
+          <div class="menu-item"><img src="/images/saltcream.png">
+            <p class="name">Salt Cream</p>
+            <p class="desc">Savory-sweet cream topping for unique drinks.</p>
+          </div>
+        </div>
+      </div>
+
+
+
+    </div>
+    </div>
+  </section>
+
+  <!-- ✅ MENU CSS -->
+  <style>
+    .menu-container {
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    /* Sidebar */
+    .menu-sidebar {
+      width: 230px;
+      background: #fff;
+      padding: 20px;
+      border-right: 1px solid #ddd;
+      border-radius: 12px;
+      height: 70vh;
+      overflow-y: auto;
+    }
+
+    .menu-sidebar h3 {
+      margin-top: 0;
+    }
+
+    .menu-sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .menu-sidebar ul li {
+      margin-bottom: 12px;
+    }
+
+    .menu-sidebar ul li a {
+      font-size: 0.9rem;
+      text-decoration: none;
+      color: #333;
+      transition: 0.3s;
+    }
+
+    .menu-sidebar ul li a.active,
+    .menu-sidebar ul li a:hover {
+      font-weight: 600;
+      color: #000;
+    }
+
+    /* Main Title */
+    .menu-title {
+      margin-bottom: 5px;
+      font-size: 2em;
+      font-weight: 700;
+      text-align: center;
+      position: relative;
+      left: 20px;
+    }
+
+    /* Content */
+    .menu-content {
+      flex: 1;
+      padding: 0;
+      margin-top: -15px;
+    }
+
+    .menu-category {
+      display: none;
+      margin-bottom: 40px;
+    }
+
+    .menu-category.active {
+      display: block;
+    }
+
+    /* Category Title */
+    .category-title {
+      margin: 0 0 18px;
+      font-size: 1.3em;
+      font-weight: 700;
+      text-align: left;
+      border-bottom: 2px solid #ccc;
+      padding-bottom: 6px;
+    }
+
+    /* Grid */
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      /* ✅ 3 cards per line */
+      gap: 15px;
+      position: relative;
+    }
+
+    .menu-grid.collapsible.collapsed {
+      max-height: 420px;
+      overflow: hidden;
+    }
+
+    .menu-grid.collapsible.collapsed::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      background: linear-gradient(to top, #f4f4f4 70%, transparent);
+      pointer-events: none;
+    }
+
+    /* Button */
+    .toggle-btn {
+      margin: -20px auto 0;
+      display: block;
+      padding: 8px 18px;
+      border: none;
+      background: #333;
+      color: #fff;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      position: relative;
+      z-index: 2;
+      transition: transform 0.2s ease, background 0.3s ease;
+    }
+
+    .toggle-btn:hover {
+      background: #555;
+      transform: scale(1.08);
+    }
+
+    /* Cards */
+    .menu-item {
+      background: #fff;
+      padding: 15px 6px;
+      border-radius: 12px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .menu-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .menu-item img {
+      width: 100%;
+      max-width: 125px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+    }
+
+    .menu-item .name {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .menu-item .desc {
+      font-size: 0.8em;
+      color: #555;
+    }
+  </style>
+
+  <!-- ✅ JS -->
+  <script>
+    function toggleMenu(event, category) {
+      event.preventDefault();
+      document.querySelectorAll('.menu-category').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.menu-sidebar ul li a').forEach(link => link.classList.remove('active'));
+      var selected = document.getElementById(category);
+      if (selected) selected.classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    function toggleSeeMore(btn) {
+      const grid = btn.previousElementSibling;
+      grid.classList.toggle('collapsed');
+      btn.textContent = grid.classList.contains('collapsed') ? "See More" : "See Less";
+    }
+  </script>
+
+
+
+  </div>
+  </div>
+  </div>
+
+  <!-- Dose Singko Story Section -->
+  <section class="story-section">
+    <div class="story-container">
+
+      <!-- LEFT: Description -->
+      <div class="story-text fade-left">
+        <h2>Dose Singko Story</h2>
+        <p>
+          Dose Singko Café was established with the vision of creating a welcoming space
+          where students, families, and friends could gather to enjoy quality food and
+          beverages at an affordable price. What started as a simple idea, inspired by
+          the love for coffee and comfort food, gradually grew into a café that reflects
+          passion, dedication, and community support. Through hard work and commitment to
+          providing not only delicious treats but also a warm and memorable experience,
+          Dose Singko Café has become more than just a place to eat—it has become a place to belong.
+        </p>
+      </div>
+
+      <!-- RIGHT: One big gray box with 4 images inside -->
+      <div class="story-photo-box fade-right">
+        <div class="story-grid">
+          <img src="/images/story1.png" alt="Story 1">
+          <img src="/images/story2.png" alt="Story 2">
+          <img src="/images/story3.png" alt="Story 3">
+          <img src="/images/story4.png" alt="Story 4">
+        </div>
+      </div>
+
+    </div>
+  </section>
+  <style>
+    .story-section {
+      background: #f5f5f5;
+      padding: 70px 40px;
+    }
+
+    .story-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+
+    .story-text {
+      flex: 1;
+      min-width: 300px;
+      opacity: 0;
+      transform: translateX(-50px);
+      transition: all 1s ease;
+    }
+
+    .story-text h2 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+    }
+
+    .story-text p {
+      font-size: 1.1em;
+      line-height: 1.7;
+      color: black;
+      text-align: justify;
+    }
+
+    .story-photo-box {
+      flex: 1;
+      background: black;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      min-width: 320px;
+      opacity: 0;
+      transform: translateX(50px);
+      transition: all 1s ease;
+    }
+
+    .story-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+
+    .story-grid img {
+      width: 100%;
+      border-radius: 10px;
+      display: block;
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    .story-grid img:hover {
+      transform: scale(1.08);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Fade-in effect when in view */
+    .show.fade-left {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .show.fade-right {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  </style>
+
+  <!-- ✅ JS -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const storyText = document.querySelector(".story-text");
+      const storyPhoto = document.querySelector(".story-photo-box");
+
+      // IntersectionObserver para sa scroll effect
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            if (entry.target.classList.contains("story-text")) {
+              entry.target.classList.add("show", "fade-left");
+            } else if (entry.target.classList.contains("story-photo-box")) {
+              entry.target.classList.add("show", "fade-right");
+            }
+          } else {
+            // kapag wala na sa view, alisin ulit para mag-reset
+            entry.target.classList.remove("show", "fade-left", "fade-right");
+          }
+        });
+      }, { threshold: 0.2 });
+
+      observer.observe(storyText);
+      observer.observe(storyPhoto);
+
+      // ✅ Pag pinindot yung "About" sa navbar
+      const aboutLink = document.querySelector('a[href="#about"]');
+      const aboutSection = document.querySelector(".story-section");
+
+      if (aboutLink && aboutSection) {
+        aboutLink.addEventListener("click", (e) => {
+          e.preventDefault();
+          aboutSection.scrollIntoView({ behavior: "smooth" });
+
+          // force show effect after scroll
+          setTimeout(() => {
+            storyText.classList.add("show", "fade-left");
+            storyPhoto.classList.add("show", "fade-right");
+          }, 400);
+        });
+      }
+    });
+  </script>
+  </div>
+
+
+  <!-- Developers Section -->
+  <section class="developers-section">
+    <h2>Developers</h2>
+    <div class="developers-carousel">
+      <div class="carousel-track">
+
+        <!-- 1st Card -->
+        <div class="dev-card">
+          <div class="dev-card-content"></div>
+          <img src="/images/pm.png" alt="Marvhil Abrenica">
+          <h3>Marvhil Abrenica</h3>
+          <p>She is the project manager of this system. She oversees the team and guides the project to success.</p>
+        </div>
+
+        <!-- 2nd Card -->
+        <div class="dev-card">
+          <div class="dev-card-content"></div>
+          <img src="/images/frontend.png" alt="Samantha Delmigues">
+          <h3>Samantha Delmigues</h3>
+          <p>She is the front-end developer of this system. She designs and codes the user interface to ensure a smooth
+            and responsive experience.</p>
+        </div>
+
+        <!-- 3rd Card -->
+        <div class="dev-card">
+          <div class="dev-card-content"></div>
+          <img src="/images/backend.png" alt="Mark Antonio">
+          <h3>Mark Antonio</h3>
+          <p>He is the back-end developer of this system. He manages the server, database, and system logic to keep
+            everything running smoothly.</p>
+        </div>
+
+        <!-- 4th Card -->
+        <div class="dev-card">
+          <div class="dev-card-content"></div>
+          <img src="/images/qa.png" alt="Sarah Antonio">
+          <h3>Sarah Antonio</h3>
+          <p>She is the QA specialist of this system. She tests the features and ensures the system runs without errors.
+          </p>
+        </div>
+
+        <!-- 5th Card -->
+        <div class="dev-card">
+          <div class="dev-card-content"></div>
+          <img src="/images/docu1.png" alt="Jerome Espiritu">
+          <h3>Jerome Espiritu</h3>
+          <p>He is the document manager of this system. He organizes, manages, and maintains all project-related files
+            and records.</p>
+        </div>
+
+        <!-- 6th Card -->
+        <div class="dev-card">
+          <div class="dev-card-content"></div>
+          <img src="/images/docu2.png" alt="Noel Urmatan">
+          <h3>Noel Urmatan</h3>
+          <p>He assists the Document Manager in organizing, managing, and maintaining all project-related files and
+            records.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .developers-section {
+      width: 100vw;
+      /* buong screen width */
+      margin: 0;
+      padding: 0 0 60px;
+      /* tanggalin yung side padding, keep bottom padding */
+      overflow: hidden;
+      background: #f5f5f5;
+      text-align: center;
+    }
+
+    .developers-section h2 {
+      font-size: 34px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    /* Carousel wrapper */
+    .developers-carousel {
+      width: 100vw;
+      /* sakop din buong gilid */
+      overflow: hidden;
+      position: relative;
+    }
+
+    .carousel-track {
+      display: flex;
+      gap: 25px;
+      animation: scroll 40s linear infinite;
+    }
+
+    .dev-card {
+      flex: 0 0 280px;
+      background: linear-gradient(135deg, #ffffff, #d9d9d9);
+      border-radius: 18px;
+      padding: 25px;
+      text-align: center;
+      color: #333;
+      overflow: hidden;
+      /* para hindi lumabas content */
+      transition: box-shadow 0.3s ease;
+      /* shadow lang ang magbabago */
+      position: relative;
+    }
+
+    .dev-card-content {
+      transition: transform 0.3s ease;
+    }
+
+    .dev-card:hover .dev-card-content {
+      transform: scale(1.07);
+      /* zoom yung laman, hindi yung frame */
+    }
+
+    .dev-card:hover {
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .dev-card img {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 15px;
+      border: 3px solid black;
+      /* <-- updated border color */
+    }
+
+    .dev-card h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .dev-card p {
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* Animation for continuous scroll */
+    @keyframes scroll {
+      0% {
+        transform: translateX(0);
+      }
+
+      100% {
+        transform: translateX(-50%);
+      }
+    }
+  </style>
+
+  <script>
+    // Duplicate cards para continuous loop
+    const track = document.querySelector('.carousel-track');
+    track.innerHTML += track.innerHTML;
+  </script>
+  </div>
+
+  <!-- ====== Our Locations Section ====== -->
+  <section id="location" class="locations-section">
+    <h2 class="fade-target">Our Locations</h2>
+    <p class="loc-desc fade-target">
+      Here are some of the locations where you can find Dose Singko Café across Nueva Ecija,
+      serving cozy spaces and signature drinks to every community we reach.
+    </p>
+
+    <div class="locations-grid">
+      <div class="location-card big fade-target">
+        <img src="/images/quezon.png" alt="Quezon Branch">
+      </div>
+
+      <div class="locations-collage">
+        <div class="location-card small fade-target">
+          <img src="/images/aliaga.png" alt="Aliaga Branch">
+        </div>
+        <div class="location-card small fade-target">
+          <img src="/images/barerra.png" alt="Barrera Branch">
+        </div>
+        <div class="location-card small fade-target">
+          <img src="/images/guimba.png" alt="Guimba Branch">
+        </div>
+        <div class="location-card small fade-target">
+          <img src="/images/lamarang.png" alt="Lamarang Branch">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    /* ===== Locations Section ===== */
+    .locations-section {
+      padding: 50px 20px;
+      text-align: center;
+      background: #f9f7f2;
+    }
+
+    .locations-section h2 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .locations-section .loc-desc {
+      max-width: 750px;
+      margin: 0 auto 30px;
+      font-size: 0.95rem;
+      color: #555;
+      line-height: 1.6;
+    }
+
+    /* Layout grid */
+    .locations-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .location-card {
+      text-align: center;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .location-card img {
+      width: 100%;
+      height: auto;
+      display: block;
+      max-width: 100%;
+      transition: transform 0.4s ease;
+    }
+
+    .location-card:hover img {
+      transform: scale(1.05);
+    }
+
+    /* Big left image */
+    .location-card.big img {
+      max-width: 500px;
+    }
+
+    /* Right side collage */
+    .locations-collage {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .location-card.small img {
+      max-width: 280px;
+    }
+
+    /* ===== Fade-up Animation ===== */
+    .fade-target {
+      opacity: 0;
+      transform: translateY(50px);
+      transition: all 0.8s ease-out;
+    }
+
+    .fade-show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Responsive */
+    @media(max-width: 900px) {
+      .locations-grid {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .location-card.big img,
+      .location-card.small img {
+        max-width: 100%;
+      }
+    }
+  </style>
+
+  <script>
+    /* ===== Scroll Animation Effect (replays every time section enters) ===== */
+    document.addEventListener("DOMContentLoaded", () => {
+      const fadeTargets = document.querySelectorAll(".fade-target");
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("fade-show");
+            } else {
+              entry.target.classList.remove("fade-show");
+            }
+          });
+        },
+        { threshold: 0.15 }
+      );
+
+      fadeTargets.forEach((el) => observer.observe(el));
+    });
+  </script>
+
+  <!-- Your Voice Matters Section -->
+  <section class="feedback-section" id="feedback">
+    <div class="feedback-box hidden">
+      <h2>Your Voice Matters.</h2>
+      <p>In this section, you can share your thoughts, suggestions, and experiences about Dose Singko Café.
+        It allows you to express your feedback and help improve the café’s services and products, making you feel valued
+        and part of building a better café experience.
+      </p>
+
+      <div class="feedback-icons">
+        <div class="feedback-item">
+          <img src="/images/chat.png" alt="Message Icon">
+          <p>Share your comments and suggestions with us.</p>
+        </div>
+        <div class="feedback-item">
+          <img src="/images/star.png" alt="Star Icon">
+          <p>Rate your experience and let us know how we're doing.</p>
+        </div>
+        <div class="feedback-item">
+          <img src="/images/voice.png" alt="Voice Icon">
+          <p>Your feedback is heard and helps us improve.</p>
+        </div>
+      </div>
+
+      <a href="/feedback" style="text-decoration:none;">
+        <button class="feedback-btn">Share your Feedback now</button>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- Footer Section -->
+  <footer class="footer-section">
+    <div class="footer-container">
+      <!-- Left Logo -->
+      <div class="footer-logo">
+        <img src="/images/logoW.png" alt="Dose Singko Logo">
+      </div>
+
+      <!-- Center Content -->
+      <div class="footer-center">
+        <h3>Visit Us Today</h3>
+        <div class="footer-info">
+          <div class="footer-item">
+            <img src="/images/location.png" alt="Location">
+            <p>Petron, Dulong Bayan,<br>Quezon, Nueva Ecija</p>
+          </div>
+          <div class="footer-item">
+            <img src="/images/time.png" alt="Time">
+            <p>Opens at 11:00am<br>Closes at 10:00pm</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Socials -->
+      <div class="footer-right">
+        <h3>Follow Us On</h3>
+        <div class="footer-social">
+          <div class="footer-item">
+            <img src="/images/ig.png" alt="Instagram">
+            <p>@dosesingkol1205</p>
+          </div>
+          <div class="footer-item">
+            <img src="/images/tiktok.png" alt="TikTok">
+            <p>@dosesingkol1205</p>
+          </div>
+          <div class="footer-item">
+            <img src="/images/fb.png" alt="Facebook">
+            <p>Dose Singko – Nueva Ecija</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="footer-copy">© 2025 Dose Singko Café. All Rights Reserved.</p>
+  </footer>
+
+  <style>
+    /* ===== YOUR VOICE MATTERS SECTION ===== */
+    .feedback-section {
+      background: #f9f7f2;
+      /* same as Location section */
+      padding: 60px 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    .feedback-box {
+      background: #fff;
+      width: 85%;
+      max-width: 850px;
+      padding: 35px 40px;
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      transition: transform 0.6s ease, opacity 0.6s ease;
+    }
+
+    .feedback-box.hidden {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+
+    .feedback-box.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .feedback-box h2 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #000;
+      margin-bottom: 15px;
+    }
+
+    .feedback-box p {
+      font-size: 0.95rem;
+      color: #333;
+      line-height: 1.6;
+      margin-bottom: 25px;
+    }
+
+    .feedback-icons {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+
+    .feedback-item {
+      max-width: 220px;
+    }
+
+    .feedback-item img {
+      width: 45px;
+      height: auto;
+      margin-bottom: 10px;
+    }
+
+    .feedback-item p {
+      font-size: 0.9rem;
+      color: #444;
+    }
+
+    /* ===== BUTTON ===== */
+    .feedback-btn {
+      background: #000;
+      color: #fff;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .feedback-btn:hover {
+      background: #e5e5e5;
+      color: #000;
+      transform: scale(1.05);
+    }
+
+    /* ===== FOOTER SECTION ===== */
+    .footer-section {
+      background: #000;
+      color: #fff;
+      font-family: "Poppins", Arial, sans-serif;
+      padding: 35px 40px 20px;
+    }
+
+    .footer-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      max-width: 1200px;
+      margin: auto;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      padding-bottom: 15px;
+      text-align: center;
+    }
+
+    .footer-logo {
+      margin-left: 30px;
+    }
+
+    .footer-logo img {
+      width: 120px;
+      height: auto;
+      object-fit: contain;
+    }
+
+    .footer-center,
+    .footer-right {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .footer-center h3,
+    .footer-right h3 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    .footer-info,
+    .footer-social {
+      display: flex;
+      gap: 35px;
+    }
+
+    .footer-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      color: #ddd;
+    }
+
+    .footer-item img {
+      width: 22px;
+      height: 22px;
+      object-fit: contain;
+      opacity: 0.9;
+    }
+
+    .footer-copy {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 0.75rem;
+      color: #aaa;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .feedback-box {
+        width: 90%;
+        padding: 30px 25px;
+      }
+
+      .feedback-box h2 {
+        font-size: 1.6rem;
+      }
+
+      .footer-container {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+      }
+
+      .footer-info,
+      .footer-social {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .footer-logo {
+        margin-left: 0;
+      }
+    }
+  </style>
+
+  <script>
+    /* ===== Scroll Entry Animation (repeats when scrolled) ===== */
+    document.addEventListener("DOMContentLoaded", () => {
+      const box = document.querySelector(".feedback-box");
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("show");
+            } else {
+              entry.target.classList.remove("show");
+            }
+          });
+        },
+        { threshold: 0.2 }
+      );
+      observer.observe(box);
+    });
+  </script>
