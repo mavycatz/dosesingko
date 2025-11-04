@@ -4,17 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Feedback Dashboard</title>
-  
-  <!-- Google Fonts: Poppins -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- Bootstrap Icons -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-  <link rel ="icon" href="images/iconup.png" type="image">
-
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel ="icon" href="images/iconup.png" type="image">
 <body style="margin:0; display:flex; min-height:100vh; background-color:#ffffff;">
 
   <!-- Navbar / Sidebar -->
@@ -110,7 +103,6 @@
 
 <div class="container mt-4">
 
-<!-- Stats Cards (Monochrome) -->
 <div class="row g-3 mb-4">
   <div class="col-md-3">
     <div class="card text-center p-3 shadow-sm position-relative" style="border-radius:12px; background-color:#ffffff;">
@@ -142,7 +134,6 @@
   </div>
 </div>
 
-<!-- Rating by Category (Vertical, Maximized Space) -->
 <div class="card p-4 mb-4 shadow-sm" style="border-radius:12px; background-color:#ffffff;">
   <h5 class="mb-2">Rating by Category</h5>
   <h6 class="text-muted mb-3" style="font-size:0.85rem;">Detailed breakdown of ratings across different service areas</h6>
@@ -150,14 +141,12 @@
   <% Object.keys(categoryRatings).forEach(cat => { %>
     <div class="d-flex flex-column mb-3 p-3 border rounded" style="background: #f9f9f9;">
       
-      <!-- Top row: category, stars + avg, trend -->
       <div class="d-flex align-items-center justify-content-between w-100">
         
-        <!-- Left: Category + Stars + Avg -->
         <div class="d-flex align-items-center" style="flex-grow:1;">
           <span style="min-width: 150px;"><%= cat.charAt(0).toUpperCase() + cat.slice(1) %></span>
 
-          <span style="margin-left: 60px;"> <!-- Increased space -->
+          <span style="margin-left: 60px;"> 
             <% const stars = Math.round(categoryRatings[cat].average); 
                for(let i=1; i<=5; i++) { %>
               <i class="bi bi-star-fill" style="color: <%= i <= stars ? '#000' : '#888' %>; margin-right:0px;"></i>
@@ -167,7 +156,6 @@
           <span style="font-size:0.85rem; color:#555; margin-left:6px;">(<%= categoryRatings[cat].average.toFixed(1) %>)</span>
         </div>
 
-        <!-- Right: Trend -->
         <div style="font-size:1rem; min-width: 80px; text-align:right;">
           <% if(categoryRatings[cat].trend > 0) { %>
             <span class="text-success">+<%= categoryRatings[cat].trend.toFixed(2) %> ↑</span>
@@ -179,7 +167,6 @@
         </div>
       </div>
 
-      <!-- Bottom row: number of ratings -->
       <div style="font-size:0.75rem; color:#555; margin-top:2px;">
         (<%= categoryRatings[cat].count %> ratings)
       </div>
@@ -245,7 +232,6 @@
 
 <div class="d-flex gap-3" style="width:100%; margin-bottom:25px;">
   
-  <!-- Category Performance (70%) -->
   <div style="flex: 0 0 70%;">
     <div class="card p-4 shadow-sm" style="border-radius:12px; background-color:#ffffff; height:100%;">
       <h5 class="mb-3">Category Performance Score</h5>
@@ -257,7 +243,6 @@
     </div>
   </div>
 
-  <!-- Recent 5-Star Reviews (30%) -->
   <div style="flex: 0 0 30%;">
     <div class="card shadow-sm d-flex flex-column" 
          style="border-radius:16px; background-color:rgba(255,255,255,0.85); height:100%; overflow:hidden;">
@@ -295,7 +280,6 @@
 
 <div class="d-flex gap-3" style="width:100%; margin:25px auto;">
 
-  <!-- Low Ratings (30%) -->
   <div style="flex:0 0 30%;">
     <div class="card shadow-sm d-flex flex-column" 
          style="border-radius:16px; background-color:rgba(255,255,255,0.85); height:100%; overflow:hidden;">
@@ -330,7 +314,6 @@
       </div>
     </div>
   </div>
-  <!-- Peak Hour Ratings (70%) -->
   <div style="flex:0 0 70%;">
     <div style="padding:20px; background:#fff; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.08); height:100%;">
           <h5 class="mb-2">Hourly Feedback Patterns</h5>
@@ -350,7 +333,6 @@
 <script>
   const allPeakData = <%- JSON.stringify(peakHours || {}) %>;
 
-  // Only include 10AM-11PM
   const filteredPeakData = Object.fromEntries(
     Object.entries(allPeakData).filter(([hour]) => parseInt(hour) >= 10 && parseInt(hour) <= 23)
   );
@@ -366,7 +348,6 @@
   const peakHourCounts = Object.values(filteredPeakData).map(h => h.count);
   const peakHourAvgRatings = Object.values(filteredPeakData).map(h => parseFloat(h.avgRating));
 
-  // Peak hour and best average rating hour
   const maxCount = Math.max(...peakHourCounts);
   const peakHourIndex = peakHourCounts.indexOf(maxCount);
   const peakHourLabel = peakHourLabels[peakHourIndex];
@@ -375,7 +356,6 @@
   const bestHourIndex = peakHourAvgRatings.indexOf(maxAvgRating);
   const bestHourLabel = peakHourLabels[bestHourIndex];
 
-  // Chart
   const ctxPeak = document.getElementById('peakHourChart').getContext('2d');
   new Chart(ctxPeak, {
     type: 'bar',
@@ -426,7 +406,6 @@
     }
   });
 
-  // Stats Cards (Option 2)
   const summaryEl = document.getElementById('peakHourSummary');
 
   const allAvgRatings = Object.values(allPeakData).map(h => parseFloat(h.avgRating));
@@ -462,7 +441,6 @@ const darkShades = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd'];
 const trends = <%- JSON.stringify(trends || { labels: [], datasets: [] }) %>;
 const ratingDistribution = <%- JSON.stringify(ratingDistribution || {5:{count:0,percentage:0},4:{count:0,percentage:0},3:{count:0,percentage:0},2:{count:0,percentage:0},1:{count:0,percentage:0}}) %>;
 
-// Rating Trends (6-Month)
 const ctxTrends = document.getElementById('ratingTrendsChart').getContext('2d');
 new Chart(ctxTrends, {
   type: 'line',
@@ -498,7 +476,6 @@ new Chart(ctxTrends, {
   }
 });
 
-// Rating Distribution Horizontal Bar
 const labelsDist = [5,4,3,2,1].map(s => s + '★');
 const counts = [5,4,3,2,1].map(s => ratingDistribution[s].count);
 const percentages = [5,4,3,2,1].map(s => ratingDistribution[s].percentage);
@@ -552,7 +529,6 @@ new Chart(ctxDist, {
 <script>
 const categoryPerformance = <%- JSON.stringify(categoryPerformance) %>;
 
-// Horizontal bar chart
 const labels = Object.keys(categoryPerformance);
 const dataValues = Object.values(categoryPerformance).map(v => parseFloat(v.percentage));
 
@@ -601,7 +577,6 @@ const chartConfig = {
 
 new Chart(document.getElementById('categoryPerformanceChart'), chartConfig);
 
-// Modern monochrome stats cards with progress bars
 const detailsContainer = document.getElementById('categoryPerformanceDetails');
 let detailsHTML = '';
 
@@ -637,7 +612,6 @@ Object.entries(categoryPerformance).forEach(([cat, stats]) => {
   `;
 });
 
-// Wrap in a responsive row, center cards if fewer than 4
 detailsContainer.innerHTML = `<div class="row justify-content-center">${detailsHTML}</div>`;
 </script>
 

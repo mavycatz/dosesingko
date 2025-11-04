@@ -35,12 +35,12 @@
   .sidebar-header {
     display: flex;
     align-items: center;
-    gap: 8px; /* reduced spacing */
-    padding: 16px; /* slightly smaller padding */
+    gap: 8px; 
+    padding: 16px; 
   }
 
   .sidebar-header i {
-    font-size: 28px; /* smaller icon */
+    font-size: 28px; 
     color: #000;
   }
 
@@ -51,12 +51,12 @@
   }
 
   .sidebar-header .title .line1 {
-    font-size: 18px; /* smaller main title */
+    font-size: 18px; 
     font-weight: 600;
   }
 
   .sidebar-header .title .line2 {
-    font-size: 14px; /* smaller subtitle */
+    font-size: 14px; 
     font-weight: 600;
     color: #555;
   }
@@ -66,21 +66,21 @@
   }
 
   .menu-group-header {
-    font-size: 12px; /* smaller group header */
+    font-size: 12px; 
     font-weight: 500;
     color: #888;
     text-transform: uppercase;
-    padding: 10px 16px 4px 16px; /* smaller padding */
+    padding: 10px 16px 4px 16px; 
   }
 
   .menu-item {
     display: flex;
     align-items: center;
-    gap: 8px; /* smaller gap */
-    padding: 8px 16px; /* smaller padding */
+    gap: 8px; 
+    padding: 8px 16px; 
     border-radius: 6px;
     color: #000;
-    font-size: 14px; /* smaller text */
+    font-size: 14px; 
     font-weight: 500;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -89,7 +89,7 @@
   }
 
   .menu-item i {
-    font-size: 18px; /* smaller icon */
+    font-size: 18px; 
     color: inherit;
     transition: transform 0.3s ease;
   }
@@ -105,7 +105,6 @@
   width: 90%;
 }
 
-/* hover effect: soft gray background */
 .menu-item:hover {
   background-color: #f2f2f2;
   font-weight: 500;
@@ -114,18 +113,15 @@
 .menu-item:hover i {
   transform: translateX(4px); 
 }
-/* active item: subtle highlight */
 .menu-item.active {
   background-color: #eaeaea;
   color: #000;
   font-weight: 600;
   border-left: 4px solid #000;
 }
-
-
   .sidebar-footer {
     padding: 16px;
-    font-size: 12px; /* smaller footer text */
+    font-size: 12px; 
     font-weight: 400;
     color: #555;
     text-align: center;
@@ -140,7 +136,7 @@
     position: absolute;
     left: 70px;
     background-color: #F9F9F9;
-    padding: 4px 8px; /* smaller tooltip */
+    padding: 4px 8px; 
     border-radius: 4px;
     font-size: 10px;
     color: #000;
@@ -154,8 +150,8 @@
     top: 50%;
     right: -15px;
     transform: translateY(-50%);
-    width: 28px; /* slightly smaller */
-    height: 50px; /* slightly smaller */
+    width: 28px; 
+    height: 50px; 
     background-color: #F9F9F9;
     border: 1px solid #CCC;
     border-radius: 6px;
@@ -168,13 +164,13 @@
   }
 
   .toggle-buckle i {
-    font-size: 16px; /* smaller icon */
+    font-size: 16px; 
     color: #000;
   }
 
   .content {
     flex: 1;
-    padding: 16px; /* slightly smaller content padding */
+    padding: 16px; 
     background-color: #E5E5E5;
   }
   .content-inner {
@@ -196,10 +192,9 @@
         <span class="line2 d-block text-muted">Feedback System</span>
       </div>
     </div>
-      <!-- Center buckle toggle -->
-<div id="sidebar-toggle" style="position: fixed; top: 20px; z-index: 50; cursor: pointer;">
-  <img src="/images/sidebar.png" alt="Toggle Sidebar" style="width:20px; height:20px;">
-</div>
+    <div id="sidebar-toggle" style="position: fixed; top: 20px; z-index: 50; cursor: pointer;">
+      <img src="/images/sidebar.png" alt="Toggle Sidebar" style="width:20px; height:20px;">
+    </div>
 
 
 <div class="menu-group" style="font-weight:400;">
@@ -260,8 +255,6 @@
   </div>
 <% } %>
 
-
-
     <div class="menu-item ms-2 <%= activeItem === 'Logout' ? 'active' : '' %>" 
          data-label="Logout" 
          onclick="window.location.href='/users/logout'">
@@ -318,10 +311,8 @@ function updateSidebarTime() {
   footer.textContent = 'Online: ' + now.toLocaleString('en-US', options);
 }
 
-// Initial update
 updateSidebarTime();
 
-// Optional: auto-update every minute
 setInterval(updateSidebarTime, 60000);
 </script>
 </body>

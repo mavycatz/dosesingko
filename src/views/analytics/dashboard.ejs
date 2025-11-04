@@ -4,14 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dose Singko - Dashboard</title>
-  
-  <!-- Google Fonts: Poppins -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-  <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
   <link rel ="icon" href="images/iconup.png" type="image">
 
@@ -49,13 +44,10 @@
 
 <body style="margin:0; display:flex; min-height:100vh; background-color:#ffffff;">
 
-  <!-- Navbar / Sidebar -->
   <%- include('../partials/navbaradmin') %>
 
-  <!-- Main Content -->
   <div class="dashboard-container d-flex flex-column flex-grow-1" style="min-height:100vh; overflow-y:auto;">
     <div class="container-fluid mt-4 px-4">
-  <!-- Breadcrumb -->
   <div class="dashboard-header mb-4" style="margin-left:20px; font-size:0.85rem;">
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb mb-1" style="color: gray; font-size:0.85rem;">
@@ -86,7 +78,6 @@
   z-index: 9999;
   min-width: 220px;
 ">
-  <!-- Profile Image -->
   <div style="
     width: 40px;
     height: 40px;
@@ -160,7 +151,6 @@
   </div>
 <% const currentYear = new Date().getFullYear(); %>
 
-<!-- Slim Modern Filters -->
 <div class="card p-3 mb-4"
      style="background:#fff; border:1px solid #e6e6e6; border-radius:20px; width:100%; max-width:100%; box-shadow:none;">
 
@@ -289,8 +279,6 @@
 
 </div>
 
-
-<!-- Bootstrap Icons -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
 <div class="card p-3 mb-4" style="background-color: #fff; border-radius: 8px; position: relative; box-shadow: 0 8px 20px rgba(0,0,0,0.15);">
@@ -345,8 +333,6 @@
     </div>
   </div>
 </div>
-
-
 
 <!-- Summary Modal -->
 <div class="modal fade" id="summaryModal" tabindex="-1" aria-labelledby="summaryModalLabel" aria-hidden="true">
@@ -771,18 +757,15 @@ async function applyFilter() {
   if (day) params.day = day;
   if (hour) params.hour = hour;
 
-  // fetch filtered feedback
   const feedbackData = await fetchData('/analytics/getFilteredFeedback', params);
   if (feedbackData) {
     latestFeedbackData = feedbackData;
-    // render summary and charts
     renderSummaryCards(feedbackData);
     renderFeedbackChart(feedbackData);
   } else {
     console.warn('No feedback data returned for filter; skipping chart update.');
   }
 
-  // fetch ratings (independent)
   const ratingsData = await fetchData('/analytics/ratings-data', params);
   if (ratingsData) {
     renderRatingsCharts(ratingsData);
@@ -792,7 +775,6 @@ async function applyFilter() {
 }
 
 function renderSummaryCards(data) {
-  // Ensure DOM elements exist before updating
   const tf = document.getElementById('totalFeedback');
   const ar = document.getElementById('avgRating');
   const ac = document.getElementById('activeCustomers');
@@ -808,12 +790,10 @@ window.addEventListener('DOMContentLoaded', async () => {
   try {
     const now = new Date();
     const currentYear = now.getFullYear();
-    const currentMonth = now.getMonth() + 1; // JS months are 0-based
+    const currentMonth = now.getMonth() + 1;
 
-    // Default params = current month and year
     const defaultParams = { year: currentYear, month: currentMonth };
 
-    // Load feedback data for current month by default
     const feedbackData = latestFeedbackData || await fetchData('/analytics/getFilteredFeedback', defaultParams);
     if (feedbackData) {
       latestFeedbackData = feedbackData;
@@ -823,7 +803,6 @@ window.addEventListener('DOMContentLoaded', async () => {
       console.info('No initial feedback data available for the current month.');
     }
 
-    // Load ratings charts for current month
     const ratingsData = await fetchData('/analytics/ratings-data', defaultParams);
     if (ratingsData) {
       renderRatingsCharts(ratingsData);
@@ -885,7 +864,6 @@ function printDashboard() {
     messageBox.textContent = text;
     messageBox.classList.remove("d-none");
 
-    // Auto-hide after 3 seconds
     setTimeout(() => {
       messageBox.classList.add("d-none");
     }, 3000);
@@ -936,17 +914,16 @@ function printDashboard() {
 <script>
   let inactivityTime = function () {
     let timer;
-    const logoutTime = 3 * 60 * 1000; // 3 minutes in milliseconds
+    const logoutTime = 3 * 60 * 1000;
 
     function resetTimer() {
       clearTimeout(timer);
       timer = setTimeout(() => {
         alert('You have been inactive for 3 minutes. Redirecting to login.');
-        window.location.href = '/users/login'; // change to your login route
+        window.location.href = '/users/login'; 
       }, logoutTime);
     }
 
-    // Events that reset the timer
     window.onload = resetTimer;
     document.onmousemove = resetTimer;
     document.onkeypress = resetTimer;

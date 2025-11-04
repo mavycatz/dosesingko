@@ -555,7 +555,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // CSV Download
   document.querySelectorAll('.csv-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
       const id = btn.dataset.id;
@@ -594,7 +593,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Delete Report
   document.querySelectorAll('.delete-report-btn').forEach(btn => {
     btn.addEventListener('click', async (e) => {
       e.stopPropagation();

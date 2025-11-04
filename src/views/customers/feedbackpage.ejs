@@ -376,7 +376,7 @@ document.querySelectorAll('.stars').forEach(starContainer => {
       for (let j = 0; j < i; j++) {
         starContainer.querySelectorAll('span')[j].classList.add('selected');
       }
-      hiddenInput.value = i; // always update hidden input
+      hiddenInput.value = i;
     });
 
     starContainer.appendChild(star);

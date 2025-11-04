@@ -400,12 +400,10 @@
       return { x, y };
     }
 
-    // Shuffle array (to avoid consecutive duplicates)
     function shuffle(arr) {
       return arr.sort(() => Math.random() - 0.5);
     }
 
-    // Add coffees
     shuffle(coffees).forEach(src => {
       const img = document.createElement('img');
       img.src = src;
@@ -419,7 +417,6 @@
       leftSide.appendChild(img);
     });
 
-    // Add leaves
     shuffle(leaves).forEach(src => {
       const img = document.createElement('img');
       img.src = src;

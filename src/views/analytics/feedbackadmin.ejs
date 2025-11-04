@@ -45,7 +45,6 @@
   <i class="bi bi-printer"></i> Print
 </button>
 
-<!-- Feedback Form Button -->
 <button type="button"
   class="btn"
   style="background-color: white; color: black; border: 1px solid black; padding: 4px 8px; border-radius: 3px; font-size: 14px; display: flex; align-items: center; gap: 3px;"
@@ -68,7 +67,7 @@
         %>
 
         <form action="/feedback/edit/<%= feedback._id %>" method="POST" class="needs-validation">
-          <!-- Overall Experience -->
+
           <div class="rating-group mb-3">
             <label class="d-block fw-semibold">Overall Experience:</label>
             <small class="text-muted d-block mb-1">e.g., Is everything good? Great service? Fast transaction?</small>
@@ -343,7 +342,7 @@ document.getElementById("addMenuForm").addEventListener("submit", async (e) => {
 
 window.loadArchivedMenus = async () => {
   try {
-    const res = await fetch("/menu/archived"); // make sure this route returns archived menus
+    const res = await fetch("/menu/archived"); 
     const menus = await res.json();
     const container = document.getElementById("archivedMenuList");
     container.innerHTML = "";
@@ -481,9 +480,9 @@ archivedMenuModal.addEventListener("show.bs.modal", loadArchivedMenus);
 
 <style>
   .active-filter {
-    background-color: #e9ecef !important; /* light gray background */
+    background-color: #e9ecef !important;
     color: #111 !important;
-    border: 1px solid #ccc !important; /* light gray border */
+    border: 1px solid #ccc !important; 
   }
 
   .pagination .page-link {
@@ -498,13 +497,13 @@ archivedMenuModal.addEventListener("show.bs.modal", loadArchivedMenus);
   }
 
   .pagination .active .page-link {
-    background-color: #555; /* dark gray active */
+    background-color: #555; 
     color: #fff;
-    border-color: #ccc; /* light gray outline */
+    border-color: #ccc; 
   }
 
   .pagination .page-link:focus {
-    box-shadow: none !important; /* removes green focus outline */
+    box-shadow: none !important;
   }
 </style>
 
@@ -658,12 +657,10 @@ document.addEventListener("DOMContentLoaded", () => {
 </form>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-  // Prevent default form submission
   document.getElementById('bulkDeleteForm').addEventListener('submit', e => e.preventDefault());
 
   document.getElementById('bulkDeleteBtn').addEventListener('click', async function(e) {
     try {
-      // collect selected feedback IDs
       const ids = Array.from(document.querySelectorAll('.feedback-checkbox:checked'))
                         .map(cb => cb.value);
 
@@ -676,7 +673,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
 
-      // confirm deletion
       const result = await Swal.fire({
         title: 'Delete selected feedbacks?',
         text: 'This action cannot be undone.',
@@ -689,7 +685,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       if (result.isConfirmed) {
-        // call your AJAX function
         const response = await fetch('/feedback/delete-multiple', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -706,7 +701,6 @@ document.addEventListener("DOMContentLoaded", () => {
             confirmButtonColor: '#000000'
           });
 
-          // remove deleted rows from table dynamically
           ids.forEach(id => {
             const row = document.querySelector(`.feedback-checkbox[value="${id}"]`).closest('tr');
             if (row) row.remove();
@@ -732,7 +726,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // select all checkbox
   document.getElementById('selectAll').addEventListener('change', function() {
     document.querySelectorAll('.feedback-checkbox').forEach(cb => cb.checked = this.checked);
   });
@@ -741,7 +734,6 @@ document.addEventListener("DOMContentLoaded", () => {
   </div>
 </div>
 
-<!-- ✅ Place all reply modals AFTER the table -->
 <% feedbacks.forEach(fb => { %>
   <% if(fb.replies && fb.replies.length > 0){ %>
     <% fb.replies.forEach(r => { %>
@@ -767,7 +759,6 @@ document.addEventListener("DOMContentLoaded", () => {
     <% }) %>
   <% } %>
 <% }) %>
-
 
 <!-- Rating Modals -->
 <% feedbacks.forEach(fb => { %>
@@ -923,7 +914,6 @@ const showMessage = (message, success = true) => {
   setTimeout(() => { msgBox.style.display = "none"; }, 3000);
 };
 
-// Approve/unapprove feedback
 document.querySelectorAll(".approve-btn").forEach(button => {
   button.addEventListener("click", async () => {
     const feedbackId = button.dataset.id;
@@ -1002,7 +992,6 @@ document.querySelectorAll("form[action^='/feedback/delete/']").forEach(form => {
     }
   });
 });
-// AI Reply (updated to show floating message instead of alert)
 document.querySelectorAll(".auto-reply-btn").forEach(button => {
   button.addEventListener("click", async () => {
     const feedbackId = button.dataset.id;
@@ -1059,7 +1048,6 @@ document.addEventListener("DOMContentLoaded", () => {
         showMessage(data.message, data.success);
 
         if (data.success) {
-          // safely remove the reply container
           const replyContainer = form.closest(".reply-item") || form.parentElement;
           if (replyContainer) replyContainer.remove();
         }
@@ -1072,7 +1060,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-// Edit reply
 document.addEventListener("submit", async e => {
   if (!e.target.matches(".edit-reply-form")) return;
   e.preventDefault();
